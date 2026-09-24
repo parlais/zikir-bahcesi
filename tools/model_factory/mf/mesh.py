@@ -23,11 +23,52 @@ class Mesh:
     V: np.ndarray                      # (n, 3) köşeler
     F: np.ndarray                      # (m, 3) üçgenler
     C: np.ndarray                      # (m, 3) yüz renkleri (doğrusal değil, sRGB 0-1)
-    material: str = "mat"              # mat | nur | cam | su
+    material: str = "mat"              # malzeme adı; Godot bu ada göre shader atar
+    W: np.ndarray | None = None        # (n,) köşe ağırlığı -> COLOR_0.a (rüzgâr salınımı, 0 dip 1 uç)
+    S: np.ndarray | None = None        # (m,) yüz başına yumuşatma açısı (derece; 0 = düz gölge)
+    NV: np.ndarray | None = None       # (n, 3) elle verilmiş köşe normalleri (sıfır = hesapla)
+
+    def __post_init__(self):
+        if self.W is None:
+            self.W = np.ones(len(self.V), dtype=np.float32)
+        if self.S is None:
+            self.S = np.zeros(len(self.F), dtype=np.float32)
+        if self.NV is None:
+            self.NV = np.zeros((len(self.V), 3), dtype=np.float32)
 
     # --- dönüşümler (hepsi yeni Mesh döndürür) ---------------------------
     def copy(self) -> "Mesh":
-        return Mesh(self.V.copy(), self.F.copy(), self.C.copy(), self.material)
+        return Mesh(self.V.copy(), self.F.copy(), self.C.copy(), self.material, self.W.copy(), self.S.copy(),
+                    self.NV.copy())
+
+    def kure_normal(self, merkez, olcek=(1.0, 1.0, 1.0)) -> "Mesh":
+        """Yaprak kümeleri için normalleri tacın merkezinden dışa yönlendirir:
+        yüzlerce küçük yaprak tek bir yumuşak, kabarık kütle gibi ışık alır."""
+        m = self.copy()
+        d = (m.V - np.asarray(merkez, np.float32)) / np.asarray(olcek, np.float32)
+        m.NV = d / (np.linalg.norm(d, axis=1, keepdims=True) + 1e-9)
+        return m
+
+    def eksen_normal(self, x=0.0, z=0.0, dikey=0.25) -> "Mesh":
+        """Selvi gibi dik kütleler: normaller dikey eksenden dışa (biraz yukarı)."""
+        m = self.copy()
+        d = m.V - np.array([x, 0.0, z], np.float32)
+        d[:, 1] = dikey * np.linalg.norm(d[:, [0, 2]], axis=1)
+        m.NV = d / (np.linalg.norm(d, axis=1, keepdims=True) + 1e-9)
+        return m
+
+    def smooth(self, aci: float = 50.0) -> "Mesh":
+        """Yumuşak gölge: aralarındaki açı `aci` dereceden küçük komşu yüzlerin
+        normalleri ortalanır. Keskin kenarlar (kutu köşeleri) keskin kalır."""
+        m = self.copy()
+        m.S = np.full(len(m.F), aci, dtype=np.float32)
+        return m
+
+    def weight(self, fn) -> "Mesh":
+        """Köşe ağırlığını konumdan hesaplar: fn(V) -> (n,) 0..1."""
+        m = self.copy()
+        m.W = np.clip(np.asarray(fn(m.V), dtype=np.float32), 0, 1)
+        return m
 
     def translate(self, x=0.0, y=0.0, z=0.0) -> "Mesh":
         m = self.copy()
@@ -45,7 +86,9 @@ class Mesh:
 
     def rotate(self, axis: str, deg: float) -> "Mesh":
         m = self.copy()
-        m.V = m.V @ rot(axis, deg).T
+        R = rot(axis, deg)
+        m.V = m.V @ R.T
+        m.NV = m.NV @ R.T
         return m
 
     def transform(self, M: np.ndarray) -> "Mesh":
@@ -70,10 +113,12 @@ class Mesh:
         return m
 
     def double_sided(self) -> "Mesh":
-        """İnce yüzeyler (yaprak, taç yaprak) arkadan da görünsün."""
+        """İnce yüzeyler (yaprak, taç yaprak) arkadan da görünsün (normaller elle verilmişse
+        arka yüz de aynı normali kullanır; kabarık taç görünümü böyle korunur)."""
         m = self.copy()
         m.F = np.vstack([m.F, m.F[:, ::-1]])
         m.C = np.vstack([m.C, m.C])
+        m.S = np.concatenate([m.S, m.S])
         return m
 
     def jitter(self, amount: float, seed: int = 0, keep_y_below: float | None = None) -> "Mesh":
@@ -109,14 +154,19 @@ def merge(*meshes: Mesh) -> Mesh:
     ms = [m for m in meshes if m is not None]
     mats = {m.material for m in ms}
     assert len(mats) == 1, f"Farklı malzemeler birleştirilemez: {mats}"
-    V, F, C, off = [], [], [], 0
+    V, F, C, W, S, NV, off = [], [], [], [], [], [], 0
     for m in ms:
         V.append(m.V)
         F.append(m.F + off)
         C.append(m.C)
+        W.append(m.W)
+        S.append(m.S)
+        NV.append(m.NV)
         off += len(m.V)
     return Mesh(np.vstack(V).astype(np.float32), np.vstack(F).astype(np.int64),
-                np.vstack(C).astype(np.float32), ms[0].material)
+                np.vstack(C).astype(np.float32), ms[0].material,
+                np.concatenate(W).astype(np.float32), np.concatenate(S).astype(np.float32),
+                np.vstack(NV).astype(np.float32))
 
 
 def rot(axis: str, deg: float) -> np.ndarray:

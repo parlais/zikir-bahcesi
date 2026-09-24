@@ -55,6 +55,19 @@ PALET = {
     "cam": (255, 226, 150),             # kandil camı (nur malzemesiyle parlar)
     "nur": (255, 214, 120),
     "su": (96, 176, 214),
+    # Büyük sahne
+    "selvi": (46, 96, 58),
+    "nar": (196, 40, 48),
+    "nar_koyu": (140, 30, 36),
+    "gul": (222, 70, 96),
+    "gul_koyu": (170, 36, 64),
+    "tas_yol": (222, 208, 184),
+    "cini_firuze": (38, 150, 160),
+    "cini_lacivert": (28, 64, 128),
+    "kursun_renk": (112, 128, 142),
+    "uzak_dag": (128, 132, 146),
+    "uzak_orman": (70, 104, 84),
+    "kar": (246, 248, 252),
     "bos": (30, 22, 18),                # kovan girişi gibi karanlık oyuklar
 }
 

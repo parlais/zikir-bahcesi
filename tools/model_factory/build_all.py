@@ -23,7 +23,12 @@ from models import load_all  # noqa: E402
 
 OUT = ROOT / "game" / "assets" / "models"
 # Asset listesinde olmayan ama sahne için gereken modeller.
-EK_MODELLER = {"ZB_zemin_ada"}
+EK_MODELLER = {"ZB_zemin_ada", "ZB_sahne_carbag", "ZB_sahne_daglar", "ZB_bitki_selvi", "ZB_bitki_nar",
+               "ZB_bitki_gul_cali", "ZB_bitki_simsir", "ZB_bitki_cimen", "ZB_bitki_lale_tarhi"}
+# Sahne modelleri tek parça büyük arazidir; üçgen sınırı onlara uygulanmaz.
+SINIRSIZ = {"ZB_sahne_carbag", "ZB_sahne_daglar"}
+# Ana ağaçlar sahnede az sayıda bulunur; daha dolgun taç için sınır yüksek.
+OZEL_SINIR = {"ZB_bitki_nar": 11000}
 # Bir modelin üst sınırı: mobilde bahçede onlarca model aynı anda görünür.
 UCGEN_SINIRI = 6000
 
@@ -42,11 +47,14 @@ def main(argv):
         tris = node.tri_count()
         size = write_glb(node, OUT / f"{name}.glb")
         toplam += 1
-        uyari = "  ÜÇGEN SINIRI AŞILDI" if tris > UCGEN_SINIRI else ""
+        sinir = OZEL_SINIR.get(name, UCGEN_SINIRI)
+        uyari = "  ÜÇGEN SINIRI AŞILDI" if tris > sinir and name not in SINIRSIZ else ""
         if uyari:
             hatali.append(name)
         print(f"{name:34s} {tris:6d} üçgen {size / 1024:7.1f} KB{uyari}")
     print(f"{toplam} model yazıldı -> {OUT.relative_to(ROOT)}")
+    from models.sahne import yerlesim_yaz
+    print("Sahne yerleşimi:", yerlesim_yaz(ROOT).relative_to(ROOT))
 
     beklenen = set(EK_MODELLER)
     for a in json.loads((ROOT / "game/data/assets.json").read_text(encoding="utf-8"))["assets"]:

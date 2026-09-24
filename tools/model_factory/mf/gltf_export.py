@@ -15,8 +15,20 @@ import pygltflib as g
 
 from .scene import Node
 
+# Godot tarafı bu adlara göre stil shader'ı atar (scenes/stil). Buradaki değerler
+# shader atanmamış görüntüleyiciler (önizleme) içindir.
 MATERIALS = {
     "mat": dict(roughness=0.85, metallic=0.0),
+    "tas": dict(roughness=0.6, metallic=0.0),
+    "zemin": dict(roughness=0.95, metallic=0.0),
+    "yaprak": dict(roughness=0.8, metallic=0.0),
+    "cimen_ot": dict(roughness=0.8, metallic=0.0),
+    "cicek": dict(roughness=0.7, metallic=0.0),
+    "govde": dict(roughness=0.9, metallic=0.0),
+    "cini": dict(roughness=0.3, metallic=0.0),
+    "altin": dict(roughness=0.3, metallic=0.9),
+    "kursun": dict(roughness=0.45, metallic=0.6),
+    "uzak": dict(roughness=1.0, metallic=0.0),
     "metal": dict(roughness=0.45, metallic=0.55),
     "nur": dict(roughness=0.4, metallic=0.0, emissive=(1.0, 0.78, 0.42)),
     "cam": dict(roughness=0.15, metallic=0.0, alpha=0.55),
@@ -95,18 +107,24 @@ class _Writer:
         prims = []
         for mat, ms in groups.items():
             P, N, C = [], [], []
+            A = []
             for m in ms:
                 tri = m.V[m.F]                                  # (t, 3, 3)
                 n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
                 ln = np.linalg.norm(n, axis=1, keepdims=True)
                 ok = ln[:, 0] > 1e-12                           # dejenere üçgenleri at
-                tri, n, ln, col = tri[ok], n[ok], ln[ok], m.C[ok]
-                n = n / ln
+                F = m.F[ok]
+                tri, col = tri[ok], m.C[ok]
+                cn = corner_normals(m.V, F, m.S[ok])
+                elle = m.NV[F]                                   # (t, 3, 3)
+                var = np.linalg.norm(elle, axis=2, keepdims=True) > 0.5
+                cn = np.where(var, elle, cn).astype(np.float32)
                 P.append(tri.reshape(-1, 3))
-                N.append(np.repeat(n, 3, axis=0))
+                N.append(cn.reshape(-1, 3))
                 C.append(np.repeat(srgb_to_linear(col), 3, axis=0))
+                A.append(m.W[F].reshape(-1, 1))
             P, N, C = np.vstack(P), np.vstack(N), np.vstack(C)
-            C4 = np.hstack([C, np.ones((len(C), 1), dtype=np.float32)])
+            C4 = np.hstack([C, np.vstack(A)]).astype(np.float32)
             attrs = g.Attributes(POSITION=self._accessor(P, g.VEC3, True),
                                  NORMAL=self._accessor(N, g.VEC3),
                                  COLOR_0=self._accessor(C4, g.VEC4))
@@ -146,3 +164,31 @@ def signed_volume(mesh) -> float:
     """Kapalı mesh'te pozitifse yüzler dışarı bakıyor (sarım yönü doğru)."""
     tri = mesh.V[mesh.F].astype(np.float64)
     return float(np.einsum("ij,ij->i", tri[:, 0], np.cross(tri[:, 1], tri[:, 2])).sum() / 6.0)
+
+
+def corner_normals(V: np.ndarray, F: np.ndarray, S: np.ndarray) -> np.ndarray:
+    """Her üçgen köşesi için normal (t, 3, 3). S[f] > 0 olan yüzlerde, aynı
+    konumu paylaşan ve normalleri arasındaki açı S'den küçük komşu yüzlerin
+    (alan ağırlıklı) normalleri ortalanır; S = 0 düz gölgedir."""
+    tri = V[F].astype(np.float64)
+    fn = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])       # alan ağırlıklı
+    unit = fn / (np.linalg.norm(fn, axis=1, keepdims=True) + 1e-20)
+    out = np.repeat(unit[:, None, :], 3, axis=1)
+    smooth = np.nonzero(S > 0)[0]
+    if len(smooth) == 0:
+        return out.astype(np.float32)
+    keys = np.round(tri[smooth].reshape(-1, 3), 4)
+    _, grp = np.unique(keys, axis=0, return_inverse=True)
+    grp = grp.reshape(-1)
+    faces_of = {}
+    for i, g in enumerate(grp):
+        faces_of.setdefault(g, []).append(smooth[i // 3])
+    cos_lim = np.cos(np.radians(S))
+    for i, g in enumerate(grp):
+        f = smooth[i // 3]
+        k = i % 3
+        komsu = np.array(faces_of[g])
+        yakin = komsu[(unit[komsu] @ unit[f]) >= cos_lim[f]]
+        n = fn[yakin].sum(axis=0)
+        out[f, k] = n / (np.linalg.norm(n) + 1e-20)
+    return out.astype(np.float32)
