@@ -49,9 +49,11 @@ Kullanıcının son geri bildirimleri:
 - Stil animasyon stili olarak seçilecek; dördü birden gösterilecek (K6).
 - Arayüz sonra baştan ele alınacak (K7).
 
-**Sıradaki iş:** Kullanıcının Pixar taslakları hakkındaki mekân geri bildirimini al ve işle. Mekân onaylanınca:
-1. Ghibli, Arcane ve Sky/Ori profillerini `animasyon_stilleri.gd` içine yaz. `resim_filtresi.gdshader` (Kuwahara, kontur, kâğıt) ve `ortak.gdshaderinc` içine `firca` parametresini ekle.
-2. 4 stil × 3 kamera (`ufuk`, `arsa`, `derece`) çek: 1600×900, `docs/goruntuler/cennet/`, ardından karşılaştırma panoları.
+**Kullanıcının taslaklara cevabı (K9):** İstediği bu değildi. Yağlı boya beşinci stil olarak eklenecek (yalnızca boya estetiği, gece veya chiaroscuro değil). Mekân kurgusu da değişecek; yeni tarif bekleniyor.
+
+**Sıradaki iş:** Kullanıcının yeni mekân tarifini al, planı ona göre güncelle ve teyit ettir. Ardından:
+1. Ghibli, Arcane, Sky/Ori ve Yağlı boya profillerini `animasyon_stilleri.gd` içine yaz. `resim_filtresi.gdshader` (Kuwahara, kontur, kâğıt) ve `ortak.gdshaderinc` içine `firca` parametresini ekle.
+2. 5 stil × 3 kamera (`ufuk`, `arsa`, `derece`) çek: 1600×900, `docs/goruntuler/cennet/`, ardından karşılaştırma panoları.
 3. Taslakta kalan kalite işleri: kuşlar ve kelebekler, köşk ve duvar ayrıntısı, koni-dağın daha doğal silüeti.
 
 Açık sorular:

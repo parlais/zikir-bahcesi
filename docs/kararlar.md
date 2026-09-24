@@ -80,3 +80,14 @@ Asset listesinin açık bıraktığı yerler için seçilen değerler aşağıda
 - Kullanıcı oyuncuların görsel olarak çok etkilenmesini istiyor.
 - Forward+ renderer (SDFGI, hacimli sis, SSR, SSAO, parlama) kullanılacak; hedef orta-üst seviye telefonlar.
 - Canlılar ve bazı kilit modeller için AI 3D aracı ya da hazır paketlerle karma üretim önerildi; kullanıcı henüz cevap vermedi (açık soru).
+
+## K9 — Beşinci stil: yağlı boya; mekân kurgusu değişecek (2026-09-24)
+- Pixar taslakları (`docs/goruntuler/cennet/taslak_pixar_*.png`) istenen şey değildi.
+- Kullanıcı bir video promptundaki "yaşayan yağlı boya" stilini beğendi. Bu stil beşinci stil olarak dört animasyon stiline eklenir.
+- Promptten yalnızca yağlı boya estetiği alınır:
+  - yüzeylerde ve gökte görünen fırça dokusu
+  - ışıklı, zengin, klasik tablo renkleri
+  - ince gren
+- Gece, lamba ışığı ve karanlık chiaroscuro istenmiyor; K5 (gece yok) geçerli.
+- Mekân kurgusu da değişecek (ova, ırmaklar, su köşkü, ufukta dereceler, Tûbâ). Kullanıcının tarifi bekleniyor.
+
