@@ -24,11 +24,18 @@ from models import load_all  # noqa: E402
 OUT = ROOT / "game" / "assets" / "models"
 # Asset listesinde olmayan ama sahne için gereken modeller.
 EK_MODELLER = {"ZB_zemin_ada", "ZB_sahne_carbag", "ZB_sahne_daglar", "ZB_bitki_selvi", "ZB_bitki_nar",
-               "ZB_bitki_gul_cali", "ZB_bitki_simsir", "ZB_bitki_cimen", "ZB_bitki_lale_tarhi"}
-# Sahne modelleri tek parça büyük arazidir; üçgen sınırı onlara uygulanmaz.
-SINIRSIZ = {"ZB_sahne_carbag", "ZB_sahne_daglar"}
-# Ana ağaçlar sahnede az sayıda bulunur; daha dolgun taç için sınır yüksek.
-OZEL_SINIR = {"ZB_bitki_nar": 11000}
+               "ZB_bitki_gul_cali", "ZB_bitki_simsir", "ZB_bitki_cimen", "ZB_bitki_lale_tarhi",
+               # Cennet mekânı (Faz 2a)
+               "ZB_dunya_cennet", "ZB_dunya_dereceler", "ZB_dunya_derece_koni", "ZB_dunya_tuba_dev",
+               "ZB_bitki_koru_agac", "ZB_bitki_uzak_agac", "ZB_yapi_su_kosku", "ZB_yapi_inci_cadir",
+               "ZB_obje_inci_cakil"}
+# Sahne ve dünya modelleri tek parça büyük arazidir; üçgen sınırı onlara uygulanmaz.
+SINIRSIZ = {"ZB_sahne_carbag", "ZB_sahne_daglar", "ZB_dunya_cennet", "ZB_dunya_dereceler", "ZB_dunya_derece_koni",
+            "ZB_dunya_tuba_dev"}
+# Ana ağaçlar ve kahraman yapılar sahnede az sayıda bulunur; daha ayrıntılı olabilir.
+# Su köşkü kahraman modeldir; mobil için ileride LOD gerekir.
+OZEL_SINIR = {"ZB_bitki_nar": 11000, "ZB_agac_sidr_a4": 9000, "ZB_agac_uzum_a4": 11000,
+              "ZB_yapi_inci_cadir": 9000, "ZB_yapi_su_kosku": 40000}
 # Bir modelin üst sınırı: mobilde bahçede onlarca model aynı anda görünür.
 UCGEN_SINIRI = 6000
 
@@ -55,6 +62,9 @@ def main(argv):
     print(f"{toplam} model yazıldı -> {OUT.relative_to(ROOT)}")
     from models.sahne import yerlesim_yaz
     print("Sahne yerleşimi:", yerlesim_yaz(ROOT).relative_to(ROOT))
+    from models.cennet import yerlesim_yaz as cennet_yerlesim_yaz
+    if not filtre or "dunya" in filtre:
+        print("Cennet yerleşimi:", cennet_yerlesim_yaz(ROOT).relative_to(ROOT))
 
     beklenen = set(EK_MODELLER)
     for a in json.loads((ROOT / "game/data/assets.json").read_text(encoding="utf-8"))["assets"]:
