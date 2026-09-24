@@ -69,6 +69,43 @@ PALET = {
     "uzak_orman": (70, 104, 84),
     "kar": (246, 248, 252),
     "bos": (30, 22, 18),                # kovan girişi gibi karanlık oyuklar
+    # Cennet mekânı (Faz 2a)
+    "yaprak_zumrut": (34, 98, 60),      # Rahmân 64: koyu yeşil (müdhâmmetân)
+    "yaprak_cennet": (112, 178, 74),
+    "kiraz": (206, 30, 52),             # sidr (Ali Ünal: dal bastı kirazlar)
+    "kiraz_koyu": (140, 18, 40),
+    "muz_yaprak": (104, 176, 76),       # talh (muz)
+    "muz_yaprak_koyu": (70, 134, 60),
+    "muz_govde": (128, 142, 72),
+    "muz": (238, 206, 92),
+    "muz_cicek": (128, 36, 72),
+    "uzum": (98, 46, 112),
+    "uzum_koyu": (62, 28, 80),
+    "uzum_acik": (184, 204, 96),
+    "altin_tugla": (234, 192, 112),     # et-Tâc: altın ve gümüş kerpiç, misk harç
+    "gumus_tugla": (224, 228, 236),
+    "misk": (74, 54, 40),
+    "gumus": (206, 212, 222),
+    "yakut": (196, 22, 64),
+    "sut": (248, 244, 234),             # Muhammed 15: dört ırmak
+    "bal": (220, 146, 34),
+    "serbet": (196, 36, 72),
+    "arsa_cimen": (118, 192, 82),       # Tirmizî 3462: düz ve boş arazi; kısa, kadife çimen
+    "toprak_arsa": (82, 56, 38),        # dikim yerlerindeki yumuşak toprak
+    "toprak_arsa_acik": (120, 86, 58),
+    "kum": (228, 210, 174),
+    "cakil": (200, 188, 168),
+    "kaya_krem": (240, 222, 196),
+    "kaya_pembe": (236, 190, 176),
+    "kaya_altin": (238, 200, 140),
+    "inci_ic": (242, 226, 206),
+    "kadife_yesil": (36, 112, 76),      # Rahmân 76: yeşil yastıklar
+    "yastik_yesil": (64, 150, 96),
+    "hali_kirmizi": (164, 36, 50),
+    "hali_lacivert": (30, 52, 112),
+    "hali_krem": (238, 222, 184),
+    "hali_altin": (214, 164, 72),
+    "nur_beyaz": (255, 246, 222),
 }
 
 

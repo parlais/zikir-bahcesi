@@ -27,6 +27,8 @@ class Mesh:
     W: np.ndarray | None = None        # (n,) köşe ağırlığı -> COLOR_0.a (rüzgâr salınımı, 0 dip 1 uç)
     S: np.ndarray | None = None        # (m,) yüz başına yumuşatma açısı (derece; 0 = düz gölge)
     NV: np.ndarray | None = None       # (n, 3) elle verilmiş köşe normalleri (sıfır = hesapla)
+    CV: np.ndarray | None = None       # (n, 3) köşe renkleri: verilirse köşeler paylaşılır (indeksli, yumuşak
+                                       # renk geçişi; büyük arazilerde dosyayı küçültür). NV de verilmelidir.
 
     def __post_init__(self):
         if self.W is None:
@@ -39,7 +41,7 @@ class Mesh:
     # --- dönüşümler (hepsi yeni Mesh döndürür) ---------------------------
     def copy(self) -> "Mesh":
         return Mesh(self.V.copy(), self.F.copy(), self.C.copy(), self.material, self.W.copy(), self.S.copy(),
-                    self.NV.copy())
+                    self.NV.copy(), None if self.CV is None else self.CV.copy())
 
     def kure_normal(self, merkez, olcek=(1.0, 1.0, 1.0)) -> "Mesh":
         """Yaprak kümeleri için normalleri tacın merkezinden dışa yönlendirir:
@@ -163,10 +165,13 @@ def merge(*meshes: Mesh) -> Mesh:
         S.append(m.S)
         NV.append(m.NV)
         off += len(m.V)
+    CV = None
+    if all(m.CV is not None for m in ms):
+        CV = np.vstack([m.CV for m in ms]).astype(np.float32)
     return Mesh(np.vstack(V).astype(np.float32), np.vstack(F).astype(np.int64),
                 np.vstack(C).astype(np.float32), ms[0].material,
                 np.concatenate(W).astype(np.float32), np.concatenate(S).astype(np.float32),
-                np.vstack(NV).astype(np.float32))
+                np.vstack(NV).astype(np.float32), CV)
 
 
 def rot(axis: str, deg: float) -> np.ndarray:

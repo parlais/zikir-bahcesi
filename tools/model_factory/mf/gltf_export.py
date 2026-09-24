@@ -34,6 +34,14 @@ MATERIALS = {
     "cam": dict(roughness=0.15, metallic=0.0, alpha=0.55),
     "su": dict(roughness=0.1, metallic=0.0, alpha=0.8),
     "inci": dict(roughness=0.25, metallic=0.1),
+    # Cennet mekânı: ırmaklar, çağlayan, tuğla, kumaş
+    "sut": dict(roughness=0.2, metallic=0.0, alpha=0.95),
+    "bal": dict(roughness=0.1, metallic=0.0, alpha=0.85),
+    "serbet": dict(roughness=0.1, metallic=0.0, alpha=0.85),
+    "selale": dict(roughness=0.2, metallic=0.0, alpha=0.8),
+    "tugla": dict(roughness=0.4, metallic=0.4),
+    "kumas": dict(roughness=0.95, metallic=0.0),
+    "bulut": dict(roughness=1.0, metallic=0.0),
 }
 
 
@@ -68,6 +76,28 @@ class _Writer:
         self.blob += data
         self.gltf.bufferViews.append(g.BufferView(buffer=0, byteOffset=off, byteLength=len(data), target=target))
         return len(self.gltf.bufferViews) - 1
+
+    def _indeksli(self, ms, mat) -> "g.Primitive":
+        """Köşeleri paylaşılan mesh'ler: tek köşe tablosu, köşe renkleri (16 bit), uint32 indeks."""
+        P = np.vstack([m.V for m in ms]).astype(np.float32)
+        N = np.vstack([m.NV for m in ms]).astype(np.float32)
+        C = np.vstack([np.hstack([srgb_to_linear(m.CV), m.W[:, None]]) for m in ms])
+        F, off = [], 0
+        for m in ms:
+            F.append(m.F + off)
+            off += len(m.V)
+        F = np.vstack(F).astype(np.uint32)
+        C16 = np.round(np.clip(C, 0, 1) * 65535).astype(np.uint16)
+        view = self._view(np.ascontiguousarray(C16).tobytes(), g.ARRAY_BUFFER)
+        self.gltf.accessors.append(g.Accessor(bufferView=view, componentType=g.UNSIGNED_SHORT, normalized=True,
+                                              count=len(C16), type=g.VEC4))
+        ci = len(self.gltf.accessors) - 1
+        view = self._view(np.ascontiguousarray(F.ravel()).tobytes(), g.ELEMENT_ARRAY_BUFFER)
+        self.gltf.accessors.append(g.Accessor(bufferView=view, componentType=g.UNSIGNED_INT, count=F.size,
+                                              type=g.SCALAR))
+        ii = len(self.gltf.accessors) - 1
+        attrs = g.Attributes(POSITION=self._accessor(P, g.VEC3, True), NORMAL=self._accessor(N, g.VEC3), COLOR_0=ci)
+        return g.Primitive(attributes=attrs, indices=ii, material=self.material(mat))
 
     def _accessor(self, arr: np.ndarray, typ: str, with_bounds=False) -> int:
         arr = np.ascontiguousarray(arr, dtype=np.float32)
@@ -106,6 +136,9 @@ class _Writer:
             groups.setdefault(m.material, []).append(m)
         prims = []
         for mat, ms in groups.items():
+            if all(m.CV is not None for m in ms):
+                prims.append(self._indeksli(ms, mat))
+                continue
             P, N, C = [], [], []
             A = []
             for m in ms:
