@@ -50,6 +50,29 @@ Son güncelleme: 2026-09-24. Bu belge, 3D dünyanın hangi ayet, hadis ve açık
 | Risale-i Nur, 28. Söz: cennet ehli bir anda yüz bin yerde; dünya kadar yer, yüz bin köşk; güneşin çok aynada görünmesi misali | Oyuncunun arsası küçük bir parsel değil, ufka uzanan bir alan. Su ve cilalı yüzeyler ışığı çoğaltan aynalar gibi. İleride arkadaş bahçesi ziyaretine dayanak |
 | Bakara 25 ve 28. Söz: "Bu daha önce rızıklandığımız şeydir" | Meyveler tanıdık biçimde (nar, hurma, üzüm) ama ışıklı ve kusursuz |
 
+## 28. Söz'deki koni misali: metin ve model
+Metin (web arama özetlerinden; basılı Sözler ile teyit edilecek):
+
+> "Çünkü cennetin sekiz tabakası birbirinden yüksek oldukları halde, umumun damı Arş-ı Âzam'dır. Nasıl ki, mahrutî bir dağın etrafında, birbiri içinde, birbirinden yüksek, kaidesinden zirvesine kadar surlu daireler bulunsa; o daireler birbirinin üstündedir, fakat birbirinin güneşi görmelerine mâni olmaz, birbirinden geçebilir, birbirine bakar. Öyle de, cennetler de öyledir." (Ehâdîsin muhtelif rivayetleri buna işaret eder.)
+
+**Bağlam:** Bu pasaj, "Kişi sevdiğiyle beraberdir" hadisi üzerine sorulan sorunun cevabındadır: Basit bir bedevî, dereceleri çok farklı olduğu hâlde cennette Peygamberimizle nasıl beraber olur? Cevapta önce ziyafet misali gelir: Dostlar aynı sofradadır ama her biri istidadına göre alır. Ardından cennetlerin ayrı olmasının beraberliğe mâni olmadığı bu koni misaliyle anlatılır. Yani misal bir mimari tarif değil, **ayrı katlarda olanların beraberliğini** anlatan bir benzetmedir.
+
+**Destekleyen hadis (Buhârî, Cihâd 4):** Aynı hadiste yüz derece, her iki derece arasının gökle yer arası kadar olduğu ve şu söylenir: "Firdevs cennetin ortası ve en yükseğidir; üstünde Rahmân'ın Arşı vardır; cennet ırmakları oradan fışkırır." Ortanın en yüksek olması koni biçimidir; ırmakların zirveden inmesinin dayanağı da budur.
+
+| Metindeki öğe | Modelde (Faz 2a taslağı) | Durum |
+| --- | --- | --- |
+| Mahrutî dağ; daireler birbiri içinde, kaideden zirveye birbirinden yüksek | İç içe halkalar, merkeze doğru yükselir | Uyuyor |
+| Umumun damı Arş-ı Âzam | Katların üstü açık gök; zirvede nur, Arş tasvir edilmez | Uyuyor |
+| Güneşi görmelerine mâni olmaz | Zirvedeki nur her halkadan görünür (K5: güneş diski yok) | Uyuyor, temsil farkıyla |
+| Sekiz tabaka | 8 seki ve ayrıca nurlu bir zirve düzlüğü (9 düzey) | Düzeltilmeli: zirve 8. tabaka (Firdevs) olmalı |
+| Surlu daireler | Halka kenarları doğal yar; sur yok | Eksik: halka kenarlarında sur ve kapılar düşünülebilir |
+| Birbirinden geçebilir | Halkalar arasında yol, merdiven ya da kapı yok | Eksik: geçitler eklenmeli |
+| Birbirine bakar | Alttaki halka üsttekini görür | Kısmen: üst halkadan alta bakış da görünmeli |
+| Firdevs'ten fışkıran ırmaklar | Dört ırmak zirveden kattan kata çağlayarak iner | Uyuyor |
+| Her iki derece arası gökle yer arası | Halkalar birbirine yakın, dağ derli toplu | Ölçek temsilî; pus ve ışıkla sezdirilebilir |
+
+**Oyun için anlamı:** Misalin asıl konusu beraberlik olduğu için arkadaş ve aile bahçelerinin farklı halkalarda olup birbirini görmesi ve ziyaret edebilmesi doğrudan bu metne dayanır.
+
 ## Ali Ünal'ın eserlerinden (kullanıcının yüklediği epub'lar)
 *Kur'ân-ı Kerîm ve Açıklamalı Meali*, *Risale-i Nur'da Küllî Kaideler 1-3* ve *Hizmet Rehberi* tarandı. Mekân için öne çıkanlar:
 
@@ -77,7 +100,7 @@ Son güncelleme: 2026-09-24. Bu belge, 3D dünyanın hangi ayet, hadis ve açık
 - Şarap ırmağı: Ali Ünal'ın açıklamasına göre sarhoşluk vermeyen tertemiz içecek. Çocuk oyununda "şerbet ırmağı" gibi bir adla, yakut renkli temsil edilebilir mi?
 - Işığın tonunda çok hafif bir "sabah-akşam" farkı (Meryem 62) olabilir mi, yoksa ışık tamamen sabit mi kalmalı?
 - Tûbâ, Kevser, Selsebil, köşkler ve inci çadırlar gerçek cennet öğeleridir. Bu adlarla modellenmeleri uygun mu? "Bu bir temsildir" dili yeterli mi?
-- Katlı koni-dağın ve nurla dolu zirvenin (Arş tasvir etmeden) gösterilmesi uygun mu?
+- Katlı koni-dağın ve nurla dolu zirvenin (Arş tasvir etmeden) gösterilmesi uygun mu? 28. Söz'deki misal bir benzetmedir; onu görsel bir mekâna çevirmek uygun bir temsil mi?
 - Dört ırmağın üst derecelerden çağlayan olarak inmesi (süt ve bal çağlayanı dahil) uygun bir temsil mi?
 - Ufukta, üst derecelerin üstünde yükselen dev bir Tûbâ ağacı gösterilebilir mi? Oyuncunun kendi Tûbâ'sı arsasında çekirdekten büyür.
 - Asset listesi I bölümündeki maddeler (hafızadan yazılmış dayanaklar, zayıf rivayetler, ebced gibi) hâlâ geçerli.
