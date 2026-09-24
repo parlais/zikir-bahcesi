@@ -1,0 +1,325 @@
+class_name SahneKurucu
+extends RefCounted
+## Stil ve dünya sahnelerinin ortak kurucusu: glTF malzeme adına göre stil
+## shader'ı, model örnekleme, MultiMesh ile çoğaltma, parçacıklar, ortam
+## (gökyüzü, sis, küresel aydınlatma) ve ana ışık.
+##
+##   var k := SahneKurucu.new(self, profil)
+##   k.goruntu_kalitesi()
+##   k.ortam_kur()
+##   k.ornek("ZB_yapi_kosk", [x, y, z, donus_derece, olcek])
+##
+## Profil şeması StilProfilleri ile aynıdır (gunes, gok, ortam, ortak, malzeme...).
+
+const MODELLER := "res://assets/models/"
+const SHADER := "res://scenes/stil/shader/"
+
+## glTF malzeme adı -> [shader, sabit parametreler, profil malzeme anahtarı]
+const MALZEME_TABLOSU := {
+	"mat": ["yuzey", {"puruz": 0.75, "detay": 0.05}, ""],
+	"tas": ["yuzey", {"puruz": 0.5, "detay": 0.12, "detay_olcek": 0.9}, "tas"],
+	"govde": ["yuzey", {"puruz": 0.95, "detay": 0.25, "detay_olcek": 5.0}, ""],
+	"metal": ["yuzey", {"puruz": 0.32, "metal": 0.85, "detay": 0.0}, "altin"],
+	"altin": ["yuzey", {"puruz": 0.3, "metal": 0.9, "detay": 0.0}, "altin"],
+	"kursun": ["yuzey", {"puruz": 0.45, "metal": 0.6, "detay": 0.05}, ""],
+	"inci": ["yuzey", {"puruz": 0.25, "detay": 0.0}, "inci"],
+	"uzak": ["yuzey", {"puruz": 1.0, "detay": 0.1, "detay_olcek": 0.02}, "uzak"],
+	"zemin": ["zemin", {"spek": 0.03}, "zemin"],
+	"yaprak": ["yaprak", {"spek": 0.03}, "yaprak"],
+	"cimen_ot": ["cimen", {"spek": 0.03}, "cimen"],
+	"cicek": ["cicek", {}, "cicek"],
+	"cini": ["cini", {}, "cini"],
+	"su": ["su", {}, "su"],
+	"nur": ["yuzey", {"puruz": 0.4, "detay": 0.0, "isima": Color(1.0, 0.8, 0.45)}, "nur"],
+	# Cennet mekânı (Faz 2a)
+	"sut": ["su", {"derin": Color("d8d4cc"), "sig": Color("fbf8f0"), "puruz": 0.12}, "sut"],
+	"bal": ["su", {"derin": Color("8a4a08"), "sig": Color("eaa030")}, "bal"],
+	"serbet": ["su", {"derin": Color("5a0618"), "sig": Color("d8305a")}, "serbet"],
+	"selale": ["selale", {}, "selale"],
+	"tugla": ["tugla", {}, "tugla"],
+	"kumas": ["yuzey", {"puruz": 0.95, "detay": 0.05, "detay_olcek": 14.0, "spek": 0.08}, "kumas"],
+}
+
+var kok: Node3D
+var profil: Dictionary
+var _malzemeler: Dictionary = {}
+
+
+func _init(k: Node3D, p: Dictionary) -> void:
+	kok = k
+	profil = p
+
+
+# --------------------------------------------------------------------------
+# Görüntü ve ortam
+# --------------------------------------------------------------------------
+
+func goruntu_kalitesi() -> void:
+	var vp := kok.get_viewport()
+	vp.msaa_3d = Viewport.MSAA_4X
+	vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
+	vp.positional_shadow_atlas_size = 4096
+	RenderingServer.directional_shadow_atlas_set_size(8192, true)
+	RenderingServer.directional_soft_shadow_filter_set_quality(RenderingServer.SHADOW_QUALITY_SOFT_HIGH)
+
+
+## Gökyüzü, Environment ve ana ışık. Döndürdüğü ışık profilin "gunes" alanından
+## kurulur (cennet sahnelerinde güneş diski görünmez; yalnızca yön ve gölge verir).
+func ortam_kur(gok_shader := SHADER + "gok.gdshader") -> DirectionalLight3D:
+	var o: Dictionary = profil["ortam"]
+	var g: Dictionary = profil["gok"]
+	var sky_mat := ShaderMaterial.new()
+	sky_mat.shader = load(gok_shader)
+	for k in g:
+		sky_mat.set_shader_parameter(k, g[k])
+	var sky := Sky.new()
+	sky.sky_material = sky_mat
+	sky.radiance_size = Sky.RADIANCE_SIZE_256
+	sky.process_mode = Sky.PROCESS_MODE_INCREMENTAL
+
+	var e := Environment.new()
+	e.background_mode = Environment.BG_SKY
+	e.sky = sky
+	e.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	e.ambient_light_energy = o["ambient"]
+	e.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+	match o["ton"]:
+		"aces":
+			e.tonemap_mode = Environment.TONE_MAPPER_ACES
+		"agx":
+			e.tonemap_mode = Environment.TONE_MAPPER_AGX
+		_:
+			e.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	e.tonemap_exposure = o["pozlama"]
+	e.tonemap_white = o["beyaz"]
+
+	var p: Array = o["parlama"]  # yoğunluk, güç, bloom, hdr eşiği
+	e.glow_enabled = true
+	e.glow_intensity = p[0]
+	e.glow_strength = p[1]
+	e.glow_bloom = p[2]
+	e.glow_hdr_threshold = p[3]
+	e.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT if p[0] < 0.5 else Environment.GLOW_BLEND_MODE_SCREEN
+	var seviye: Array = o.get("parlama_seviye", [0.0, 0.3, 0.6, 0.9, 1.0, 0.8, 0.5])
+	for i in 7:
+		e.set_glow_level(i, seviye[i])
+
+	var s: Array = o["sis"]  # yoğunluk, renk, güneş saçılımı, gökyüzü etkisi
+	e.fog_enabled = true
+	e.fog_density = s[0]
+	e.fog_light_color = s[1]
+	e.fog_sun_scatter = s[2]
+	e.fog_sky_affect = s[3]
+	e.fog_aerial_perspective = o.get("hava_perspektif", 0.2)
+	if o.has("sis_yukseklik"):  # [yükseklik, yoğunluk]: alçak yerlerde pus
+		e.fog_height = o["sis_yukseklik"][0]
+		e.fog_height_density = o["sis_yukseklik"][1]
+
+	var h: Array = o["hacim_sis"]  # yoğunluk, renk, anizotropi, uzunluk
+	if h[0] > 0.0:
+		e.volumetric_fog_enabled = true
+		e.volumetric_fog_density = h[0]
+		e.volumetric_fog_albedo = h[1]
+		e.volumetric_fog_anisotropy = h[2]
+		e.volumetric_fog_length = h[3]
+		e.volumetric_fog_detail_spread = 1.5
+		e.volumetric_fog_sky_affect = 0.0
+
+	e.sdfgi_enabled = o["sdfgi"]
+	e.sdfgi_use_occlusion = true
+	e.sdfgi_cascades = o.get("sdfgi_kademe", 4)
+	e.sdfgi_min_cell_size = o.get("sdfgi_hucre", 0.25)
+	e.ssao_enabled = o["ssao"] > 0.0
+	e.ssao_intensity = o["ssao"] * 2.0
+	e.ssao_radius = 1.2
+	e.ssil_enabled = true
+	e.ssr_enabled = o["ssr"]
+	e.ssr_max_steps = 96
+	e.ssr_fade_in = 0.05
+	e.ssr_fade_out = 1.5
+	e.adjustment_enabled = true
+	e.adjustment_saturation = o["doygunluk"]
+	e.adjustment_contrast = o["kontrast"]
+	e.adjustment_brightness = o["parlaklik"]
+	var we := WorldEnvironment.new()
+	we.environment = e
+	kok.add_child(we)
+
+	var gp: Dictionary = profil["gunes"]
+	var gunes := DirectionalLight3D.new()
+	var el := deg_to_rad(gp["yukseklik"])
+	var az := deg_to_rad(gp["yon"])
+	var yon := Vector3(cos(el) * sin(az), sin(el), cos(el) * cos(az))
+	kok.add_child(gunes)
+	gunes.position = yon * 100.0
+	gunes.look_at(Vector3.ZERO, Vector3.UP if absf(yon.y) < 0.99 else Vector3.FORWARD)
+	gunes.light_color = gp["renk"]
+	gunes.light_energy = gp["enerji"]
+	gunes.light_angular_distance = gp["yumusak"]
+	gunes.light_volumetric_fog_energy = 1.6
+	gunes.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_AND_SKY
+	gunes.shadow_enabled = true
+	gunes.shadow_blur = gp.get("golge_bulanik", 1.5)
+	gunes.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+	gunes.directional_shadow_max_distance = gp.get("golge_mesafe", 120.0)
+	return gunes
+
+
+# --------------------------------------------------------------------------
+# Malzemeler
+# --------------------------------------------------------------------------
+
+## glTF malzeme adına göre stil shader'ı (önbellekli).
+func malzeme(ad: String) -> Material:
+	if _malzemeler.has(ad):
+		return _malzemeler[ad]
+	if not MALZEME_TABLOSU.has(ad):
+		_malzemeler[ad] = null
+		return null
+	var satir: Array = MALZEME_TABLOSU[ad]
+	var m := ShaderMaterial.new()
+	m.shader = load(SHADER + satir[0] + ".gdshader")
+	var ortak: Dictionary = profil["ortak"]
+	for k in ortak:
+		m.set_shader_parameter(k, ortak[k])
+	for k in satir[1]:
+		m.set_shader_parameter(k, satir[1][k])
+	var ozel: Dictionary = profil["malzeme"].get(satir[2], {})
+	for k in ozel:
+		m.set_shader_parameter(k, ozel[k])
+	if ad == "uzak":
+		m.set_shader_parameter("doygunluk", float(ortak.get("doygunluk", 1.0)) * 0.7)
+	_malzemeler[ad] = m
+	return m
+
+
+func boya(n: Node) -> void:
+	for mi in n.find_children("*", "MeshInstance3D", true, false):
+		var mesh: Mesh = mi.mesh
+		for i in mesh.get_surface_count():
+			var eski := mesh.surface_get_material(i)
+			var yeni := malzeme(eski.resource_name) if eski else null
+			if yeni:
+				mi.set_surface_override_material(i, yeni)
+			elif eski is BaseMaterial3D:
+				(eski as BaseMaterial3D).vertex_color_use_as_albedo = true
+
+
+## Modeli sahneye koyar. t: [x, y, z, y ekseninde dönüş (derece), ölçek]
+func ornek(model: String, t: Array, ek_olcek := 1.0, ebeveyn: Node = null) -> Node3D:
+	var s: PackedScene = load(MODELLER + model + ".glb")
+	var n: Node3D = s.instantiate()
+	n.position = Vector3(t[0], t[1], t[2])
+	n.rotation_degrees.y = t[3]
+	n.scale = Vector3.ONE * float(t[4]) * ek_olcek
+	(ebeveyn if ebeveyn else kok).add_child(n)
+	boya(n)
+	return n
+
+
+# --------------------------------------------------------------------------
+# MultiMesh ile çoğaltma
+# --------------------------------------------------------------------------
+
+func bitki_mesh(model: String) -> Mesh:
+	var s: PackedScene = load(MODELLER + model + ".glb")
+	var n := s.instantiate()
+	var mi: MeshInstance3D = n.find_children("*", "MeshInstance3D", true, false)[0]
+	var mesh: ArrayMesh = mi.mesh.duplicate()
+	for i in mesh.get_surface_count():
+		var eski := mesh.surface_get_material(i)
+		var yeni := malzeme(eski.resource_name) if eski else null
+		if yeni:
+			mesh.surface_set_material(i, yeni)
+	n.free()
+	return mesh
+
+
+## konumlar: [[x, y, z, dönüş, ölçek], ...]
+func coklu(model: String, konumlar: Array, golge := true) -> MultiMeshInstance3D:
+	if konumlar.is_empty():
+		return null
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.use_custom_data = true
+	mm.mesh = bitki_mesh(model)
+	mm.instance_count = konumlar.size()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(model)
+	for i in konumlar.size():
+		var t: Array = konumlar[i]
+		var b := Basis(Vector3.UP, deg_to_rad(t[3])).scaled(Vector3.ONE * float(t[4]))
+		mm.set_instance_transform(i, Transform3D(b, Vector3(t[0], t[1], t[2])))
+		mm.set_instance_custom_data(i, Color(rng.randf(), rng.randf(), 0, 0))
+	var mmi := MultiMeshInstance3D.new()
+	mmi.multimesh = mm
+	mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if golge else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	kok.add_child(mmi)
+	return mmi
+
+
+# --------------------------------------------------------------------------
+# Parçacıklar
+# --------------------------------------------------------------------------
+
+func yuvarlak_doku() -> Texture2D:
+	var g := Gradient.new()
+	g.set_color(0, Color(1, 1, 1, 1))
+	g.set_color(1, Color(1, 1, 1, 0))
+	var t := GradientTexture2D.new()
+	t.gradient = g
+	t.fill = GradientTexture2D.FILL_RADIAL
+	t.fill_from = Vector2(0.5, 0.5)
+	t.fill_to = Vector2(0.5, 0.0)
+	t.width = 64
+	t.height = 64
+	return t
+
+
+func parcacik(adet: int, merkez: Vector3, alan: Vector3, boy: float, renk: Color, isik: float,
+		yercekimi: Vector3, hiz: float, omur: float, billboard := BaseMaterial3D.BILLBOARD_ENABLED) -> GPUParticles3D:
+	var p := GPUParticles3D.new()
+	p.amount = adet
+	p.lifetime = omur
+	p.preprocess = omur
+	p.visibility_aabb = AABB(-alan * 1.5 - Vector3.ONE * boy, alan * 3.0 + Vector3.ONE * boy * 2.0)
+	var pm := ParticleProcessMaterial.new()
+	pm.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	pm.emission_box_extents = alan
+	pm.gravity = yercekimi
+	pm.initial_velocity_min = hiz * 0.3
+	pm.initial_velocity_max = hiz
+	pm.spread = 180.0
+	pm.turbulence_enabled = true
+	pm.turbulence_noise_strength = 0.6
+	pm.turbulence_noise_scale = 6.0
+	pm.scale_min = 0.5
+	pm.scale_max = 1.3
+	pm.angle_min = 0.0
+	pm.angle_max = 360.0
+	var sonuk := Gradient.new()
+	sonuk.set_color(0, Color(1, 1, 1, 0))
+	sonuk.add_point(0.2, Color(1, 1, 1, 1))
+	sonuk.add_point(0.8, Color(1, 1, 1, 1))
+	sonuk.set_color(sonuk.get_point_count() - 1, Color(1, 1, 1, 0))
+	var gt := GradientTexture1D.new()
+	gt.gradient = sonuk
+	pm.color_ramp = gt
+	p.process_material = pm
+	var q := QuadMesh.new()
+	q.size = Vector2(boy, boy)
+	var mat := StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.billboard_mode = billboard
+	mat.billboard_keep_scale = true
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD if isik > 0.0 else BaseMaterial3D.BLEND_MODE_MIX
+	mat.vertex_color_use_as_albedo = true
+	mat.albedo_color = renk * (1.0 + isik)
+	mat.albedo_texture = yuvarlak_doku()
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	q.material = mat
+	p.draw_pass_1 = q
+	p.position = merkez
+	kok.add_child(p)
+	return p
