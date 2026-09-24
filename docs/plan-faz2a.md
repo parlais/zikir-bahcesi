@@ -140,6 +140,17 @@ Yeni shader'lar:
   - K5: Cennette gece-gündüz ve mevsim yok: sürekli yumuşak ışık; önceki "gerçek saatle gece-gündüz" kararı iptal. Işık tonunda hafif sabah-akşam farkı ve asset listesindeki mevsim ve gece öğeleri danışma kuruluna sorulacak
   - K6: Arayüz ayrı bir aşamada baştan tasarlanacak
 
+## Ara durak (2026-09-24, kullanıcı onayladı)
+Kullanıcı planı onayladı ve bir ara durak istedi: mekân önce yalnızca Pixar stilinde, yarım çözünürlükte çekilip gösterilir. Mekân onaylanınca dört stile geçilir. İş `claude/sleepy-bell-nc2a9a` dalında sürüyor.
+
+Plandan ayrılan ya da netleşen noktalar:
+- **Yeni bitki adları:** Asset listesindeki adlar kullanıldı: `ZB_agac_sidr_a1..a4`, `ZB_agac_talh_a1..a4`, `ZB_agac_uzum_a1..a4`. Ek olarak `ZB_bitki_koru_agac` (koyu yeşil korular) ve `ZB_bitki_uzak_agac` (uzak korular için hafif model) yazıldı.
+- **Yeni yapı adları:** Asset listesinden `ZB_yapi_sedir_kosesi`, `ZB_yapi_selsebil_cesmesi` ve `ZB_yapi_ab_i_hayat_pinari` alındı. Listede olmayan `ZB_yapi_su_kosku`, `ZB_yapi_inci_cadir` ve `ZB_obje_inci_cakil` de eklendi.
+- **Dünya modelleri:** `ZB_dunya_cennet` (ova ve dört ırmak), `ZB_dunya_dereceler` (ufuktaki derece duvarları, sekiler, çağlayanlar), `ZB_dunya_derece_koni` (dış görünüm) ve `ZB_dunya_tuba_dev`. Irmaklar ayrı model değil, `ZB_dunya_cennet` içindeki `irmaklar` düğümü.
+- **İçeriden görünüm:** Üst dereceler, merkeze doğru yükselen ve ışıklı pusa karışan kat kat yamaçlar olarak ufukta durur. Yanlara doğru alçalır, ufuk açılır. Tepede bir şey yoktur.
+- **Arsa:** Çıplak toprak yerine kadife çimenli boş çayır ve inci/yakut çakıl sınırı. Gerekçe `mekan-kurgusu.md` dosyasında.
+- **Ton eşleme:** AgX bu sahnede soluk verdi; Pixar profili ACES kullanır.
+
 ## Doğrulama
 - Testler geçmeli: `godot --headless --path game -s res://tests/run_tests.gd` (şu an 34 test).
 - `python3 tools/model_factory/build_all.py` üçgen sınırı hatası vermeden bitmeli.
@@ -150,4 +161,4 @@ Yeni shader'lar:
   - çağlayanlar okunuyor mu
   - arsa boş ama verimli görünüyor mu
   - dört stil birbirinden net ayrışıyor mu
-- Her adım ayrı commit olarak `claude/busy-allen-p76wgo` dalına gönderilir.
+- Her adım ayrı commit olarak `claude/sleepy-bell-nc2a9a` dalına gönderilir (önceki iş `claude/busy-allen-p76wgo` dalındaydı).

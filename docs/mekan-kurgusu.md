@@ -9,6 +9,8 @@ Son güncelleme: 2026-09-24. Bu belge, 3D dünyanın hangi ayet, hadis ve açık
 - **En üst kat** tamamen nur ve ışıkla doludur. Ayrı ve çok özenli bir kalite işidir. Arş tasvir edilmez.
 - **Gece-gündüz ve mevsim yok** (Nisâ 57, İnsan 13). Işık sürekli, yumuşak ve kaynaksızdır; gölge de süreklidir (Ra'd 35). Her an bir bahar dolgunluğu vardır (Onuncu Söz).
 - **Oyuncunun başladığı yer:** İlk katta verimli ama boş bir arsa (Tirmizî 3462), ortasında ışıklı bir Tûbâ çekirdeği (Küllî Kaideler 1). Her zikir bir "nur tohumu" gibi toprağa düşüp açar.
+  - İlk taslakta çıplak toprak çamur lekesi gibi göründü. Hadisteki "düz ve boş arazi" (kîân) çıplaklık şartı koymuyor; arsa kısa, kadife çimenli boş bir çayır olarak yorumlandı. Toprak yalnızca dikim yerlerinde görünür.
+  - Arsanın sınırı inci ve yakut çakıllarla çizilir (et-Tâc 5/402: cennetin çakılları inci ve yakuttur).
 - **İlk katın karakteri:** Rahmân 62-76'ya göre koyu yeşil; fışkıran pınarlar, hurma ve nar, otağlar, yeşil yastıklı sedirler. Yukarı çıktıkça (Rahmân 46-61) çeşitlilik, akan pınarlar ve incelik artar.
 - **Ana öğeler:**
   - köşklerin altından akan ırmaklar
@@ -76,6 +78,8 @@ Son güncelleme: 2026-09-24. Bu belge, 3D dünyanın hangi ayet, hadis ve açık
 - Işığın tonunda çok hafif bir "sabah-akşam" farkı (Meryem 62) olabilir mi, yoksa ışık tamamen sabit mi kalmalı?
 - Tûbâ, Kevser, Selsebil, köşkler ve inci çadırlar gerçek cennet öğeleridir. Bu adlarla modellenmeleri uygun mu? "Bu bir temsildir" dili yeterli mi?
 - Katlı koni-dağın ve nurla dolu zirvenin (Arş tasvir etmeden) gösterilmesi uygun mu?
+- Dört ırmağın üst derecelerden çağlayan olarak inmesi (süt ve bal çağlayanı dahil) uygun bir temsil mi?
+- Ufukta, üst derecelerin üstünde yükselen dev bir Tûbâ ağacı gösterilebilir mi? Oyuncunun kendi Tûbâ'sı arsasında çekirdekten büyür.
 - Asset listesi I bölümündeki maddeler (hafızadan yazılmış dayanaklar, zayıf rivayetler, ebced gibi) hâlâ geçerli.
 
 ## Asset listesinde yeniden düşünülecekler
