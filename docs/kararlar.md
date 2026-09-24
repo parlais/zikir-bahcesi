@@ -31,3 +31,24 @@ Raporun "Birlikte karar vermemiz gereken açık sorular" bölümüne verilen cev
 - **Ebced modu:** Varsayılan açıktır, ayarlardan "serbest sayı" moduna geçilir (Açık soru #5). Serbest modda esma item'ları sabit 33'te açılır.
 - **Rekabet:** Bireysel sıralama yoktur (Açık soru #4).
 - **Müzik:** Yoktur, yalnızca doğa ambiyansı çalar (Rapor §7).
+
+## Uygulamada verilen tasarım kararları (onayınızı bekler)
+Asset listesinin açık bıraktığı yerler için seçilen değerler aşağıda. Hepsi `tools/content/build_content.py` başındaki sabitlerde durur ve tek satırla değiştirilebilir.
+
+- **Çiçek eşikleri:** Çiçekler 1'de tohum, 33'te gonca, 100'de açmış olur. Kılavuz yalnızca ağaçlar için sayı veriyordu (1, 10, 33, 100).
+- **Esma ile büyüyen bitkiler:** Eşikler ebcedin oranıdır; ebced tamamlanınca bitki olgunlaşır. Örneğin servi (Vâhid, 19) 1, 2, 7 ve 19'da büyür; lale (66) 1, 22 ve 66'da.
+- **Tûbâ:** Ömür boyu toplam tevhid sayısıyla 5 aşamada büyür: 1, 33, 100, 1000, 10000.
+- **Sure ağaçları (Tîn, Rahmân, Vâkıa):** Okuma sayısıyla 1, 3, 7 ve 11'de büyür.
+- **Sayı belirtilmemiş tetikleyiciler:**
+  - kısa zikirler 33'te tamamlanır
+  - dualar, sureler ve günlük sözler 1 kez yeterlidir
+  - olaya bağlı sözler de 1 kez söylenir: oturum açılışındaki Bismillah, arkadaşın bahçesinde verilen selam, hediye alınca söylenen "Cezâkallah"
+- **Tekrar:** Bir bitki olgunlaşınca aynı zikirle yenisi dikilir; item'lar her tamamlamada envantere bir tane daha eklenir (gül balı için 100 gül gibi tarifler bunu gerektiriyor). "İkinci item" notlu olanlar sırayla gelir: 1. tamamlama kandil, 2. tamamlama fanus, 3. tamamlama yine kandil.
+- **Tarifler:** Bahçede duran hiçbir şey harcanmaz (bitki, yapı, kovan, şadırvan). Yalnızca malzemeler tüketilir: inci, mercan, sedef, ipek kozası, un çuvalı, ekmek, zeytinyağı.
+- **Kaynaklar:**
+  - her tevhid havayı, her elhamdülillah ve istiğfar suyu artırır
+  - Nûr ışığı, Rezzâk rızkı artırır
+  - kaynaklar saatte 1 puan solar ama 20'nin altına inmez
+  - bahçenin renk doygunluğu havaya bağlıdır
+- **Seri:** Her 7 günde 1 dondurma hakkı kazanılır, en fazla 3 birikir. Kaçan gün dondurmayla kapanır. Dondurma yetmezse seri sessizce yeniden başlar; en uzun seri kaybolmaz.
+- **Ses tanıma bekleme süresi:** Başka bir sözün başı olan söz 1,2 saniye bekletilir. Zamanda çakışan iki algılamadan uzun olan sayılır.

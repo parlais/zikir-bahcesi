@@ -14,6 +14,9 @@ func _init() -> void:
 	var kalan: Array[String] = []
 	for f in dosyalar:
 		var script: GDScript = load("res://tests/" + f)
+		if script == null or not script.can_instantiate():
+			kalan.append("%s  dosya derlenemedi" % f)
+			continue
 		for m in script.get_script_method_list():
 			var ad: String = m["name"]
 			if not ad.begins_with("test_"):
