@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>ZB model önizleme</title>
+<style>
+  body { margin: 0; background: #efe7d6; font: 13px/1.2 system-ui, sans-serif; color: #3a2e22; }
+  #grid { position: relative; }
+  canvas { display: block; }
+  .etiket { position: absolute; padding: 3px 6px; background: rgba(255,255,255,.75); border-radius: 4px; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "./node_modules/three/build/three.module.js",
+               "three/addons/": "./node_modules/three/examples/jsm/" } }
+</script>
+</head>
+<body>
+<div id="grid"></div>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const q = new URLSearchParams(location.search);
+const files = (q.get('files') || '').split(',').filter(Boolean);
+const cols = Number(q.get('cols') || 4);
+const cell = Number(q.get('cell') || 320);
+const rows = Math.ceil(files.length / cols);
+const W = cols * cell, H = rows * cell;
+
+const grid = document.getElementById('grid');
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(W, H);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.setScissorTest(true);
+grid.appendChild(renderer.domElement);
+
+const loader = new GLTFLoader();
+const load = (f) => new Promise((ok, err) => loader.load('../../game/assets/models/' + f + '.glb', ok, undefined, err));
+
+for (let i = 0; i < files.length; i++) {
+  const f = files[i];
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(i % 2 ? 0xe9e0cc : 0xf1eadb);
+  scene.add(new THREE.HemisphereLight(0xfff6e6, 0x9a8b70, 1.6));
+  const sun = new THREE.DirectionalLight(0xffffff, 1.8);
+  sun.position.set(3, 5, 4);
+  scene.add(sun);
+  let label = f;
+  try {
+    const g = await load(f);
+    scene.add(g.scene);
+    const box = new THREE.Box3().setFromObject(g.scene);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const r = Math.max(size.x, size.y, size.z) * 0.5 || 0.5;
+    const cam = new THREE.PerspectiveCamera(30, 1, r / 100, r * 100);
+    const dir = new THREE.Vector3(0.75, 0.55, 1.0).normalize();
+    cam.position.copy(center).addScaledVector(dir, r * 4.6);
+    cam.lookAt(center);
+    let tris = 0;
+    g.scene.traverse(o => { if (o.isMesh) tris += o.geometry.attributes.position.count / 3; });
+    label = `${f}  ·  ${tris} üçgen  ·  ${size.y.toFixed(2)} m`;
+    const x = (i % cols) * cell, y = H - (Math.floor(i / cols) + 1) * cell;
+    renderer.setViewport(x, y, cell, cell);
+    renderer.setScissor(x, y, cell, cell);
+    renderer.render(scene, cam);
+  } catch (e) {
+    label = f + '  ·  YÜKLENEMEDİ: ' + e;
+  }
+  const d = document.createElement('div');
+  d.className = 'etiket';
+  d.style.left = ((i % cols) * cell + 6) + 'px';
+  d.style.top = (Math.floor(i / cols) * cell + 6) + 'px';
+  d.textContent = label;
+  grid.appendChild(d);
+}
+window.__done = true;
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+"""Node ağacını tek dosyalık .glb olarak yazar.
+
+Renkler köşe rengi (COLOR_0) olarak gider; glTF köşe renklerini doğrusal
+(linear) uzayda beklediği için paletteki sRGB değerleri burada çevrilir.
+Her malzeme adı için tek bir glTF malzemesi üretilir.
+"""
+from __future__ import annotations
+
+import math
+import struct
+from pathlib import Path
+
+import numpy as np
+import pygltflib as g
+
+from .scene import Node
+
+MATERIALS = {
+    "mat": dict(roughness=0.85, metallic=0.0),
+    "metal": dict(roughness=0.45, metallic=0.55),
+    "nur": dict(roughness=0.4, metallic=0.0, emissive=(1.0, 0.78, 0.42)),
+    "cam": dict(roughness=0.15, metallic=0.0, alpha=0.55),
+    "su": dict(roughness=0.1, metallic=0.0, alpha=0.8),
+    "inci": dict(roughness=0.25, metallic=0.1),
+}
+
+
+def srgb_to_linear(c: np.ndarray) -> np.ndarray:
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def _quat_from_euler(rx, ry, rz):
+    """XYZ Euler (derece) -> (x, y, z, w)."""
+    hx, hy, hz = (math.radians(a) / 2 for a in (rx, ry, rz))
+    cx, sx = math.cos(hx), math.sin(hx)
+    cy, sy = math.cos(hy), math.sin(hy)
+    cz, sz = math.cos(hz), math.sin(hz)
+    # q = qz * qy * qx (önce X, sonra Y, sonra Z dönüşü)
+    w = cz * cy * cx + sz * sy * sx
+    x = cz * cy * sx - sz * sy * cx
+    y = cz * sy * cx + sz * cy * sx
+    z = sz * cy * cx - cz * sy * sx
+    return [x, y, z, w]
+
+
+class _Writer:
+    def __init__(self):
+        self.gltf = g.GLTF2(asset=g.Asset(generator="ZB model fabrikası", version="2.0"))
+        self.blob = bytearray()
+        self.mat_index: dict[str, int] = {}
+
+    def _view(self, data: bytes, target=None) -> int:
+        while len(self.blob) % 4:
+            self.blob.append(0)
+        off = len(self.blob)
+        self.blob += data
+        self.gltf.bufferViews.append(g.BufferView(buffer=0, byteOffset=off, byteLength=len(data), target=target))
+        return len(self.gltf.bufferViews) - 1
+
+    def _accessor(self, arr: np.ndarray, typ: str, with_bounds=False) -> int:
+        arr = np.ascontiguousarray(arr, dtype=np.float32)
+        view = self._view(arr.tobytes(), g.ARRAY_BUFFER)
+        acc = g.Accessor(bufferView=view, componentType=g.FLOAT, count=len(arr), type=typ)
+        if with_bounds:
+            acc.min = arr.min(axis=0).tolist()
+            acc.max = arr.max(axis=0).tolist()
+        self.gltf.accessors.append(acc)
+        return len(self.gltf.accessors) - 1
+
+    def material(self, name: str) -> int:
+        if name in self.mat_index:
+            return self.mat_index[name]
+        p = MATERIALS[name]
+        m = g.Material(
+            name=name,
+            pbrMetallicRoughness=g.PbrMetallicRoughness(
+                baseColorFactor=[1.0, 1.0, 1.0, p.get("alpha", 1.0)],
+                metallicFactor=p["metallic"], roughnessFactor=p["roughness"]),
+            doubleSided=False,
+        )
+        if "emissive" in p:
+            m.emissiveFactor = list(p["emissive"])
+        if "alpha" in p:
+            m.alphaMode = g.BLEND
+        self.gltf.materials.append(m)
+        self.mat_index[name] = len(self.gltf.materials) - 1
+        return self.mat_index[name]
+
+    def mesh(self, node: Node) -> int | None:
+        if not node.meshes:
+            return None
+        groups: dict[str, list] = {}
+        for m in node.meshes:
+            groups.setdefault(m.material, []).append(m)
+        prims = []
+        for mat, ms in groups.items():
+            P, N, C = [], [], []
+            for m in ms:
+                tri = m.V[m.F]                                  # (t, 3, 3)
+                n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
+                ln = np.linalg.norm(n, axis=1, keepdims=True)
+                ok = ln[:, 0] > 1e-12                           # dejenere üçgenleri at
+                tri, n, ln, col = tri[ok], n[ok], ln[ok], m.C[ok]
+                n = n / ln
+                P.append(tri.reshape(-1, 3))
+                N.append(np.repeat(n, 3, axis=0))
+                C.append(np.repeat(srgb_to_linear(col), 3, axis=0))
+            P, N, C = np.vstack(P), np.vstack(N), np.vstack(C)
+            C4 = np.hstack([C, np.ones((len(C), 1), dtype=np.float32)])
+            attrs = g.Attributes(POSITION=self._accessor(P, g.VEC3, True),
+                                 NORMAL=self._accessor(N, g.VEC3),
+                                 COLOR_0=self._accessor(C4, g.VEC4))
+            prims.append(g.Primitive(attributes=attrs, material=self.material(mat)))
+        self.gltf.meshes.append(g.Mesh(name=node.name, primitives=prims))
+        return len(self.gltf.meshes) - 1
+
+    def node(self, node: Node) -> int:
+        children = [self.node(c) for c in node.children]
+        gn = g.Node(name=node.name, children=children)
+        mi = self.mesh(node)
+        if mi is not None:
+            gn.mesh = mi
+        if any(node.translation):
+            gn.translation = list(node.translation)
+        if any(node.rotation_deg):
+            gn.rotation = _quat_from_euler(*node.rotation_deg)
+        if node.scale != (1.0, 1.0, 1.0):
+            gn.scale = list(node.scale)
+        self.gltf.nodes.append(gn)
+        return len(self.gltf.nodes) - 1
+
+
+def write_glb(root: Node, path: Path) -> int:
+    w = _Writer()
+    root_index = w.node(root)
+    w.gltf.scenes = [g.Scene(name=root.name, nodes=[root_index])]
+    w.gltf.scene = 0
+    w.gltf.buffers = [g.Buffer(byteLength=len(w.blob))]
+    w.gltf.set_binary_blob(bytes(w.blob))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    w.gltf.save_binary(str(path))
+    return path.stat().st_size
+
+
+def signed_volume(mesh) -> float:
+    """Kapalı mesh'te pozitifse yüzler dışarı bakıyor (sarım yönü doğru)."""
+    tri = mesh.V[mesh.F].astype(np.float64)
+    return float(np.einsum("ij,ij->i", tri[:, 0], np.cross(tri[:, 1], tri[:, 2])).sum() / 6.0)
