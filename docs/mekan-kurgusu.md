@@ -2,7 +2,17 @@
 
 Son güncelleme: 2026-09-24. Bu belge, 3D dünyanın hangi ayet, hadis ve açıklamadan ilham aldığını kaydeder. Görsel ve mekânsal her karar buraya bağlanır. Buradaki bütün dayanaklar **danışma kurulunca teyit edilecek**; kaynak numaralarının bir kısmı araştırma sırasında ikinci el kaynaklardan (Sorularla İslamiyet ve Risale sitelerinin arama özetleri) alındı.
 
-## Özet: mekân nasıl bir yer?
+## Güncel kurgu (K10, 2026-09-24): uzanıp giden 8 yatay tabaka
+Aşağıdaki özet ilk kurguyu (koni-dağ) anlatır; K10 bunun yerini aldı:
+- **Tabakalar:** Cennet uçsuz bucaksız 8 yatay tabakadır. En üstte Firdevs vardır, ortasında dört ırmağın kaynağı bulunur. Üstte her şeyi kuşatan ışık vardır; Arş tasvir edilmez.
+- **İçeriden:** Ufuk açıktır ve göğe bakınca üst tabaka görünmez, atmosfer tabakaları gibi. Tabakalar arası çiçekli taş merdivenler bulutların içinden ışığa yükselir.
+- **Dışarıdan:** Açılışta ve geçişte bir kesit görünür, Dünya'nın katman resimleri gibi.
+- **Dayanaklar:**
+  - 28. Söz'deki koni misali (aşağıda): Tabakalar birbirinden yüksektir, hepsi aynı ışığı alır, birbirinden geçilebilir ve birbirine bakar.
+  - Buhârî, Cihâd 4 ve bir Tirmizî rivayeti (Sıfatü'l-Cenne): Firdevs en yüksek derecedir, dört ırmak oradan fışkırır, Arş onun üstündedir.
+- **"Evsat" kelimesi:** Hem "orta" hem "en seçkin" anlamına gelir (Bakara 143, "ümmeten vasatan"). Firdevs en üste konur, "ortası" ırmakların kaynağıyla karşılanır.
+
+## Özet: mekân nasıl bir yer? (ilk kurgu, K4)
 - **Katlı yapı:** Risale-i Nur, 28. Söz'deki dağ misaline göre cennet, iç içe halkalardan oluşan, zirvesi nura açılan koni biçimli bir dağdır.
   - Bu yapı **yalnızca dışarıdan** görünür: açılış animasyonunda ve katlar arası geçişte. Oyuncu kendi katına uzaktan yaklaşıp iner.
   - **Katın içinde tepede hiçbir şey yoktur.** Her katta ferah, açık, bütün güzelliğiyle bir gökyüzü görünür.
@@ -102,6 +112,8 @@ Metin (web arama özetlerinden; basılı Sözler ile teyit edilecek):
 - Tûbâ, Kevser, Selsebil, köşkler ve inci çadırlar gerçek cennet öğeleridir. Bu adlarla modellenmeleri uygun mu? "Bu bir temsildir" dili yeterli mi?
 - Katlı koni-dağın ve nurla dolu zirvenin (Arş tasvir etmeden) gösterilmesi uygun mu? 28. Söz'deki misal bir benzetmedir; onu görsel bir mekâna çevirmek uygun bir temsil mi?
 - Dört ırmağın üst derecelerden çağlayan olarak inmesi (süt ve bal çağlayanı dahil) uygun bir temsil mi?
+- K10: Cenneti uçsuz bucaksız 8 yatay tabaka olarak, dışarıdan da dilimi kesilmiş bir kesit olarak göstermek uygun mu?
+- Firdevs'in yeri: "evsatu'l-cenne" ifadesini "en seçkin" olarak okuyup Firdevs'i en üst tabakaya, dört ırmağın kaynağını da onun ortasına koymak doğru mu? İlgili Tirmizî rivayeti teyit edilecek.
 - Ufukta, üst derecelerin üstünde yükselen dev bir Tûbâ ağacı gösterilebilir mi? Oyuncunun kendi Tûbâ'sı arsasında çekirdekten büyür.
 - Asset listesi I bölümündeki maddeler (hafızadan yazılmış dayanaklar, zayıf rivayetler, ebced gibi) hâlâ geçerli.
 

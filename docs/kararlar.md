@@ -91,3 +91,21 @@ Asset listesinin açık bıraktığı yerler için seçilen değerler aşağıda
 - Gece, lamba ışığı ve karanlık chiaroscuro istenmiyor; K5 (gece yok) geçerli.
 - Mekân kurgusu da değişecek (ova, ırmaklar, su köşkü, ufukta dereceler, Tûbâ). Kullanıcının tarifi bekleniyor.
 
+## K10 — Cennet: uzanıp giden 8 yatay tabaka (2026-09-24)
+- K4'teki koni-dağ görünümünün yerine geçer. 28. Söz'deki koni, güneşi görme ve birbirine geçme örneği için verilmiş bir dünya misalidir; cennet dağ gibi sınırlı bir yer değildir.
+- **Tabakalar:**
+  - Cennet 8 yatay tabakadır ve her tabaka uçsuz bucaksızdır.
+  - En üstte Firdevs vardır, ortasında dört ırmağın kaynağı bulunur. Firdevs'in üstü her şeyi kuşatan ışıktır; Arş tasvir edilmez.
+- **İçeriden:**
+  - Her katta ufuk açıktır.
+  - Göğe bakınca üst tabaka görünmez, atmosfer tabakaları gibi.
+  - Aynı ışık her kata ulaşır (K5: güneş diski yok).
+- **Dışarıdan:**
+  - Açılışta ve katlar arası geçişte, Dünya'nın katman resimleri gibi bir kesit görünür.
+  - Her tabakanın zemini ve göğü bant bant görünür, yanları ışığa karışır.
+- **Merdivenler:** Katlar arasında çiçek ve sarmaşıkla kaplı taş merdivenler, kıvrılarak bulutların içinden ışığa yükselir. Alttan bakınca bulutta kaybolur. Kullanıcının referans görseli bu havadadır.
+- **Firdevs'in yeri:** Hadisteki "evsat" hem "orta" hem "en seçkin" anlamına gelir. Firdevs en üst kat olarak konur, "ortası" da dört ırmağın kaynağıyla karşılanır. Danışma kuruluna sorulacak.
+- Kavram eskizleri:
+  - `docs/goruntuler/cennet/eskiz_katmanlar.png`
+  - `docs/goruntuler/cennet/eskiz_kure_tabaka.png`
+
