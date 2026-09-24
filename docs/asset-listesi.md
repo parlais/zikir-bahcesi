@@ -332,14 +332,14 @@ Mevcut item'lar birleşerek 13 yeni model üretir; hiçbiri yeni zikir gerektirm
 
 > **Revizyon (2026-09-24):** Modeller artık Tripo'da değil, depodaki prosedürel **ZB model fabrikasında** (`tools/model_factory/`) üretilir. Kredi ve plan hesabı kaldırıldı. Ayrıntı: `docs/kararlar.md`.
 
-Toplam 157 asset, büyüme aşamalarıyla birlikte 205 model dosyası eder; MVP bunun 59'udur.
+Toplam 157 asset, büyüme aşamalarıyla birlikte 203 model dosyası eder; MVP bunun 59'udur. Sayılar `game/data/assets.json` içindeki `meta.ozet` alanından gelir ve `tools/content/build_content.py` her çalıştığında yeniden hesaplanır. Önceki Tripo tahmini v2 için 115 diyordu. Aradaki 2'lik fark, harem güvercininin ayrı model değil renk varyantı sayılmasından ve aşama sayılarının artık kuraldan hesaplanmasından gelir.
 
 | Sürüm | Asset | Model dosyası |
 | --- | --- | --- |
 | MVP | 40 | 59 |
-| v2 | 87 | 115 |
+| v2 | 87 | 113 |
 | v3 | 30 | 31 |
-| Toplam | 157 | 205 |
+| Toplam | 157 | 203 |
 
 - **Üretim yöntemi:** Her model bir Python fonksiyonudur (`tools/model_factory/models/`). Parametreler koddadır, yani model istenildiği an yeniden üretilebilir, renk veya oran değişikliği tek satırdır. `python3 tools/model_factory/build_all.py` bütün modelleri `game/assets/models/` altına `.glb` olarak yazar.
 - **Stil:** Stilize low-poly, düz gölgeli (flat shading), tek palet. Palet `tools/model_factory/palette.py` içindedir; Osmanlı çini ve bahçe renklerinden seçilmiştir.

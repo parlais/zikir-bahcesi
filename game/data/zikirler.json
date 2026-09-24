@@ -1,0 +1,381 @@
+{
+ "zikirler": [
+  {
+   "id": "bismillah",
+   "varsayilan_adet": 33,
+   "ad": "Bismillâhirrahmânirrahîm",
+   "arapca": "بسم الله الرحمن الرحيم",
+   "anlam": "Rahmân ve Rahîm olan Allah'ın adıyla.",
+   "tur": "zikir",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "tevhid",
+   "varsayilan_adet": 33,
+   "ad": "Lâ ilâhe illallâh",
+   "arapca": "لا إله إلا الله",
+   "anlam": "Allah'tan başka ilah yoktur.",
+   "tur": "zikir",
+   "onek_of": [
+    "tehlil_kebir"
+   ],
+   "sonek_of": []
+  },
+  {
+   "id": "tehlil_kebir",
+   "varsayilan_adet": 33,
+   "ad": "Lâ ilâhe illallâhu vahdehû lâ şerîke leh, lehü'l-mülkü ve lehü'l-hamdü ve hüve alâ külli şey'in kadîr",
+   "arapca": "لا إله إلا الله وحده لا شريك له له الملك وله الحمد وهو على كل شيء قدير",
+   "anlam": "Allah'tan başka ilah yoktur; O tektir, ortağı yoktur. Mülk ve hamd O'nundur, O her şeye gücü yetendir.",
+   "tur": "zikir",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "subhanallah",
+   "varsayilan_adet": 33,
+   "ad": "Sübhânallâh",
+   "arapca": "سبحان الله",
+   "anlam": "Allah her türlü eksiklikten uzaktır.",
+   "tur": "zikir",
+   "onek_of": [
+    "subhanallahi_ve_bihamdihi",
+    "subhanallahil_azim"
+   ],
+   "sonek_of": []
+  },
+  {
+   "id": "subhanallahi_ve_bihamdihi",
+   "varsayilan_adet": 33,
+   "ad": "Sübhânallâhi ve bihamdihî",
+   "arapca": "سبحان الله وبحمده",
+   "anlam": "Allah'ı hamd ile tesbih ederim.",
+   "tur": "zikir",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "subhanallahil_azim",
+   "varsayilan_adet": 33,
+   "ad": "Sübhânallâhi'l-azîm ve bihamdihî",
+   "arapca": "سبحان الله العظيم وبحمده",
+   "anlam": "Yüce Allah'ı hamd ile tesbih ederim.",
+   "tur": "zikir",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "elhamdulillah",
+   "varsayilan_adet": 33,
+   "ad": "Elhamdülillâh",
+   "arapca": "الحمد لله",
+   "anlam": "Hamd Allah'adır.",
+   "tur": "zikir",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "allahu_ekber",
+   "varsayilan_adet": 33,
+   "ad": "Allâhu ekber",
+   "arapca": "الله أكبر",
+   "anlam": "Allah en büyüktür.",
+   "tur": "zikir",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "lahavle",
+   "varsayilan_adet": 33,
+   "ad": "Lâ havle ve lâ kuvvete illâ billâh",
+   "arapca": "لا حول ولا قوة إلا بالله",
+   "anlam": "Güç ve kuvvet yalnız Allah'tandır.",
+   "tur": "zikir",
+   "onek_of": [],
+   "sonek_of": [],
+   "sonek_ortak": [
+    "masaallah"
+   ]
+  },
+  {
+   "id": "masaallah",
+   "varsayilan_adet": 33,
+   "ad": "Mâşâallah, lâ kuvvete illâ billâh",
+   "arapca": "ما شاء الله لا قوة إلا بالله",
+   "anlam": "Allah dilemiş; kuvvet yalnız Allah'tandır.",
+   "tur": "zikir",
+   "onek_of": [],
+   "sonek_of": [],
+   "sonek_ortak": [
+    "lahavle"
+   ]
+  },
+  {
+   "id": "istigfar",
+   "varsayilan_adet": 33,
+   "ad": "Estağfirullâh",
+   "arapca": "أستغفر الله",
+   "anlam": "Allah'tan bağışlanma dilerim.",
+   "tur": "zikir",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "seyyidul_istigfar",
+   "varsayilan_adet": 1,
+   "ad": "Seyyidü'l-istiğfâr",
+   "arapca": "اللهم أنت ربي لا إله إلا أنت خلقتني وأنا عبدك وأنا على عهدك ووعدك ما استطعت أعوذ بك من شر ما صنعت أبوء لك بنعمتك علي وأبوء بذنبي فاغفر لي فإنه لا يغفر الذنوب إلا أنت",
+   "anlam": "İstiğfarların efendisi olan bağışlanma duası.",
+   "tur": "dua",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "salavat",
+   "varsayilan_adet": 33,
+   "ad": "Allâhümme salli alâ Muhammed",
+   "arapca": "اللهم صل على محمد",
+   "anlam": "Allah'ım, Hz. Muhammed'e salât eyle.",
+   "tur": "zikir",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "salat_tefriciye",
+   "varsayilan_adet": 1,
+   "ad": "Salât-ı Tefriciye",
+   "arapca": null,
+   "anlam": "Toplu okunan bir salavat.",
+   "tur": "dua",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "hasbunallah",
+   "varsayilan_adet": 33,
+   "ad": "Hasbünallâhu ve ni'mel vekîl",
+   "arapca": "حسبنا الله ونعم الوكيل",
+   "anlam": "Allah bize yeter, O ne güzel vekildir.",
+   "tur": "zikir",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "yunus_duasi",
+   "varsayilan_adet": 1,
+   "ad": "Lâ ilâhe illâ ente sübhâneke innî küntü mine'z-zâlimîn",
+   "arapca": "لا إله إلا أنت سبحانك إني كنت من الظالمين",
+   "anlam": "Senden başka ilah yoktur; sen eksiklikten uzaksın, ben kendime yazık edenlerden oldum.",
+   "tur": "dua",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "rabbi_zidni_ilma",
+   "varsayilan_adet": 1,
+   "ad": "Rabbi zidnî ilmâ",
+   "arapca": "رب زدني علما",
+   "anlam": "Rabbim, ilmimi artır.",
+   "tur": "dua",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "rabbena_atina",
+   "varsayilan_adet": 1,
+   "ad": "Rabbenâ âtinâ",
+   "arapca": "ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار",
+   "anlam": "Rabbimiz, bize dünyada da ahirette de güzellik ver.",
+   "tur": "dua",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "insallah",
+   "varsayilan_adet": 1,
+   "ad": "İnşâallah",
+   "arapca": "إن شاء الله",
+   "anlam": "Allah dilerse.",
+   "tur": "gunluk",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "selam",
+   "varsayilan_adet": 1,
+   "ad": "Selâmün aleyküm",
+   "arapca": "السلام عليكم",
+   "anlam": "Selam üzerinize olsun.",
+   "tur": "gunluk",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "cezakallah",
+   "varsayilan_adet": 1,
+   "ad": "Cezâkallâhu hayran",
+   "arapca": "جزاك الله خيرا",
+   "anlam": "Allah seni hayırla mükâfatlandırsın.",
+   "tur": "gunluk",
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "tesbihat",
+   "varsayilan_adet": 33,
+   "ad": "33'lük tesbihat",
+   "arapca": null,
+   "anlam": "33 Sübhânallâh, 33 Elhamdülillâh, 33 Allâhu ekber.",
+   "tur": "zikir",
+   "bilesik": [
+    [
+     "subhanallah",
+     33
+    ],
+    [
+     "elhamdulillah",
+     33
+    ],
+    [
+     "allahu_ekber",
+     33
+    ]
+   ],
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "fatiha",
+   "varsayilan_adet": 1,
+   "ad": "Fâtiha suresi",
+   "arapca": null,
+   "anlam": "Kur'an'ın açılış suresi.",
+   "tur": "sure",
+   "sure_no": 1,
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "ayetel_kursi",
+   "varsayilan_adet": 1,
+   "ad": "Âyetü'l-Kürsî",
+   "arapca": null,
+   "anlam": "Bakara suresi 255. ayet.",
+   "tur": "sure",
+   "sure_no": 2,
+   "ayet": 255,
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "ihlas",
+   "varsayilan_adet": 1,
+   "ad": "İhlâs suresi",
+   "arapca": null,
+   "anlam": "Allah'ın birliğini anlatan sure.",
+   "tur": "sure",
+   "sure_no": 112,
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "felak",
+   "varsayilan_adet": 1,
+   "ad": "Felak suresi",
+   "arapca": null,
+   "anlam": "Sabahın Rabbine sığınma.",
+   "tur": "sure",
+   "sure_no": 113,
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "tin",
+   "varsayilan_adet": 1,
+   "ad": "Tîn suresi",
+   "arapca": null,
+   "anlam": "İncire ve zeytine yemin ile başlar.",
+   "tur": "sure",
+   "sure_no": 95,
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "kevser",
+   "varsayilan_adet": 1,
+   "ad": "Kevser suresi",
+   "arapca": null,
+   "anlam": "Kur'an'ın en kısa suresi.",
+   "tur": "sure",
+   "sure_no": 108,
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "rahman_suresi",
+   "varsayilan_adet": 1,
+   "ad": "Rahmân suresi",
+   "arapca": null,
+   "anlam": "Nimetleri sayan sure.",
+   "tur": "sure",
+   "sure_no": 55,
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "vakia",
+   "varsayilan_adet": 1,
+   "ad": "Vâkıa suresi",
+   "arapca": null,
+   "anlam": "Kıyameti ve bahçeleri anlatan sure.",
+   "tur": "sure",
+   "sure_no": 56,
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "duha",
+   "varsayilan_adet": 1,
+   "ad": "Duhâ suresi",
+   "arapca": null,
+   "anlam": "Kuşluk vaktine yemin.",
+   "tur": "sure",
+   "sure_no": 93,
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "kamer",
+   "varsayilan_adet": 1,
+   "ad": "Kamer suresi",
+   "arapca": null,
+   "anlam": "Ay suresi.",
+   "tur": "sure",
+   "sure_no": 54,
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "necm",
+   "varsayilan_adet": 1,
+   "ad": "Necm suresi",
+   "arapca": null,
+   "anlam": "Yıldız suresi.",
+   "tur": "sure",
+   "sure_no": 53,
+   "onek_of": [],
+   "sonek_of": []
+  },
+  {
+   "id": "kuran_okuma",
+   "varsayilan_adet": 1,
+   "ad": "Kur'an okuma",
+   "arapca": null,
+   "anlam": "Her ayet bir basamak.",
+   "tur": "sure",
+   "onek_of": [],
+   "sonek_of": []
+  }
+ ]
+}

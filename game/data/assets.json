@@ -1,0 +1,5820 @@
+{
+ "meta": {
+  "kaynak": "docs/asset-listesi.md",
+  "uretici": "tools/content/build_content.py",
+  "kurallar": {
+   "agac_esikleri": [
+    1,
+    10,
+    33,
+    100
+   ],
+   "cicek_esikleri": [
+    1,
+    33,
+    100
+   ],
+   "tuba_esikleri": [
+    1,
+    33,
+    100,
+    1000,
+    10000
+   ],
+   "sure_agac_esikleri": [
+    1,
+    3,
+    7,
+    11
+   ],
+   "agac_oranlari": [
+    0.01,
+    0.1,
+    0.33,
+    1.0
+   ],
+   "cicek_oranlari": [
+    0.01,
+    0.33,
+    1.0
+   ],
+   "serbest_esma_adedi": 33,
+   "grup_esigi": 500,
+   "varsayilan_adet": {
+    "zikir": 33,
+    "dua": 1,
+    "gunluk": 1,
+    "sure": 1
+   }
+  },
+  "ozet": {
+   "MVP": {
+    "asset": 40,
+    "model": 59
+   },
+   "v2": {
+    "asset": 87,
+    "model": 113
+   },
+   "v3": {
+    "asset": 30,
+    "model": 31
+   },
+   "toplam": {
+    "asset": 157,
+    "model": 203
+   }
+  }
+ },
+ "assets": [
+  {
+   "id": "saba_yeli",
+   "ad": "Sabâ yeli, açılan gökyüzü, dağılan sis",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "A",
+    "metin": "tevhid nefes gibi temel ihtiyaç",
+    "ham": "A: tevhid nefes gibi temel ihtiyaç"
+   },
+   "tetikleyici": {
+    "ham": "La ilahe illallah (sürekli)",
+    "tur": "zikir",
+    "kaynak": "tevhid",
+    "adet": null,
+    "grup": false,
+    "kural": "surekli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "nisan_yagmuru",
+   "ad": "Nisan yağmuru",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nuh 10-12",
+    "ham": "N: Nuh 10-12"
+   },
+   "tetikleyici": {
+    "ham": "Estağfirullah ×100",
+    "tur": "zikir",
+    "kaynak": "istigfar",
+    "adet": 100,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    100
+   ],
+   "esikler_serbest": [
+    100
+   ],
+   "grup": false
+  },
+  {
+   "id": "kandil_isigi",
+   "ad": "Kandil ışığı, nur hüzmesi",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nur 35",
+    "ham": "N: Nur 35"
+   },
+   "tetikleyici": {
+    "ham": "Ya Nûr (256)",
+    "tur": "esma",
+    "kaynak": "nur",
+    "adet": 256,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    256
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "gul_kokusu_parcaciklari",
+   "ad": "Gül kokusu parçacıkları",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "G",
+    "metin": "gül ve Hz. Peygamber",
+    "ham": "G: gül ve Hz. Peygamber"
+   },
+   "tetikleyici": {
+    "ham": "Salavat, 10 üst üste",
+    "tur": "zikir",
+    "kaynak": "salavat",
+    "adet": 10,
+    "grup": false,
+    "kural": "ardisik",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    10
+   ],
+   "esikler_serbest": [
+    10
+   ],
+   "grup": false
+  },
+  {
+   "id": "su_yuzeyi",
+   "ad": "Su yüzeyi (ırmak, havuz, dere)",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "altlarından ırmaklar akan bahçeler",
+    "ham": "N: altlarından ırmaklar akan bahçeler"
+   },
+   "tetikleyici": {
+    "ham": "Su yapılarıyla birlikte gelir",
+    "tur": "yapi_ile",
+    "kaynak": null,
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "gokkusagi",
+   "ad": "Gökkuşağı",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "yağmurdan sonra müjde",
+    "ham": "A: yağmurdan sonra müjde"
+   },
+   "tetikleyici": {
+    "ham": "Seyyidü'l-istiğfar",
+    "tur": "zikir",
+    "kaynak": "seyyidul_istigfar",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "rahmet_bulutu",
+   "ad": "Rahmet bulutu",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "A'râf 57, rahmetin önünde müjdeci rüzgârlar",
+    "ham": "N: A'râf 57, rahmetin önünde müjdeci rüzgârlar"
+   },
+   "tetikleyici": {
+    "ham": "Ya Rahmân (298)",
+    "tur": "esma",
+    "kaynak": "rahman",
+    "adet": 298,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    298
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "bahar_patlamasi",
+   "ad": "Bahar patlaması: tüm bahçe çiçek açar",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Hac 5-6, ölü toprağın dirilişi",
+    "ham": "N: Hac 5-6, ölü toprağın dirilişi"
+   },
+   "tetikleyici": {
+    "ham": "Ya Bâis (573, grup)",
+    "tur": "esma",
+    "kaynak": "bais",
+    "adet": 573,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    573
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "gece_koruma_kubbesi",
+   "ad": "Gece koruma kubbesi",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Buhârî, yatarken okuyan korunur",
+    "ham": "N: Buhârî, yatarken okuyan korunur"
+   },
+   "tetikleyici": {
+    "ham": "Âyetü'l-Kürsî",
+    "tur": "sure",
+    "kaynak": "ayetel_kursi",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "safak_gokyuzu",
+   "ad": "Şafak gökyüzü",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "Sky",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Felak 1, sabahın Rabbi",
+    "ham": "N: Felak 1, sabahın Rabbi"
+   },
+   "tetikleyici": {
+    "ham": "Felak suresi",
+    "tur": "sure",
+    "kaynak": "felak",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "yildizli_gece_gogu",
+   "ad": "Yıldızlı gece göğü",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "Sky",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "G",
+    "metin": "Risale-i Nur, 30. Lem'a",
+    "ham": "G: Risale-i Nur, 30. Lem'a"
+   },
+   "tetikleyici": {
+    "ham": "Ya Kayyûm (156)",
+    "tur": "esma",
+    "kaynak": "kayyum",
+    "adet": 156,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    156
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "deniz_ufku",
+   "ad": "Deniz ufku (arka plan)",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "Sky",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "genişlik",
+    "ham": "A: genişlik"
+   },
+   "tetikleyici": {
+    "ham": "Ya Vâsi' (137)",
+    "tur": "esma",
+    "kaynak": "vasi",
+    "adet": 137,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    137
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "ciy_taneli_sabah",
+   "ad": "Çiy taneli sabah",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "her sabah tazelenme",
+    "ham": "A: her sabah tazelenme"
+   },
+   "tetikleyici": {
+    "ham": "Ya Gafûr (1286, grup)",
+    "tur": "esma",
+    "kaynak": "gafur",
+    "adet": 1286,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    1286
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "kar_ortusu",
+   "ad": "Kar örtüsü (kış)",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "gafr, örtmek demektir",
+    "ham": "A: gafr, örtmek demektir"
+   },
+   "tetikleyici": {
+    "ham": "Ya Gaffâr (1281, grup)",
+    "tur": "esma",
+    "kaynak": "gaffar",
+    "adet": 1281,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    1281
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "sonbahar_yaprak_dokumu",
+   "ad": "Sonbahar yaprak dökümü",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "daraltan",
+    "ham": "A: daraltan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Kâbıd (903, grup)",
+    "tur": "esma",
+    "kaynak": "kabid",
+    "adet": 903,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    903
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "parlak_gunesli_gun",
+   "ad": "Parlak güneşli gün",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "Sky",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "apaçık olan",
+    "ham": "A: apaçık olan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Zâhir (1106, grup)",
+    "tur": "esma",
+    "kaynak": "zahir",
+    "adet": 1106,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    1106
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "karli_dag_silueti",
+   "ad": "Karlı dağ silüeti (arka plan)",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "Sky",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "azamet; Nebe 7",
+    "ham": "A: azamet; Nebe 7"
+   },
+   "tetikleyici": {
+    "ham": "Ya Mütekebbir (662, grup)",
+    "tur": "esma",
+    "kaynak": "mutekebbir",
+    "adet": 662,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    662
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "simsek_ve_gok_gurultusu",
+   "ad": "Şimşek ve gök gürültüsü",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "VFX",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Ra'd 13, gök gürültüsü hamd ile tesbih eder",
+    "ham": "N: Ra'd 13, gök gürültüsü hamd ile tesbih eder"
+   },
+   "tetikleyici": {
+    "ham": "Ya Muktedir (744, grup)",
+    "tur": "esma",
+    "kaynak": "muktedir",
+    "adet": 744,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    744
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "gokyuzu_sureleri",
+   "ad": "Gökyüzü sureleri: kuşluk ışığı, ay, yıldız",
+   "bolum": "A",
+   "kategori": "atmosfer",
+   "tip": "Sky",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "N",
+    "metin": "",
+    "ham": "N"
+   },
+   "tetikleyici": {
+    "ham": "Duhâ, Kamer, Necm sureleri",
+    "tur": "sure",
+    "kaynak": [
+     "duha",
+     "kamer",
+     "necm"
+    ],
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "tuba",
+   "ad": "Tûbâ (bahçenin merkez ağacı)",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "hadis, gölgesi yüz yıllık yol; sembolik temsil",
+    "ham": "N: hadis, gölgesi yüz yıllık yol; sembolik temsil"
+   },
+   "tetikleyici": {
+    "ham": "Toplam La ilahe illallah sayısıyla büyür",
+    "tur": "zikir",
+    "kaynak": "tevhid",
+    "adet": null,
+    "grup": false,
+    "kural": "toplam",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 5,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun",
+    "ulu"
+   ],
+   "modeller": [
+    "ZB_agac_tuba_a1",
+    "ZB_agac_tuba_a2",
+    "ZB_agac_tuba_a3",
+    "ZB_agac_tuba_a4",
+    "ZB_agac_tuba_a5"
+   ],
+   "esikler": [
+    1,
+    33,
+    100,
+    1000,
+    10000
+   ],
+   "esikler_serbest": [
+    1,
+    33,
+    100,
+    1000,
+    10000
+   ],
+   "grup": false
+  },
+  {
+   "id": "hurma_agaci",
+   "ad": "Hurma ağacı",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Tirmizî 3464",
+    "ham": "N: Tirmizî 3464"
+   },
+   "tetikleyici": {
+    "ham": "Sübhanallahi'l-azîm ve bihamdihi",
+    "tur": "zikir",
+    "kaynak": "subhanallahil_azim",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 4,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun"
+   ],
+   "modeller": [
+    "ZB_agac_hurma_a1",
+    "ZB_agac_hurma_a2",
+    "ZB_agac_hurma_a3",
+    "ZB_agac_hurma_a4"
+   ],
+   "esikler": [
+    1,
+    10,
+    33,
+    100
+   ],
+   "esikler_serbest": [
+    1,
+    10,
+    33,
+    100
+   ],
+   "grup": false
+  },
+  {
+   "id": "cinar",
+   "ad": "Çınar",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "G",
+    "metin": "azamet, Osman Gazi'nin rüyası",
+    "ham": "G: azamet, Osman Gazi'nin rüyası"
+   },
+   "tetikleyici": {
+    "ham": "Allahu Ekber",
+    "tur": "zikir",
+    "kaynak": "allahu_ekber",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 4,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun"
+   ],
+   "modeller": [
+    "ZB_agac_cinar_a1",
+    "ZB_agac_cinar_a2",
+    "ZB_agac_cinar_a3",
+    "ZB_agac_cinar_a4"
+   ],
+   "esikler": [
+    1,
+    10,
+    33,
+    100
+   ],
+   "esikler_serbest": [
+    1,
+    10,
+    33,
+    100
+   ],
+   "grup": false
+  },
+  {
+   "id": "servi",
+   "ad": "Servi",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "G",
+    "metin": "elif gibi dimdik, vahdet sembolü",
+    "ham": "G: elif gibi dimdik, vahdet sembolü"
+   },
+   "tetikleyici": {
+    "ham": "Ya Vâhid (19)",
+    "tur": "esma",
+    "kaynak": "vahid",
+    "adet": 19,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 4,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun"
+   ],
+   "modeller": [
+    "ZB_agac_servi_a1",
+    "ZB_agac_servi_a2",
+    "ZB_agac_servi_a3",
+    "ZB_agac_servi_a4"
+   ],
+   "esikler": [
+    1,
+    2,
+    7,
+    19
+   ],
+   "esikler_serbest": [
+    1,
+    4,
+    11,
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "uzum_asmasi_ve_cardak",
+   "ad": "Üzüm asması ve çardak",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nebe 32; hamd mizanı doldurur",
+    "ham": "N: Nebe 32; hamd mizanı doldurur"
+   },
+   "tetikleyici": {
+    "ham": "Elhamdülillah",
+    "tur": "zikir",
+    "kaynak": "elhamdulillah",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 4,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun"
+   ],
+   "modeller": [
+    "ZB_agac_uzum_a1",
+    "ZB_agac_uzum_a2",
+    "ZB_agac_uzum_a3",
+    "ZB_agac_uzum_a4"
+   ],
+   "esikler": [
+    1,
+    10,
+    33,
+    100
+   ],
+   "esikler_serbest": [
+    1,
+    10,
+    33,
+    100
+   ],
+   "grup": false
+  },
+  {
+   "id": "kirmizi_gul",
+   "ad": "Kırmızı gül",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "G",
+    "metin": "gül ve Hz. Peygamber",
+    "ham": "G: gül ve Hz. Peygamber"
+   },
+   "tetikleyici": {
+    "ham": "Salavat",
+    "tur": "zikir",
+    "kaynak": "salavat",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 3,
+   "asama_adlari": [
+    "tohum",
+    "gonca",
+    "açmış"
+   ],
+   "modeller": [
+    "ZB_cicek_kirmizi_gul_a1",
+    "ZB_cicek_kirmizi_gul_a2",
+    "ZB_cicek_kirmizi_gul_a3"
+   ],
+   "esikler": [
+    1,
+    33,
+    100
+   ],
+   "esikler_serbest": [
+    1,
+    33,
+    100
+   ],
+   "grup": false
+  },
+  {
+   "id": "beyaz_gul",
+   "ad": "Beyaz gül",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "G",
+    "metin": "Cuma salavatı teşviki Ebû Dâvûd'da",
+    "ham": "G; Cuma salavatı teşviki Ebû Dâvûd'da"
+   },
+   "tetikleyici": {
+    "ham": "Cuma günü salavat",
+    "tur": "zikir",
+    "kaynak": "salavat",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": "cuma",
+    "not": null
+   },
+   "asama_sayisi": 3,
+   "asama_adlari": [
+    "tohum",
+    "gonca",
+    "açmış"
+   ],
+   "modeller": [
+    "ZB_cicek_beyaz_gul_a1",
+    "ZB_cicek_beyaz_gul_a2",
+    "ZB_cicek_beyaz_gul_a3"
+   ],
+   "esikler": [
+    1,
+    33,
+    100
+   ],
+   "esikler_serbest": [
+    1,
+    33,
+    100
+   ],
+   "grup": false
+  },
+  {
+   "id": "lale",
+   "ad": "Lale",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "G",
+    "metin": "lale ile Allah lafzının ebcedi aynı",
+    "ham": "G: lale ile Allah lafzının ebcedi aynı"
+   },
+   "tetikleyici": {
+    "ham": "Allah (66)",
+    "tur": "esma",
+    "kaynak": "allah",
+    "adet": 66,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 3,
+   "asama_adlari": [
+    "tohum",
+    "gonca",
+    "açmış"
+   ],
+   "modeller": [
+    "ZB_cicek_lale_a1",
+    "ZB_cicek_lale_a2",
+    "ZB_cicek_lale_a3"
+   ],
+   "esikler": [
+    1,
+    22,
+    66
+   ],
+   "esikler_serbest": [
+    1,
+    11,
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "bahar_dali",
+   "ad": "Bahar dalı (solmuş bitkiyi diriltir)",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Rum 50",
+    "ham": "N: Rum 50"
+   },
+   "tetikleyici": {
+    "ham": "Ya Muhyî (68)",
+    "tur": "esma",
+    "kaynak": "muhyi",
+    "adet": 68,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 3,
+   "asama_adlari": [
+    "tohum",
+    "gonca",
+    "açmış"
+   ],
+   "modeller": [
+    "ZB_cicek_bahar_dali_a1",
+    "ZB_cicek_bahar_dali_a2",
+    "ZB_cicek_bahar_dali_a3"
+   ],
+   "esikler": [
+    1,
+    23,
+    68
+   ],
+   "esikler_serbest": [
+    1,
+    11,
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "cimen_halisi",
+   "ad": "Çimen halısı (zemin shader'ı)",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "VFX",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "A",
+    "metin": "yayıp genişleten",
+    "ham": "A: yayıp genişleten"
+   },
+   "tetikleyici": {
+    "ham": "Ya Bâsıt (72)",
+    "tur": "esma",
+    "kaynak": "basit",
+    "adet": 72,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    72
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "zeytin_agaci",
+   "ad": "Zeytin ağacı",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Tîn 1; Nur 35",
+    "ham": "N: Tîn 1; Nur 35"
+   },
+   "tetikleyici": {
+    "ham": "Tîn suresi",
+    "tur": "sure",
+    "kaynak": "tin",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 4,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun"
+   ],
+   "modeller": [
+    "ZB_agac_zeytin_a1",
+    "ZB_agac_zeytin_a2",
+    "ZB_agac_zeytin_a3",
+    "ZB_agac_zeytin_a4"
+   ],
+   "esikler": [
+    1,
+    3,
+    7,
+    11
+   ],
+   "esikler_serbest": [
+    1,
+    3,
+    7,
+    11
+   ],
+   "grup": false
+  },
+  {
+   "id": "incir_agaci",
+   "ad": "İncir ağacı",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Tîn 1",
+    "ham": "N: Tîn 1"
+   },
+   "tetikleyici": {
+    "ham": "Tîn suresi",
+    "tur": "sure",
+    "kaynak": "tin",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 4,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun"
+   ],
+   "modeller": [
+    "ZB_agac_incir_a1",
+    "ZB_agac_incir_a2",
+    "ZB_agac_incir_a3",
+    "ZB_agac_incir_a4"
+   ],
+   "esikler": [
+    1,
+    3,
+    7,
+    11
+   ],
+   "esikler_serbest": [
+    1,
+    3,
+    7,
+    11
+   ],
+   "grup": false
+  },
+  {
+   "id": "sidr_agaci",
+   "ad": "Sidr ağacı",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Vâkıa 28",
+    "ham": "N: Vâkıa 28"
+   },
+   "tetikleyici": {
+    "ham": "Ya Selâm (131), ikinci item",
+    "tur": "esma",
+    "kaynak": "selam",
+    "adet": 131,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": "ikinci item"
+   },
+   "asama_sayisi": 4,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun"
+   ],
+   "modeller": [
+    "ZB_agac_sidr_a1",
+    "ZB_agac_sidr_a2",
+    "ZB_agac_sidr_a3",
+    "ZB_agac_sidr_a4"
+   ],
+   "esikler": [
+    2,
+    14,
+    44,
+    131
+   ],
+   "esikler_serbest": [
+    1,
+    4,
+    11,
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "toros_sediri",
+   "ad": "Toros sediri",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "büyüklük",
+    "ham": "A: büyüklük"
+   },
+   "tetikleyici": {
+    "ham": "Ya Kebîr (232)",
+    "tur": "esma",
+    "kaynak": "kebir",
+    "adet": 232,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 4,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun"
+   ],
+   "modeller": [
+    "ZB_agac_sedir_a1",
+    "ZB_agac_sedir_a2",
+    "ZB_agac_sedir_a3",
+    "ZB_agac_sedir_a4"
+   ],
+   "esikler": [
+    3,
+    24,
+    77,
+    232
+   ],
+   "esikler_serbest": [
+    1,
+    4,
+    11,
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "defne",
+   "ad": "Defne",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "her dem yeşil",
+    "ham": "A: her dem yeşil"
+   },
+   "tetikleyici": {
+    "ham": "Ya Bâkî (113)",
+    "tur": "esma",
+    "kaynak": "baki",
+    "adet": 113,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 4,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun"
+   ],
+   "modeller": [
+    "ZB_agac_defne_a1",
+    "ZB_agac_defne_a2",
+    "ZB_agac_defne_a3",
+    "ZB_agac_defne_a4"
+   ],
+   "esikler": [
+    2,
+    12,
+    38,
+    113
+   ],
+   "esikler_serbest": [
+    1,
+    4,
+    11,
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "tefriciye_gulu",
+   "ad": "Tefriciye gülü (altın sarısı, nadir)",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "G",
+    "metin": "toplu okuma geleneği",
+    "ham": "G: toplu okuma geleneği"
+   },
+   "tetikleyici": {
+    "ham": "Salât-ı Tefriciye 4444 (grup)",
+    "tur": "zikir",
+    "kaynak": "salat_tefriciye",
+    "adet": 4444,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 3,
+   "asama_adlari": [
+    "tohum",
+    "gonca",
+    "açmış"
+   ],
+   "modeller": [
+    "ZB_cicek_tefriciye_gulu_a1",
+    "ZB_cicek_tefriciye_gulu_a2",
+    "ZB_cicek_tefriciye_gulu_a3"
+   ],
+   "esikler": [
+    45,
+    1467,
+    4444
+   ],
+   "esikler_serbest": [
+    45,
+    1467,
+    4444
+   ],
+   "grup": true
+  },
+  {
+   "id": "kardelen",
+   "ad": "Kardelen",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "öne alan; bahardan önce açar",
+    "ham": "A: öne alan; bahardan önce açar"
+   },
+   "tetikleyici": {
+    "ham": "Ya Mukaddim (184)",
+    "tur": "esma",
+    "kaynak": "mukaddim",
+    "adet": 184,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 3,
+   "asama_adlari": [
+    "tohum",
+    "gonca",
+    "açmış"
+   ],
+   "modeller": [
+    "ZB_cicek_kardelen_a1",
+    "ZB_cicek_kardelen_a2",
+    "ZB_cicek_kardelen_a3"
+   ],
+   "esikler": [
+    2,
+    61,
+    184
+   ],
+   "esikler_serbest": [
+    1,
+    11,
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "sus_cicekleri_seti",
+   "ad": "Süs çiçekleri seti: karanfil, sümbül, nergis, zambak",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Müslim, Allah güzeldir güzeli sever",
+    "ham": "N: Müslim, Allah güzeldir güzeli sever"
+   },
+   "tetikleyici": {
+    "ham": "Ya Cemîl (83, 99 dışı)",
+    "tur": "esma",
+    "kaynak": "cemil",
+    "adet": 83,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": "99 dışı"
+   },
+   "asama_sayisi": 3,
+   "asama_adlari": [
+    "tohum",
+    "gonca",
+    "açmış"
+   ],
+   "modeller": [
+    "ZB_cicek_karanfil_a1",
+    "ZB_cicek_karanfil_a2",
+    "ZB_cicek_karanfil_a3",
+    "ZB_cicek_sumbul_a1",
+    "ZB_cicek_sumbul_a2",
+    "ZB_cicek_sumbul_a3",
+    "ZB_cicek_nergis_a1",
+    "ZB_cicek_nergis_a2",
+    "ZB_cicek_nergis_a3",
+    "ZB_cicek_zambak_a1",
+    "ZB_cicek_zambak_a2",
+    "ZB_cicek_zambak_a3"
+   ],
+   "esikler": [
+    1,
+    28,
+    83
+   ],
+   "esikler_serbest": [
+    1,
+    11,
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "sifali_otlar_tarhi",
+   "ad": "Şifalı otlar tarhı: nane, kekik, adaçayı",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "fayda veren",
+    "ham": "A: fayda veren"
+   },
+   "tetikleyici": {
+    "ham": "Ya Nâfi' (201)",
+    "tur": "esma",
+    "kaynak": "nafi",
+    "adet": 201,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_bitki_sifali_otlar"
+   ],
+   "esikler": [
+    201
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "gulistan_tarhi",
+   "ad": "Gülistan tarhı (ateş çukurundan gül bahçesine)",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Enbiyâ 69; G: ateşin gülistana dönmesi",
+    "ham": "N: Enbiyâ 69; G: ateşin gülistana dönmesi"
+   },
+   "tetikleyici": {
+    "ham": "Hasbünallahu ve ni'mel vekîl",
+    "tur": "zikir",
+    "kaynak": "hasbunallah",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 3,
+   "asama_adlari": [
+    "tohum",
+    "gonca",
+    "açmış"
+   ],
+   "modeller": [
+    "ZB_cicek_gulistan_tarhi_a1",
+    "ZB_cicek_gulistan_tarhi_a2",
+    "ZB_cicek_gulistan_tarhi_a3"
+   ],
+   "esikler": [
+    1,
+    33,
+    100
+   ],
+   "esikler_serbest": [
+    1,
+    33,
+    100
+   ],
+   "grup": false
+  },
+  {
+   "id": "yedi_basakli_bugday",
+   "ad": "Yedi başaklı buğday",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Bakara 261, bir tohum yedi başak",
+    "ham": "N: Bakara 261, bir tohum yedi başak"
+   },
+   "tetikleyici": {
+    "ham": "Ya Şekûr (526, grup)",
+    "tur": "esma",
+    "kaynak": "sekur",
+    "adet": 526,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 3,
+   "asama_adlari": [
+    "tohum",
+    "gonca",
+    "açmış"
+   ],
+   "modeller": [
+    "ZB_cicek_yedi_basakli_bugday_a1",
+    "ZB_cicek_yedi_basakli_bugday_a2",
+    "ZB_cicek_yedi_basakli_bugday_a3"
+   ],
+   "esikler": [
+    6,
+    174,
+    526
+   ],
+   "esikler_serbest": [
+    1,
+    11,
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "fidanlik_kasasi",
+   "ad": "Fidanlık kasası",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "ilk kez yaratan",
+    "ham": "A: ilk kez yaratan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Mübdi' (57)",
+    "tur": "esma",
+    "kaynak": "mubdi",
+    "adet": 57,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_bitki_fidanlik_kasasi"
+   ],
+   "esikler": [
+    57
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "hazir_fidan_cukuru",
+   "ad": "Hazır fidan çukuru (yarının hedefi)",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Kehf 23-24",
+    "ham": "N: Kehf 23-24"
+   },
+   "tetikleyici": {
+    "ham": "İnşallah",
+    "tur": "zikir",
+    "kaynak": "insallah",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_bitki_fidan_cukuru"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "nar_agaci",
+   "ad": "Nar ağacı",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Rahmân 68",
+    "ham": "N: Rahmân 68"
+   },
+   "tetikleyici": {
+    "ham": "Rahmân suresi",
+    "tur": "sure",
+    "kaynak": "rahman_suresi",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 4,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun"
+   ],
+   "modeller": [
+    "ZB_agac_nar_a1",
+    "ZB_agac_nar_a2",
+    "ZB_agac_nar_a3",
+    "ZB_agac_nar_a4"
+   ],
+   "esikler": [
+    1,
+    3,
+    7,
+    11
+   ],
+   "esikler_serbest": [
+    1,
+    3,
+    7,
+    11
+   ],
+   "grup": false
+  },
+  {
+   "id": "talh",
+   "ad": "Talh (muz) ağacı",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Vâkıa 29",
+    "ham": "N: Vâkıa 29"
+   },
+   "tetikleyici": {
+    "ham": "Vâkıa suresi",
+    "tur": "sure",
+    "kaynak": "vakia",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 4,
+   "asama_adlari": [
+    "tohum",
+    "filiz",
+    "fidan",
+    "olgun"
+   ],
+   "modeller": [
+    "ZB_agac_talh_a1",
+    "ZB_agac_talh_a2",
+    "ZB_agac_talh_a3",
+    "ZB_agac_talh_a4"
+   ],
+   "esikler": [
+    1,
+    3,
+    7,
+    11
+   ],
+   "esikler_serbest": [
+    1,
+    3,
+    7,
+    11
+   ],
+   "grup": false
+  },
+  {
+   "id": "guz_cigdemi",
+   "ad": "Güz çiğdemi",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D-A",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "erteleyen; herkesten sonra açar",
+    "ham": "A: erteleyen; herkesten sonra açar"
+   },
+   "tetikleyici": {
+    "ham": "Ya Muahhir (847, grup)",
+    "tur": "esma",
+    "kaynak": "muahhir",
+    "adet": 847,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 3,
+   "asama_adlari": [
+    "tohum",
+    "gonca",
+    "açmış"
+   ],
+   "modeller": [
+    "ZB_cicek_guz_cigdemi_a1",
+    "ZB_cicek_guz_cigdemi_a2",
+    "ZB_cicek_guz_cigdemi_a3"
+   ],
+   "esikler": [
+    9,
+    280,
+    847
+   ],
+   "esikler_serbest": [
+    1,
+    11,
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "reyhan_ve_lavanta_saksilari",
+   "ad": "Reyhan ve lavanta saksıları",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Vâkıa 89, reyhan",
+    "ham": "N: Vâkıa 89, reyhan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Şâfî (391, 99 dışı)",
+    "tur": "esma",
+    "kaynak": "safi",
+    "adet": 391,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": "99 dışı"
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_bitki_reyhan_saksi"
+   ],
+   "esikler": [
+    391
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "nadir_tur_tohumu_kesesi",
+   "ad": "Nadir tür tohumu kesesi",
+   "bolum": "B",
+   "kategori": "bitki",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "yaratan; rastgele yeni tür verir",
+    "ham": "A: yaratan; rastgele yeni tür verir"
+   },
+   "tetikleyici": {
+    "ham": "Ya Hâlık (731, grup)",
+    "tur": "esma",
+    "kaynak": "halik",
+    "adet": 731,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_bitki_tohum_kesesi"
+   ],
+   "esikler": [
+    731
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "guvercin",
+   "ad": "Güvercin",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nur 41, kanat çırpan kuşlar tesbih eder",
+    "ham": "N: Nur 41, kanat çırpan kuşlar tesbih eder"
+   },
+   "tetikleyici": {
+    "ham": "Sübhanallah (her 33'te bir kuş gelir)",
+    "tur": "zikir",
+    "kaynak": "subhanallah",
+    "adet": 33,
+    "grup": false,
+    "kural": "her_n",
+    "kosul": null,
+    "not": "her 33'te bir kuş gelir"
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_guvercin"
+   ],
+   "esikler": [
+    33
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "serce",
+   "ad": "Serçe",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nur 41",
+    "ham": "N: Nur 41"
+   },
+   "tetikleyici": {
+    "ham": "Sübhanallah (rastgele tür)",
+    "tur": "zikir",
+    "kaynak": "subhanallah",
+    "adet": 33,
+    "grup": false,
+    "kural": "her_n",
+    "kosul": null,
+    "not": "rastgele tür"
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_serce"
+   ],
+   "esikler": [
+    33
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "bulbul",
+   "ad": "Bülbül",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "A",
+    "metin": "hamd; G: gül ve bülbül",
+    "ham": "A: hamd; G: gül ve bülbül"
+   },
+   "tetikleyici": {
+    "ham": "Ya Hamîd (62)",
+    "tur": "esma",
+    "kaynak": "hamid",
+    "adet": 62,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_bulbul"
+   ],
+   "esikler": [
+    62
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "kitmir",
+   "ad": "Kıtmir (bahçe muhafızı)",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Kehf 18",
+    "ham": "N: Kehf 18"
+   },
+   "tetikleyici": {
+    "ham": "Ya Hafîz (998, aile hedefi)",
+    "tur": "esma",
+    "kaynak": "hafiz",
+    "adet": 998,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_kitmir"
+   ],
+   "esikler": [
+    998
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "ari",
+   "ad": "Arı",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nahl 68-69",
+    "ham": "N: Nahl 68-69"
+   },
+   "tetikleyici": {
+    "ham": "Ya Rezzâk (308)",
+    "tur": "esma",
+    "kaynak": "rezzak",
+    "adet": 308,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_ari"
+   ],
+   "esikler": [
+    308
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "kelebek",
+   "ad": "Kelebek",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "A",
+    "metin": "gizli lütuf",
+    "ham": "A: gizli lütuf"
+   },
+   "tetikleyici": {
+    "ham": "Latîf kozasından çıkar",
+    "tur": "item",
+    "kaynak": "ipek_kozasi",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_kelebek"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "kumru_cifti",
+   "ad": "Kumru çifti",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "G",
+    "metin": "sevgi ve bağlılık",
+    "ham": "G: sevgi ve bağlılık"
+   },
+   "tetikleyici": {
+    "ham": "Ya Vedûd (20)",
+    "tur": "esma",
+    "kaynak": "vedud",
+    "adet": 20,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_kumru"
+   ],
+   "esikler": [
+    20
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "harem_guvercini",
+   "ad": "Harem güvercini (güvercinin doku varyantı)",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "G",
+    "metin": "Harem'in dokunulmaz güvercinleri, emniyet",
+    "ham": "G: Harem'in dokunulmaz güvercinleri, emniyet"
+   },
+   "tetikleyici": {
+    "ham": "Ya Mü'min (137)",
+    "tur": "esma",
+    "kaynak": "mumin",
+    "adet": 137,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "varyant_of": {
+    "model": "ZB_canli_guvercin",
+    "renk": "harem"
+   },
+   "modeller": [],
+   "esikler": [
+    137
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "kirlangic",
+   "ad": "Kırlangıç",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "her yıl aynı yuvaya döner",
+    "ham": "A: her yıl aynı yuvaya döner"
+   },
+   "tetikleyici": {
+    "ham": "Ya Tevvâb (409)",
+    "tur": "esma",
+    "kaynak": "tevvab",
+    "adet": 409,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_kirlangic"
+   ],
+   "esikler": [
+    409
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "leylek_ve_yuvasi",
+   "ad": "Leylek ve yuvası",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "geri döndüren; her bahar döner",
+    "ham": "A: geri döndüren; her bahar döner"
+   },
+   "tetikleyici": {
+    "ham": "Ya Muîd (124)",
+    "tur": "esma",
+    "kaynak": "muid",
+    "adet": 124,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_leylek"
+   ],
+   "esikler": [
+    124
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "hudhud",
+   "ad": "Hüdhüd",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Neml 20-22, haber getiren kuş",
+    "ham": "N: Neml 20-22, haber getiren kuş"
+   },
+   "tetikleyici": {
+    "ham": "Ya Habîr (812, grup)",
+    "tur": "esma",
+    "kaynak": "habir",
+    "adet": 812,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_hudhud"
+   ],
+   "esikler": [
+    812
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "kedi",
+   "ad": "Kedi",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "dost",
+    "ham": "A: dost"
+   },
+   "tetikleyici": {
+    "ham": "Ya Veliyy (46)",
+    "tur": "esma",
+    "kaynak": "veliyy",
+    "adet": 46,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_kedi"
+   ],
+   "esikler": [
+    46
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "ceylan",
+   "ad": "Ceylan",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "yumuşak huylu",
+    "ham": "A: yumuşak huylu"
+   },
+   "tetikleyici": {
+    "ham": "Ya Halîm (88)",
+    "tur": "esma",
+    "kaynak": "halim",
+    "adet": 88,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_ceylan"
+   ],
+   "esikler": [
+    88
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "koyun_ve_kuzu",
+   "ad": "Koyun ve kuzu",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "şefkat",
+    "ham": "A: şefkat"
+   },
+   "tetikleyici": {
+    "ham": "Ya Raûf (287)",
+    "tur": "esma",
+    "kaynak": "rauf",
+    "adet": 287,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_koyun"
+   ],
+   "esikler": [
+    287
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "balik",
+   "ad": "Balık",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Enbiyâ 87",
+    "ham": "N: Enbiyâ 87"
+   },
+   "tetikleyici": {
+    "ham": "Yunus duası",
+    "tur": "zikir",
+    "kaynak": "yunus_duasi",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_balik"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "turna",
+   "ad": "Turna",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "yüksekte süzülen",
+    "ham": "A: yüksekte süzülen"
+   },
+   "tetikleyici": {
+    "ham": "Ya Aliyy (110)",
+    "tur": "esma",
+    "kaynak": "aliyy",
+    "adet": 110,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_turna"
+   ],
+   "esikler": [
+    110
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "sahin",
+   "ad": "Şahin",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "en yüce",
+    "ham": "A: en yüce"
+   },
+   "tetikleyici": {
+    "ham": "Ya Müteâlî (551, grup)",
+    "tur": "esma",
+    "kaynak": "muteali",
+    "adet": 551,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_sahin"
+   ],
+   "esikler": [
+    551
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "deve",
+   "ad": "Deve",
+   "bolum": "C",
+   "kategori": "canli",
+   "tip": "Rig",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Gâşiye 17; G: sabır sembolü",
+    "ham": "N: Gâşiye 17; G: sabır sembolü"
+   },
+   "tetikleyici": {
+    "ham": "Ya Sabûr (298)",
+    "tur": "esma",
+    "kaynak": "sabur",
+    "adet": 298,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_canli_deve"
+   ],
+   "esikler": [
+    298
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "bahce_kapisi",
+   "ad": "Bahçe kapısı",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "G",
+    "metin": "her hayrın başı",
+    "ham": "G: her hayrın başı"
+   },
+   "tetikleyici": {
+    "ham": "Bismillah (her oturum açılışı)",
+    "tur": "zikir",
+    "kaynak": "bismillah",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": "oturum_acilisi",
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_bahce_kapisi"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "masaallah_kitabesi",
+   "ad": "Mâşâallah kitabesi (kapı üstü levha)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Kehf 39, bahçene girdiğinde böyle deseydin",
+    "ham": "N: Kehf 39, bahçene girdiğinde böyle deseydin"
+   },
+   "tetikleyici": {
+    "ham": "Mâşâallah, lâ kuvvete illâ billâh",
+    "tur": "zikir",
+    "kaynak": "masaallah",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_masaallah_kitabesi"
+   ],
+   "esikler": [
+    33
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "temel_tasi",
+   "ad": "Temel taşı",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "A",
+    "metin": "ilk olan",
+    "ham": "A: ilk olan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Evvel (37)",
+    "tur": "esma",
+    "kaynak": "evvel",
+    "adet": 37,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_temel_tasi"
+   ],
+   "esikler": [
+    37
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "kosk",
+   "ad": "Köşk",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Müsned, zayıf rivayet",
+    "ham": "N: Müsned, zayıf rivayet"
+   },
+   "tetikleyici": {
+    "ham": "İhlas ×10",
+    "tur": "sure",
+    "kaynak": "ihlas",
+    "adet": 10,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_kosk"
+   ],
+   "esikler": [
+    10
+   ],
+   "esikler_serbest": [
+    10
+   ],
+   "grup": false
+  },
+  {
+   "id": "sadirvan",
+   "ad": "Şadırvan",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "A",
+    "metin": "arınma",
+    "ham": "A: arınma"
+   },
+   "tetikleyici": {
+    "ham": "Ya Kuddûs (170)",
+    "tur": "esma",
+    "kaynak": "kuddus",
+    "adet": 170,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_sadirvan"
+   ],
+   "esikler": [
+    170
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "ab_i_hayat_pinari",
+   "ad": "Âb-ı hayat pınarı",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "A",
+    "metin": "hayat veren",
+    "ham": "A: hayat veren"
+   },
+   "tetikleyici": {
+    "ham": "Ya Hayy (18)",
+    "tur": "esma",
+    "kaynak": "hayy",
+    "adet": 18,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_ab_i_hayat_pinari"
+   ],
+   "esikler": [
+    18
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "parsel_kapisi_ve_anahtar",
+   "ad": "Parsel kapısı ve anahtar",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "A",
+    "metin": "açan",
+    "ham": "A: açan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Fettâh (489)",
+    "tur": "esma",
+    "kaynak": "fettah",
+    "adet": 489,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_parsel_kapisi_ve_anahtar"
+   ],
+   "esikler": [
+    489
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "sur_parcalari",
+   "ad": "Sur parçaları (düz, köşe)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Buhârî-Müslim, o gün şeytandan korunur",
+    "ham": "N: Buhârî-Müslim, o gün şeytandan korunur"
+   },
+   "tetikleyici": {
+    "ham": "Tehlil-i kebir ×100",
+    "tur": "zikir",
+    "kaynak": "tehlil_kebir",
+    "adet": 100,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_sur_parcalari_duz",
+    "ZB_yapi_sur_parcalari_kose"
+   ],
+   "esikler": [
+    100
+   ],
+   "esikler_serbest": [
+    100
+   ],
+   "grup": false
+  },
+  {
+   "id": "bahce_citi",
+   "ad": "Bahçe çiti",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "engelleyen",
+    "ham": "A: engelleyen"
+   },
+   "tetikleyici": {
+    "ham": "Ya Mâni' (161)",
+    "tur": "esma",
+    "kaynak": "mani",
+    "adet": 161,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_bahce_citi"
+   ],
+   "esikler": [
+    161
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "sur_burcu",
+   "ad": "Sur burcu",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "sapasağlam",
+    "ham": "A: sapasağlam"
+   },
+   "tetikleyici": {
+    "ham": "Ya Metîn (500, grup)",
+    "tur": "esma",
+    "kaynak": "metin",
+    "adet": 500,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_sur_burcu"
+   ],
+   "esikler": [
+    500
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "patika_seti",
+   "ad": "Patika seti (düz, dönemeç, kavşak)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Fatiha 6, dosdoğru yol",
+    "ham": "N: Fatiha 6, dosdoğru yol"
+   },
+   "tetikleyici": {
+    "ham": "Fatiha",
+    "tur": "sure",
+    "kaynak": "fatiha",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_patika_seti_duz",
+    "ZB_yapi_patika_seti_donemec",
+    "ZB_yapi_patika_seti_kavsak"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "kameriye",
+   "ad": "Kameriye",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "esenlik; Dârüsselâm",
+    "ham": "A: esenlik; Dârüsselâm"
+   },
+   "tetikleyici": {
+    "ham": "Ya Selâm (131)",
+    "tur": "esma",
+    "kaynak": "selam",
+    "adet": 131,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_kameriye"
+   ],
+   "esikler": [
+    131
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "sebil",
+   "ad": "Sebil",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "G",
+    "metin": "su hayratı",
+    "ham": "G: su hayratı"
+   },
+   "tetikleyici": {
+    "ham": "Ya Rahmân (298)",
+    "tur": "esma",
+    "kaynak": "rahman",
+    "adet": 298,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_sebil"
+   ],
+   "esikler": [
+    298
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "hayrat_cesmesi",
+   "ad": "Hayrat çeşmesi",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "cömert",
+    "ham": "A: cömert"
+   },
+   "tetikleyici": {
+    "ham": "Ya Mâcid (48)",
+    "tur": "esma",
+    "kaynak": "macid",
+    "adet": 48,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_hayrat_cesmesi"
+   ],
+   "esikler": [
+    48
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "selsebil_cesmesi",
+   "ad": "Selsebil çeşmesi",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "İnsan 18; su sesi için yapılır",
+    "ham": "N: İnsan 18; su sesi için yapılır"
+   },
+   "tetikleyici": {
+    "ham": "Ya Semî' (180)",
+    "tur": "esma",
+    "kaynak": "semi",
+    "adet": 180,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_selsebil_cesmesi"
+   ],
+   "esikler": [
+    180
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "cikrikli_kuyu",
+   "ad": "Çıkrıklı kuyu",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "kovayı salarsın, suyla cevap verir",
+    "ham": "A: kovayı salarsın, suyla cevap verir"
+   },
+   "tetikleyici": {
+    "ham": "Ya Mücîb (55)",
+    "tur": "esma",
+    "kaynak": "mucib",
+    "adet": 55,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_cikrikli_kuyu"
+   ],
+   "esikler": [
+    55
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "yansima_havuzu",
+   "ad": "Yansıma havuzu",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "gören",
+    "ham": "A: gören"
+   },
+   "tetikleyici": {
+    "ham": "Ya Basîr (302)",
+    "tur": "esma",
+    "kaynak": "basir",
+    "adet": 302,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_yansima_havuzu"
+   ],
+   "esikler": [
+    302
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "fiskiyeli_buyuk_havuz",
+   "ad": "Fıskiyeli büyük havuz",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "görkem",
+    "ham": "A: görkem"
+   },
+   "tetikleyici": {
+    "ham": "Ya Celîl (73)",
+    "tur": "esma",
+    "kaynak": "celil",
+    "adet": 73,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_fiskiyeli_buyuk_havuz"
+   ],
+   "esikler": [
+    73
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "kevser_havuzu",
+   "ad": "Kevser havuzu",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Kevser 1",
+    "ham": "N: Kevser 1"
+   },
+   "tetikleyici": {
+    "ham": "Kevser suresi",
+    "tur": "sure",
+    "kaynak": "kevser",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_kevser_havuzu"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "golet",
+   "ad": "Gölet",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Enbiyâ 87",
+    "ham": "N: Enbiyâ 87"
+   },
+   "tetikleyici": {
+    "ham": "Yunus duası",
+    "tur": "zikir",
+    "kaynak": "yunus_duasi",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_golet"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "bahce_deresi",
+   "ad": "Bahçe deresi",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Buhârî, günahlar deniz köpüğü kadar olsa da silinir",
+    "ham": "N: Buhârî, günahlar deniz köpüğü kadar olsa da silinir"
+   },
+   "tetikleyici": {
+    "ham": "Sübhanallahi ve bihamdihi ×100",
+    "tur": "zikir",
+    "kaynak": "subhanallahi_ve_bihamdihi",
+    "adet": 100,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_bahce_deresi"
+   ],
+   "esikler": [
+    100
+   ],
+   "esikler_serbest": [
+    100
+   ],
+   "grup": false
+  },
+  {
+   "id": "carbag_kanallari",
+   "ad": "Çarbağ kanalları (dört kol)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "G",
+    "metin": "çarbağ düzeni; A: denge",
+    "ham": "G: çarbağ düzeni; A: denge"
+   },
+   "tetikleyici": {
+    "ham": "Ya Muksit (209)",
+    "tur": "esma",
+    "kaynak": "muksit",
+    "adet": 209,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_carbag_kanallari"
+   ],
+   "esikler": [
+    209
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "su_dolabi",
+   "ad": "Su dolabı (sen yokken bahçeyi sular)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "işi O'na bırakmak",
+    "ham": "A: işi O'na bırakmak"
+   },
+   "tetikleyici": {
+    "ham": "Ya Vekîl (66)",
+    "tur": "esma",
+    "kaynak": "vekil",
+    "adet": 66,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_su_dolabi"
+   ],
+   "esikler": [
+    66
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "su_degirmeni",
+   "ad": "Su değirmeni",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "besleyen",
+    "ham": "A: besleyen"
+   },
+   "tetikleyici": {
+    "ham": "Ya Mukît (550, grup)",
+    "tur": "esma",
+    "kaynak": "mukit",
+    "adet": 550,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_su_degirmeni"
+   ],
+   "esikler": [
+    550
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "tas_kopru",
+   "ad": "Taş köprü",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "güçlü",
+    "ham": "A: güçlü"
+   },
+   "tetikleyici": {
+    "ham": "Ya Kaviyy (116)",
+    "tur": "esma",
+    "kaynak": "kaviyy",
+    "adet": 116,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_tas_kopru"
+   ],
+   "esikler": [
+    116
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "teras_seti",
+   "ad": "Teras seti (yükseltilmiş kat)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "yükselten",
+    "ham": "A: yükselten"
+   },
+   "tetikleyici": {
+    "ham": "Ya Râfi' (351)",
+    "tur": "esma",
+    "kaynak": "rafi",
+    "adet": 351,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_teras_seti"
+   ],
+   "esikler": [
+    351
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "tas_avlu",
+   "ad": "Taş avlu (arkadaş buluşma meydanı)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "toplayan",
+    "ham": "A: toplayan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Câmi' (114)",
+    "tur": "esma",
+    "kaynak": "cami",
+    "adet": 114,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_tas_avlu"
+   ],
+   "esikler": [
+    114
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "kus_evi",
+   "ad": "Kuş evi (kuş sarayı)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "G",
+    "metin": "Osmanlı kuş evleri, merhamet",
+    "ham": "G: Osmanlı kuş evleri, merhamet"
+   },
+   "tetikleyici": {
+    "ham": "Ya Rahîm (258)",
+    "tur": "esma",
+    "kaynak": "rahim",
+    "adet": 258,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_kus_evi"
+   ],
+   "esikler": [
+    258
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "cihannuma",
+   "ad": "Cihannüma (seyir kulesi)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "gözetip koruyan",
+    "ham": "A: gözetip koruyan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Müheymin (145)",
+    "tur": "esma",
+    "kaynak": "muheymin",
+    "adet": 145,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_cihannuma"
+   ],
+   "esikler": [
+    145
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "tac_kapi",
+   "ad": "Taç kapı",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "izzet veren",
+    "ham": "A: izzet veren"
+   },
+   "tetikleyici": {
+    "ham": "Ya Muizz (117)",
+    "tur": "esma",
+    "kaynak": "muizz",
+    "adet": 117,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_tac_kapi"
+   ],
+   "esikler": [
+    117
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "mermer_sutun",
+   "ad": "Mermer sütun",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "yıkılmaz izzet",
+    "ham": "A: yıkılmaz izzet"
+   },
+   "tetikleyici": {
+    "ham": "Ya Azîz (94)",
+    "tur": "esma",
+    "kaynak": "aziz",
+    "adet": 94,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_mermer_sutun"
+   ],
+   "esikler": [
+    94
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "magara",
+   "ad": "Mağara",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "gizli; N: Kehf",
+    "ham": "A: gizli; N: Kehf"
+   },
+   "tetikleyici": {
+    "ham": "Ya Bâtın (62)",
+    "tur": "esma",
+    "kaynak": "batin",
+    "adet": 62,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_magara"
+   ],
+   "esikler": [
+    62
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "yekpare_kaya",
+   "ad": "Yekpare kaya",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "her şeyin dayandığı",
+    "ham": "A: her şeyin dayandığı"
+   },
+   "tetikleyici": {
+    "ham": "Ya Samed (134)",
+    "tur": "esma",
+    "kaynak": "samed",
+    "adet": 134,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_yekpare_kaya"
+   ],
+   "esikler": [
+    134
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "sedir_kosesi",
+   "ad": "Sedir köşesi",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "İnsan 13, sedirler",
+    "ham": "N: İnsan 13, sedirler"
+   },
+   "tetikleyici": {
+    "ham": "Ya Melik (90)",
+    "tur": "esma",
+    "kaynak": "melik",
+    "adet": 90,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_sedir_kosesi"
+   ],
+   "esikler": [
+    90
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "sancak_diregi",
+   "ad": "Sancak direği",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "şan",
+    "ham": "A: şan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Mecîd (57)",
+    "tur": "esma",
+    "kaynak": "mecid",
+    "adet": 57,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_sancak_diregi"
+   ],
+   "esikler": [
+    57
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "kitabe_tasi",
+   "ad": "Kitabe taşı (kilometre taşlarını kaydeder)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "şahit",
+    "ham": "A: şahit"
+   },
+   "tetikleyici": {
+    "ham": "Ya Şehîd (319)",
+    "tur": "esma",
+    "kaynak": "sehid",
+    "adet": 319,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_kitabe_tasi"
+   ],
+   "esikler": [
+    319
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "bekci_feneri_diregi",
+   "ad": "Bekçi feneri direği",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "gözeten",
+    "ham": "A: gözeten"
+   },
+   "tetikleyici": {
+    "ham": "Ya Rakîb (312)",
+    "tur": "esma",
+    "kaynak": "rakib",
+    "adet": 312,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_bekci_feneri_diregi"
+   ],
+   "esikler": [
+    312
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "misafir_sediri",
+   "ad": "Misafir sediri",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Müslim, selamı yayın",
+    "ham": "N: Müslim, selamı yayın"
+   },
+   "tetikleyici": {
+    "ham": "Selâmün aleyküm (arkadaş bahçesine girerken)",
+    "tur": "zikir",
+    "kaynak": "selam",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": "arkadas_bahcesi",
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_misafir_sediri"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "nisan_tasi",
+   "ad": "Nişan taşı (yön gösteren)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "doğru yola ileten",
+    "ham": "A: doğru yola ileten"
+   },
+   "tetikleyici": {
+    "ham": "Ya Reşîd (514, grup)",
+    "tur": "esma",
+    "kaynak": "resid",
+    "adet": 514,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_nisan_tasi"
+   ],
+   "esikler": [
+    514
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "yel_degirmeni",
+   "ad": "Yel değirmeni",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "kudret",
+    "ham": "A: kudret"
+   },
+   "tetikleyici": {
+    "ham": "Ya Kâdir (305)",
+    "tur": "esma",
+    "kaynak": "kadir",
+    "adet": 305,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_yel_degirmeni"
+   ],
+   "esikler": [
+    305
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "selale",
+   "ad": "Şelale",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "azamet",
+    "ham": "A: azamet"
+   },
+   "tetikleyici": {
+    "ham": "Ya Azîm (1020, grup)",
+    "tur": "esma",
+    "kaynak": "azim",
+    "adet": 1020,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_selale"
+   ],
+   "esikler": [
+    1020
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "kilit_tasli_kemer",
+   "ad": "Kilit taşlı kemer",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "son olan; temel taşının eşi",
+    "ham": "A: son olan; temel taşının eşi"
+   },
+   "tetikleyici": {
+    "ham": "Ya Âhir (801, grup)",
+    "tur": "esma",
+    "kaynak": "ahir",
+    "adet": 801,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_kilit_tasli_kemer"
+   ],
+   "esikler": [
+    801
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "ikram_kosku",
+   "ad": "İkram köşkü",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "celal ve ikram",
+    "ham": "A: celal ve ikram"
+   },
+   "tetikleyici": {
+    "ham": "Ya Zü'l-Celâli ve'l-İkrâm (1100, grup)",
+    "tur": "esma",
+    "kaynak": "zul_celali_vel_ikram",
+    "adet": 1100,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_ikram_kosku"
+   ],
+   "esikler": [
+    1100
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "teras_basamagi",
+   "ad": "Teras basamağı",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Tirmizî, oku ve yüksel",
+    "ham": "N: Tirmizî, oku ve yüksel"
+   },
+   "tetikleyici": {
+    "ham": "Kur'an okuma (ayet başına bir basamak)",
+    "tur": "sure",
+    "kaynak": "kuran_okuma",
+    "adet": 1,
+    "grup": false,
+    "kural": "her_n",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_teras_basamagi"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "cifte_havuz",
+   "ad": "Çifte havuz",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Bakara 201, dünyada ve ahirette güzellik",
+    "ham": "N: Bakara 201, dünyada ve ahirette güzellik"
+   },
+   "tetikleyici": {
+    "ham": "Rabbenâ âtinâ",
+    "tur": "zikir",
+    "kaynak": "rabbena_atina",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_yapi_cifte_havuz"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "kandil",
+   "ad": "Kandil",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nur 35",
+    "ham": "N: Nur 35"
+   },
+   "tetikleyici": {
+    "ham": "Ya Nûr (256)",
+    "tur": "esma",
+    "kaynak": "nur",
+    "adet": 256,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_kandil"
+   ],
+   "esikler": [
+    256
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "fener_ve_kutup_yildizi",
+   "ad": "Fener ve kutup yıldızı",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nahl 16, yıldızlarla yol bulurlar",
+    "ham": "N: Nahl 16, yıldızlarla yol bulurlar"
+   },
+   "tetikleyici": {
+    "ham": "Ya Hâdî (20)",
+    "tur": "esma",
+    "kaynak": "hadi",
+    "adet": 20,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_fener"
+   ],
+   "esikler": [
+    20
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "rahle_ve_kitap",
+   "ad": "Rahle ve kitap",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Tâhâ 114",
+    "ham": "N: Tâhâ 114"
+   },
+   "tetikleyici": {
+    "ham": "Rabbi zidnî ilmâ",
+    "tur": "zikir",
+    "kaynak": "rabbi_zidni_ilma",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_rahle"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "define_sandigi",
+   "ad": "Define sandığı",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Buhârî-Müslim, cennet hazinelerinden bir hazine",
+    "ham": "N: Buhârî-Müslim, cennet hazinelerinden bir hazine"
+   },
+   "tetikleyici": {
+    "ham": "La havle ve la kuvvete illa billah",
+    "tur": "zikir",
+    "kaynak": "lahavle",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_define_sandigi"
+   ],
+   "esikler": [
+    33
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "inci",
+   "ad": "İnci",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Rahmân 22",
+    "ham": "N: Rahmân 22"
+   },
+   "tetikleyici": {
+    "ham": "Define sandığından veya nisan yağmuru tarifinden",
+    "tur": "item",
+    "kaynak": "define_sandigi",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": "ayrıca inci_yagmuru tarifi"
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_inci"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "mercan",
+   "ad": "Mercan",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Rahmân 22",
+    "ham": "N: Rahmân 22"
+   },
+   "tetikleyici": {
+    "ham": "Define sandığından çıkar",
+    "tur": "item",
+    "kaynak": "define_sandigi",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_mercan"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "sedef",
+   "ad": "Sedef (istiridye)",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "A",
+    "metin": "bulan; açınca bulursun",
+    "ham": "A: bulan; açınca bulursun"
+   },
+   "tetikleyici": {
+    "ham": "Ya Vâcid (14)",
+    "tur": "esma",
+    "kaynak": "vacid",
+    "adet": 14,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_sedef"
+   ],
+   "esikler": [
+    14
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "hediye_bohcasi",
+   "ad": "Hediye bohçası (yalnız arkadaşa gönderilir)",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "A",
+    "metin": "karşılıksız veren",
+    "ham": "A: karşılıksız veren"
+   },
+   "tetikleyici": {
+    "ham": "Ya Vehhâb (14)",
+    "tur": "esma",
+    "kaynak": "vehhab",
+    "adet": 14,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_hediye_bohcasi"
+   ],
+   "esikler": [
+    14
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "ipek_kozasi",
+   "ad": "İpek kozası",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "A",
+    "metin": "gizli ve ince lütuf",
+    "ham": "A: gizli ve ince lütuf"
+   },
+   "tetikleyici": {
+    "ham": "Ya Latîf (129)",
+    "tur": "esma",
+    "kaynak": "latif",
+    "adet": 129,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_ipek_kozasi"
+   ],
+   "esikler": [
+    129
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "ari_kovani",
+   "ad": "Arı kovanı",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nahl 68",
+    "ham": "N: Nahl 68"
+   },
+   "tetikleyici": {
+    "ham": "Ya Rezzâk (308)",
+    "tur": "esma",
+    "kaynak": "rezzak",
+    "adet": 308,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_ari_kovani"
+   ],
+   "esikler": [
+    308
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "tesbih",
+   "ad": "Tesbih",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Müslim, namaz sonrası tesbihat",
+    "ham": "N: Müslim, namaz sonrası tesbihat"
+   },
+   "tetikleyici": {
+    "ham": "33'lük tesbihat tamamlanınca",
+    "tur": "zikir",
+    "kaynak": "tesbihat",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_tesbih"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "fanus",
+   "ad": "Fanus",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nur 35, cam içindeki kandil",
+    "ham": "N: Nur 35, cam içindeki kandil"
+   },
+   "tetikleyici": {
+    "ham": "Ya Nûr (256), ikinci item",
+    "tur": "esma",
+    "kaynak": "nur",
+    "adet": 256,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": "ikinci item"
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_fanus"
+   ],
+   "esikler": [
+    256
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "kutuphane_dolabi",
+   "ad": "Kütüphane dolabı",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "her şeyi bilen",
+    "ham": "A: her şeyi bilen"
+   },
+   "tetikleyici": {
+    "ham": "Ya Alîm (150)",
+    "tur": "esma",
+    "kaynak": "alim",
+    "adet": 150,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_kutuphane_dolabi"
+   ],
+   "esikler": [
+    150
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "divit_ve_kamis_kalem",
+   "ad": "Divit ve kamış kalem",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Kalem 1",
+    "ham": "N: Kalem 1"
+   },
+   "tetikleyici": {
+    "ham": "Ya Hakîm (78)",
+    "tur": "esma",
+    "kaynak": "hakim",
+    "adet": 78,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_divit"
+   ],
+   "esikler": [
+    78
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "gunes_saati",
+   "ad": "Güneş saati",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "G",
+    "metin": "Risale-i Nur, hikmetli nizam",
+    "ham": "G: Risale-i Nur, hikmetli nizam"
+   },
+   "tetikleyici": {
+    "ham": "Ya Hakem (68)",
+    "tur": "esma",
+    "kaynak": "hakem",
+    "adet": 68,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_gunes_saati"
+   ],
+   "esikler": [
+    68
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "terazi",
+   "ad": "Terazi",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Rahmân 7-9, mizan",
+    "ham": "N: Rahmân 7-9, mizan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Adl (104)",
+    "tur": "esma",
+    "kaynak": "adl",
+    "adet": 104,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_terazi"
+   ],
+   "esikler": [
+    104
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "kiblenuma",
+   "ad": "Kıblenüma",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "gerçeği gösteren",
+    "ham": "A: gerçeği gösteren"
+   },
+   "tetikleyici": {
+    "ham": "Ya Hakk (108)",
+    "tur": "esma",
+    "kaynak": "hakk",
+    "adet": 108,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_kiblenuma"
+   ],
+   "esikler": [
+    108
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "abakus",
+   "ad": "Abaküs",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "hesap gören",
+    "ham": "A: hesap gören"
+   },
+   "tetikleyici": {
+    "ham": "Ya Hasîb (80)",
+    "tur": "esma",
+    "kaynak": "hasib",
+    "adet": 80,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_abakus"
+   ],
+   "esikler": [
+    80
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "mimar_takimi",
+   "ad": "Mimar takımı: pergel ve cetvel",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "kusursuz ve uyumlu yaratan",
+    "ham": "A: kusursuz ve uyumlu yaratan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Bârî (214)",
+    "tur": "esma",
+    "kaynak": "bari",
+    "adet": 214,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_mimar_takimi"
+   ],
+   "esikler": [
+    214
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "bahce_maketi_masasi",
+   "ad": "Bahçe maketi masası (kuş bakışı düzenleme)",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "yöneten",
+    "ham": "A: yöneten"
+   },
+   "tetikleyici": {
+    "ham": "Ya Vâlî (47)",
+    "tur": "esma",
+    "kaynak": "vali",
+    "adet": 47,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_maket_masasi"
+   ],
+   "esikler": [
+    47
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "koleksiyon_albumu",
+   "ad": "Koleksiyon albümü",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "UI",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "tek tek sayan",
+    "ham": "A: tek tek sayan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Muhsî (148)",
+    "tur": "esma",
+    "kaynak": "muhsi",
+    "adet": 148,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    148
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "ebru_teknesi",
+   "ad": "Ebru teknesi (boyama aracı)",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "şekil ve renk veren",
+    "ham": "A: şekil ve renk veren"
+   },
+   "tetikleyici": {
+    "ham": "Ya Musavvir (336)",
+    "tur": "esma",
+    "kaynak": "musavvir",
+    "adet": 336,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_ebru_teknesi"
+   ],
+   "esikler": [
+    336
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "cini_pano",
+   "ad": "Çini pano (her oyuncuya eşsiz motif)",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "örneksiz yaratan",
+    "ham": "A: örneksiz yaratan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Bedî' (86)",
+    "tur": "esma",
+    "kaynak": "bedi",
+    "adet": 86,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_cini_pano"
+   ],
+   "esikler": [
+    86
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "asi_ve_onarim_sandigi",
+   "ad": "Aşı ve onarım sandığı",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "cebr, kırığı sarmak",
+    "ham": "A: cebr, kırığı sarmak"
+   },
+   "tetikleyici": {
+    "ham": "Ya Cebbâr (206)",
+    "tur": "esma",
+    "kaynak": "cebbar",
+    "adet": 206,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_onarim_sandigi"
+   ],
+   "esikler": [
+    206
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "bahce_tirmigi",
+   "ad": "Bahçe tırmığı",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "izleri silen",
+    "ham": "A: izleri silen"
+   },
+   "tetikleyici": {
+    "ham": "Ya Afüvv (156)",
+    "tur": "esma",
+    "kaynak": "afuvv",
+    "adet": 156,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_bahce_tirmigi"
+   ],
+   "esikler": [
+    156
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "ferman_tomari",
+   "ad": "Ferman tomarı (yeni ada tapusu)",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "mülkün sahibi",
+    "ham": "A: mülkün sahibi"
+   },
+   "tetikleyici": {
+    "ham": "Ya Mâlikü'l-Mülk (212)",
+    "tur": "esma",
+    "kaynak": "malikul_mulk",
+    "adet": 212,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_ferman_tomari"
+   ],
+   "esikler": [
+    212
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "sedef_kakma_saklama_kutusu",
+   "ad": "Sedef kakma saklama kutusu",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "koruyan",
+    "ham": "A: koruyan"
+   },
+   "tetikleyici": {
+    "ham": "Ya Hafîz (998), ikinci item",
+    "tur": "esma",
+    "kaynak": "hafiz",
+    "adet": 998,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": "ikinci item"
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_sedef_kutu"
+   ],
+   "esikler": [
+    998
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "altin_tepsi_ve_ikram",
+   "ad": "Altın tepsi ve ikram",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Zuhruf 71",
+    "ham": "N: Zuhruf 71"
+   },
+   "tetikleyici": {
+    "ham": "Ya Kerîm (270)",
+    "tur": "esma",
+    "kaynak": "kerim",
+    "adet": 270,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_altin_tepsi"
+   ],
+   "esikler": [
+    270
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "meyve_sepeti",
+   "ad": "Meyve sepeti (komşuya ikram)",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "iyilik eden",
+    "ham": "A: iyilik eden"
+   },
+   "tetikleyici": {
+    "ham": "Ya Berr (202)",
+    "tur": "esma",
+    "kaynak": "berr",
+    "adet": 202,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_meyve_sepeti"
+   ],
+   "esikler": [
+    202
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": false
+  },
+  {
+   "id": "tesekkur_buketi",
+   "ad": "Teşekkür buketi",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Tirmizî",
+    "ham": "N: Tirmizî"
+   },
+   "tetikleyici": {
+    "ham": "Cezâkallahu hayran (hediye alınca)",
+    "tur": "zikir",
+    "kaynak": "cezakallah",
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": "hediye_alinca",
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_tesekkur_buketi"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "celali_isimler_ogretici_kart_seti",
+   "ad": "Celâlî isimler öğretici kart seti (7 kart)",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "UI",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "G",
+    "metin": "Gazâlî: tenzih ve haşyet",
+    "ham": "Gazâlî: tenzih ve haşyet"
+   },
+   "tetikleyici": {
+    "ham": "İsmin ebcedi kadar çekilince kart açılır",
+    "tur": "esma_kart",
+    "kaynak": [
+     "kahhar",
+     "kabid",
+     "hafid",
+     "muzill",
+     "mumit",
+     "muntekim",
+     "darr"
+    ],
+    "adet": null,
+    "grup": false,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "mucevher_kutusu",
+   "ad": "Mücevher kutusu: yakut ve zümrüt",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Rahmân 58",
+    "ham": "N: Rahmân 58"
+   },
+   "tetikleyici": {
+    "ham": "Ya Ganî (1060, grup)",
+    "tur": "esma",
+    "kaynak": "gani",
+    "adet": 1060,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_mucevher_kutusu"
+   ],
+   "esikler": [
+    1060
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "bereket_kesesi",
+   "ad": "Bereket kesesi (arkadaşa kaynak gönderir)",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "zengin eden",
+    "ham": "A: zengin eden"
+   },
+   "tetikleyici": {
+    "ham": "Ya Muğnî (1100, grup)",
+    "tur": "esma",
+    "kaynak": "mugni",
+    "adet": 1100,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_bereket_kesesi"
+   ],
+   "esikler": [
+    1100
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "yadigar_sandigi",
+   "ad": "Yadigâr sandığı (aile bahçesine miras)",
+   "bolum": "E",
+   "kategori": "obje",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "her şeyin vârisi",
+    "ham": "A: her şeyin vârisi"
+   },
+   "tetikleyici": {
+    "ham": "Ya Vâris (707, grup)",
+    "tur": "esma",
+    "kaynak": "varis",
+    "adet": 707,
+    "grup": true,
+    "kural": "birikimli",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_obje_yadigar_sandigi"
+   ],
+   "esikler": [
+    707
+   ],
+   "esikler_serbest": [
+    33
+   ],
+   "grup": true
+  },
+  {
+   "id": "zeytinyagi_testisi",
+   "ad": "Zeytinyağı testisi",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nur 35",
+    "ham": "N: Nur 35"
+   },
+   "tetikleyici": {
+    "ham": "Olgun zeytin ağacı, hasat",
+    "tur": "tarif",
+    "kaynak": "zeytinyagi_testisi",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_zeytinyagi_testisi"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "inci_kosk",
+   "ad": "İnci köşk",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Buhârî-Müslim, inciden çadırlar",
+    "ham": "N: Buhârî-Müslim, inciden çadırlar"
+   },
+   "tetikleyici": {
+    "ham": "İnci ×33 + köşk",
+    "tur": "tarif",
+    "kaynak": "inci_kosk",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_inci_kosk"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "gul_bali_kavanozu",
+   "ad": "Gül balı kavanozu",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nahl 69",
+    "ham": "N: Nahl 69"
+   },
+   "tetikleyici": {
+    "ham": "Kırmızı gül ×100 + arı kovanı",
+    "tur": "tarif",
+    "kaynak": "gul_bali_kavanozu",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_gul_bali_kavanozu"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "gulabdan",
+   "ad": "Gülabdan (gülsuyu)",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "G",
+    "metin": "gülsuyu ikramı",
+    "ham": "G: gülsuyu ikramı"
+   },
+   "tetikleyici": {
+    "ham": "Kırmızı gül ×100 + şadırvan",
+    "tur": "tarif",
+    "kaynak": "gulabdan",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_gulabdan"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "un_cuvali",
+   "ad": "Un çuvalı",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "rızkın emeği",
+    "ham": "A: rızkın emeği"
+   },
+   "tetikleyici": {
+    "ham": "Yedi başaklı buğday + su değirmeni",
+    "tur": "tarif",
+    "kaynak": "un_cuvali",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_un_cuvali"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "tas_firin_ve_ekmek",
+   "ad": "Taş fırın ve ekmek",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "A",
+    "metin": "rızkın emeği",
+    "ham": "A: rızkın emeği"
+   },
+   "tetikleyici": {
+    "ham": "Un çuvalı ×3",
+    "tur": "tarif",
+    "kaynak": "tas_firin_ve_ekmek",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_tas_firin"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "lale_motifli_cini_nis",
+   "ad": "Lale motifli çini niş",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "G",
+    "metin": "çinide lale, tevhid sembolü",
+    "ham": "G: çinide lale, tevhid sembolü"
+   },
+   "tetikleyici": {
+    "ham": "Çini pano + lale",
+    "tur": "tarif",
+    "kaynak": "lale_motifli_cini_nis",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_cini_nis"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "kehf_kosesi",
+   "ad": "Kehf köşesi (Kıtmir'in nöbet yeri)",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v2",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Kehf 18",
+    "ham": "N: Kehf 18"
+   },
+   "tetikleyici": {
+    "ham": "Mağara + Kıtmir",
+    "tur": "tarif",
+    "kaynak": "kehf_kosesi",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_kehf_kosesi"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "ikram_sofrasi",
+   "ad": "İkram sofrası",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "G",
+    "metin": "misafire ikram",
+    "ham": "G: misafire ikram"
+   },
+   "tetikleyici": {
+    "ham": "Ekmek + altın tepsi + meyve sepeti",
+    "tur": "tarif",
+    "kaynak": "ikram_sofrasi",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_ikram_sofrasi"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "pekmez_kupu",
+   "ad": "Pekmez küpü",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "G",
+    "metin": "",
+    "ham": "G"
+   },
+   "tetikleyici": {
+    "ham": "Olgun asma + parlak güneşli gün",
+    "tur": "tarif",
+    "kaynak": "pekmez_kupu",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_pekmez_kupu"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "ipek_kilim",
+   "ad": "İpek kilim",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Gâşiye 16, serilmiş halılar",
+    "ham": "N: Gâşiye 16, serilmiş halılar"
+   },
+   "tetikleyici": {
+    "ham": "İpek kozası ×10 + ebru teknesi",
+    "tur": "tarif",
+    "kaynak": "ipek_kilim",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_ipek_kilim"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "dort_irmak_merkez_havuzu",
+   "ad": "Dört ırmak merkez havuzu",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Muhammed 15",
+    "ham": "N: Muhammed 15"
+   },
+   "tetikleyici": {
+    "ham": "Çarbağ kanalları + bahçe deresi",
+    "tur": "tarif",
+    "kaynak": "dort_irmak_merkez_havuzu",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_dort_irmak_havuzu"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  },
+  {
+   "id": "revak",
+   "ad": "Revak (kemerli yol)",
+   "bolum": "G",
+   "kategori": "tarif",
+   "tip": "3D",
+   "oncelik": "v3",
+   "dayanak": {
+    "kod": "A",
+    "metin": "Evvel ve Âhir",
+    "ham": "A: Evvel ve Âhir"
+   },
+   "tetikleyici": {
+    "ham": "Temel taşı + kilit taşlı kemer",
+    "tur": "tarif",
+    "kaynak": "revak",
+    "adet": null,
+    "grup": false,
+    "kural": null,
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [
+    "ZB_tarif_revak"
+   ],
+   "esikler": [
+    1
+   ],
+   "esikler_serbest": [
+    1
+   ],
+   "grup": false
+  }
+ ]
+}

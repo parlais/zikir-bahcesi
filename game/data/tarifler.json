@@ -1,0 +1,375 @@
+{
+ "tarifler": [
+  {
+   "id": "zeytinyagi_testisi",
+   "ad": "Olgun zeytin ağacı, hasat",
+   "girdiler": [
+    {
+     "asset": "zeytin_agaci",
+     "asama": 4,
+     "adet": 1,
+     "eylem": "hasat"
+    }
+   ],
+   "urun": {
+    "asset": "zeytinyagi_testisi",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nur 35",
+    "ham": "N: Nur 35"
+   },
+   "oncelik": "v2",
+   "yeni_model": true
+  },
+  {
+   "id": "inci_kosk",
+   "ad": "İnci ×33 + köşk",
+   "girdiler": [
+    {
+     "asset": "inci",
+     "adet": 33
+    },
+    {
+     "asset": "kosk",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "inci_kosk",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "N",
+    "metin": "Buhârî-Müslim, inciden çadırlar",
+    "ham": "N: Buhârî-Müslim, inciden çadırlar"
+   },
+   "oncelik": "v2",
+   "yeni_model": true
+  },
+  {
+   "id": "gul_bali_kavanozu",
+   "ad": "Kırmızı gül ×100 + arı kovanı",
+   "girdiler": [
+    {
+     "asset": "kirmizi_gul",
+     "asama": 3,
+     "adet": 100
+    },
+    {
+     "asset": "ari_kovani",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "gul_bali_kavanozu",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nahl 69",
+    "ham": "N: Nahl 69"
+   },
+   "oncelik": "v2",
+   "yeni_model": true
+  },
+  {
+   "id": "gulabdan",
+   "ad": "Kırmızı gül ×100 + şadırvan",
+   "girdiler": [
+    {
+     "asset": "kirmizi_gul",
+     "asama": 3,
+     "adet": 100
+    },
+    {
+     "asset": "sadirvan",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "gulabdan",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "G",
+    "metin": "gülsuyu ikramı",
+    "ham": "G: gülsuyu ikramı"
+   },
+   "oncelik": "v2",
+   "yeni_model": true
+  },
+  {
+   "id": "un_cuvali",
+   "ad": "Yedi başaklı buğday + su değirmeni",
+   "girdiler": [
+    {
+     "asset": "yedi_basakli_bugday",
+     "asama": 3,
+     "adet": 1
+    },
+    {
+     "asset": "su_degirmeni",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "un_cuvali",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "A",
+    "metin": "rızkın emeği",
+    "ham": "A: rızkın emeği"
+   },
+   "oncelik": "v2",
+   "yeni_model": true
+  },
+  {
+   "id": "tas_firin_ve_ekmek",
+   "ad": "Un çuvalı ×3",
+   "girdiler": [
+    {
+     "asset": "un_cuvali",
+     "adet": 3
+    }
+   ],
+   "urun": {
+    "asset": "tas_firin_ve_ekmek",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "A",
+    "metin": "rızkın emeği",
+    "ham": "A: rızkın emeği"
+   },
+   "oncelik": "v2",
+   "yeni_model": true
+  },
+  {
+   "id": "lale_motifli_cini_nis",
+   "ad": "Çini pano + lale",
+   "girdiler": [
+    {
+     "asset": "cini_pano",
+     "adet": 1
+    },
+    {
+     "asset": "lale",
+     "asama": 3,
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "lale_motifli_cini_nis",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "G",
+    "metin": "çinide lale, tevhid sembolü",
+    "ham": "G: çinide lale, tevhid sembolü"
+   },
+   "oncelik": "v2",
+   "yeni_model": true
+  },
+  {
+   "id": "kehf_kosesi",
+   "ad": "Mağara + Kıtmir",
+   "girdiler": [
+    {
+     "asset": "magara",
+     "adet": 1
+    },
+    {
+     "asset": "kitmir",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "kehf_kosesi",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "N",
+    "metin": "Kehf 18",
+    "ham": "N: Kehf 18"
+   },
+   "oncelik": "v2",
+   "yeni_model": true
+  },
+  {
+   "id": "ikram_sofrasi",
+   "ad": "Ekmek + altın tepsi + meyve sepeti",
+   "girdiler": [
+    {
+     "asset": "tas_firin_ve_ekmek",
+     "adet": 1
+    },
+    {
+     "asset": "altin_tepsi_ve_ikram",
+     "adet": 1
+    },
+    {
+     "asset": "meyve_sepeti",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "ikram_sofrasi",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "G",
+    "metin": "misafire ikram",
+    "ham": "G: misafire ikram"
+   },
+   "oncelik": "v3",
+   "yeni_model": true
+  },
+  {
+   "id": "pekmez_kupu",
+   "ad": "Olgun asma + parlak güneşli gün",
+   "girdiler": [
+    {
+     "asset": "uzum_asmasi_ve_cardak",
+     "asama": 4,
+     "adet": 1
+    },
+    {
+     "asset": "parlak_gunesli_gun",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "pekmez_kupu",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "G",
+    "metin": "",
+    "ham": "G"
+   },
+   "oncelik": "v3",
+   "yeni_model": true
+  },
+  {
+   "id": "ipek_kilim",
+   "ad": "İpek kozası ×10 + ebru teknesi",
+   "girdiler": [
+    {
+     "asset": "ipek_kozasi",
+     "adet": 10
+    },
+    {
+     "asset": "ebru_teknesi",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "ipek_kilim",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "N",
+    "metin": "Gâşiye 16, serilmiş halılar",
+    "ham": "N: Gâşiye 16, serilmiş halılar"
+   },
+   "oncelik": "v3",
+   "yeni_model": true
+  },
+  {
+   "id": "dort_irmak_merkez_havuzu",
+   "ad": "Çarbağ kanalları + bahçe deresi",
+   "girdiler": [
+    {
+     "asset": "carbag_kanallari",
+     "adet": 1
+    },
+    {
+     "asset": "bahce_deresi",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "dort_irmak_merkez_havuzu",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "N",
+    "metin": "Muhammed 15",
+    "ham": "N: Muhammed 15"
+   },
+   "oncelik": "v3",
+   "yeni_model": true
+  },
+  {
+   "id": "revak",
+   "ad": "Temel taşı + kilit taşlı kemer",
+   "girdiler": [
+    {
+     "asset": "temel_tasi",
+     "adet": 1
+    },
+    {
+     "asset": "kilit_tasli_kemer",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "revak",
+    "adet": 1
+   },
+   "dayanak": {
+    "kod": "A",
+    "metin": "Evvel ve Âhir",
+    "ham": "A: Evvel ve Âhir"
+   },
+   "oncelik": "v3",
+   "yeni_model": true
+  },
+  {
+   "id": "inci_yagmuru",
+   "girdiler": [
+    {
+     "asset": "nisan_yagmuru",
+     "adet": 1
+    },
+    {
+     "asset": "sedef",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "asset": "inci",
+    "adet": 1
+   },
+   "aciklama": "Nisan yağmuru ile sedef inciyi verir.",
+   "ad": "Nisan yağmuru ile sedef inciyi verir.",
+   "dayanak": null,
+   "oncelik": "v2",
+   "yeni_model": false
+  },
+  {
+   "id": "kandil_tam_parlaklik",
+   "girdiler": [
+    {
+     "asset": "zeytinyagi_testisi",
+     "adet": 1
+    },
+    {
+     "asset": "kandil",
+     "adet": 1
+    }
+   ],
+   "urun": {
+    "etki": "kandil_tam_parlaklik"
+   },
+   "aciklama": "Zeytinyağı testisi ile kandil tam parlaklığa ulaşır.",
+   "ad": "Zeytinyağı testisi ile kandil tam parlaklığa ulaşır.",
+   "dayanak": null,
+   "oncelik": "v2",
+   "yeni_model": false
+  }
+ ]
+}
