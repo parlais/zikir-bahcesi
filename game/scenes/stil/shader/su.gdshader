@@ -9,6 +9,8 @@ uniform float dalga_olcek = 1.6;
 uniform float dalga_guc = 0.35;
 uniform float isima_guc = 0.0;
 uniform vec3 isima : source_color = vec3(0.1, 0.7, 0.75);
+uniform vec2 akis = vec2(0.0);        // ırmaklarda dalgaların akış hızı (m/sn, dünya xz)
+uniform float puruz = 0.03;
 
 varying vec3 dunya;
 
@@ -26,13 +28,13 @@ vec2 egim(vec2 p, float t) {
 }
 
 void fragment() {
-	vec2 g = egim(dunya.xz * dalga_olcek, TIME * 1.1) * dalga_guc;
+	vec2 g = egim((dunya.xz - akis * TIME) * dalga_olcek, TIME * 1.1) * dalga_guc;
 	vec3 n_dunya = normalize(vec3(-g.x, 1.0, -g.y));
 	NORMAL = normalize((VIEW_MATRIX * vec4(n_dunya, 0.0)).xyz);
 	float f = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 4.0);
 	float kostik = pow(0.5 + 0.5 * sin(dunya.x * 7.0 + TIME) * sin(dunya.z * 6.0 - TIME * 1.3), 6.0);
 	ALBEDO = mix(sig, derin, f) + kostik * 0.05;
-	ROUGHNESS = 0.03;
+	ROUGHNESS = puruz;
 	METALLIC = 0.0;
 	SPECULAR = 0.9;
 	EMISSION = isima * isima_guc * (0.6 + kostik);
