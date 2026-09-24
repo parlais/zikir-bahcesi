@@ -1,0 +1,9 @@
+# Godot
+game/.godot/
+*.import.tmp
+export_presets.cfg.local
+# Araçlar
+node_modules/
+__pycache__/
+*.pyc
+tools/preview/out/
