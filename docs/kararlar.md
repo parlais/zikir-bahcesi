@@ -52,3 +52,31 @@ Asset listesinin açık bıraktığı yerler için seçilen değerler aşağıda
   - bahçenin renk doygunluğu havaya bağlıdır
 - **Seri:** Her 7 günde 1 dondurma hakkı kazanılır, en fazla 3 birikir. Kaçan gün dondurmayla kapanır. Dondurma yetmezse seri sessizce yeniden başlar; en uzun seri kaybolmaz.
 - **Ses tanıma bekleme süresi:** Başka bir sözün başı olan söz 1,2 saniye bekletilir. Zamanda çakışan iki algılamadan uzun olan sayılır.
+
+## K4 — Mekân: Kur'an tasvirlerinden ilhamlı, katlı cennet (2026-09-24)
+- İlk dilimdeki küçük ada ve stil karşılaştırmasındaki 60×60 m çarbağ, istenen mekân değildi. Çarbağ "fena değil" bulundu ama his eksikti.
+- Yeni mekân: Risale-i Nur'daki koni-dağ misaline göre iç içe katlar (dereceler).
+  - Katlı yapı yalnızca dışarıdan görünür (açılış animasyonu, katlar arası geçiş).
+  - Katın içinde tepede bir şey yoktur; ferah, güzel bir gökyüzü vardır.
+  - En üst kat nurla doludur ve ayrıca özenle yapılacak.
+- Oyuncu ilk katta verimli, boş bir arsada başlar; zikirle doldurur.
+- Ayrıntılar ve dayanaklar: `docs/mekan-kurgusu.md`.
+
+## K5 — Cennette gece-gündüz ve mevsim yok (2026-09-24)
+- Işık sürekli, yumuşak ve kaynaksızdır; gölge süreklidir. Güneş diski görünmez.
+- "Gerçek saatle gece-gündüz döngüsü" fikri ve Mücevher stilinin gece sahnesi **iptal edildi**.
+- Işık tonunda hafif bir sabah-akşam farkı ve asset listesindeki mevsim ve gece öğeleri danışma kuruluna sorulacak.
+
+## K6 — Görsel stil: animasyon stili olarak seçilecek (2026-09-24)
+- Kullanıcı karar veremedi. Dört animasyon stilinin hepsini yeni mekânda görmek istiyor: Disney/Pixar 3D, Ghibli/boyalı, Arcane/fırça darbeli 3D, Sky/Journey/Ori.
+- Çizim tarzı (yumuşak / toon / ara) da henüz seçilmedi.
+- İlke: gerçekçi değil, rüya gibi ve dünyaya benzemeyen bir temsil. Biçimler tanıdık, nitelik ve ışık dünya dışı.
+
+## K7 — Arayüz sonra, ayrı bir aşamada (2026-09-24)
+- Şu an yalnızca 3D dünya konuşuluyor.
+- Mevcut arayüz ve stil karşılaştırmasındaki arayüz önizlemesi kullanıcıyı tatmin etmiyor; ayrı bir aşamada baştan tasarlanacak.
+
+## K8 — Kalite hedefi: "ultra" (2026-09-24)
+- Kullanıcı oyuncuların görsel olarak çok etkilenmesini istiyor.
+- Forward+ renderer (SDFGI, hacimli sis, SSR, SSAO, parlama) kullanılacak; hedef orta-üst seviye telefonlar.
+- Canlılar ve bazı kilit modeller için AI 3D aracı ya da hazır paketlerle karma üretim önerildi; kullanıcı henüz cevap vermedi (açık soru).

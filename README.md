@@ -5,7 +5,10 @@ Motor Godot 4.7. Bütün 3D modeller depodaki prosedürel model fabrikasında ü
 
 ![Bahçe](docs/goruntuler/bahce_demo.png)
 
-## Durum: Faz 1 (ilk oynanabilir dilim)
+## Güncel durum
+Stil karşılaştırması yapıldı (`docs/stil-karsilastirmasi.md`). Sıradaki iş: Kur'an tasvirlerinden ilhamlı, katlı cennet mekânının 4 animasyon stilinde denenmesi (`docs/plan-faz2a.md`, `docs/mekan-kurgusu.md`). Oturumlar arası özet: `CLAUDE.md`.
+
+## Faz 1 (ilk oynanabilir dilim)
 
 Hazır olanlar:
 - **İçerik verisi.** Asset listesi (`docs/asset-listesi.md`) makinece okunur JSON'a çevrilir: 157 asset, 99+2 esma, 34 söz ve 15 tarif.
