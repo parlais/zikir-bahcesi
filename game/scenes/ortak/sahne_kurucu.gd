@@ -10,6 +10,10 @@ extends RefCounted
 ##   k.ornek("ZB_yapi_kosk", [x, y, z, donus_derece, olcek])
 ##
 ## Profil şeması StilProfilleri ile aynıdır (gunes, gok, ortam, ortak, malzeme...).
+##
+## Işık geçişi (K12): guncelle(profil) ortamı, gökyüzünü, ana ışığı, malzemeleri
+## ve bağları (bagla) yeni profile göre yeniden ayarlar. Yapı (SDFGI, SSR, sisin
+## açık olup olmadığı, parıltı kipi) kurulduğu gibi kalır.
 
 const MODELLER := "res://assets/models/"
 const SHADER := "res://scenes/stil/shader/"
@@ -43,7 +47,12 @@ const MALZEME_TABLOSU := {
 
 var kok: Node3D
 var profil: Dictionary
+var ortam: Environment
+var gok_malzeme: ShaderMaterial
+var gunes: DirectionalLight3D
 var _malzemeler: Dictionary = {}
+## [nesne, özellik, Callable(profil) -> değer]
+var _baglar: Array = []
 
 
 func _init(k: Node3D, p: Dictionary) -> void:
@@ -69,21 +78,18 @@ func goruntu_kalitesi(vp: Viewport = null) -> void:
 ## kurulur (cennet sahnelerinde güneş diski görünmez; yalnızca yön ve gölge verir).
 func ortam_kur(gok_shader := SHADER + "gok.gdshader") -> DirectionalLight3D:
 	var o: Dictionary = profil["ortam"]
-	var g: Dictionary = profil["gok"]
-	var sky_mat := ShaderMaterial.new()
-	sky_mat.shader = load(gok_shader)
-	for k in g:
-		sky_mat.set_shader_parameter(k, g[k])
+	gok_malzeme = ShaderMaterial.new()
+	gok_malzeme.shader = load(gok_shader)
 	var sky := Sky.new()
-	sky.sky_material = sky_mat
+	sky.sky_material = gok_malzeme
 	sky.radiance_size = Sky.RADIANCE_SIZE_256
 	sky.process_mode = Sky.PROCESS_MODE_INCREMENTAL
 
 	var e := Environment.new()
+	ortam = e
 	e.background_mode = Environment.BG_SKY
 	e.sky = sky
 	e.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	e.ambient_light_energy = o["ambient"]
 	e.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	match o["ton"]:
 		"aces":
@@ -92,37 +98,28 @@ func ortam_kur(gok_shader := SHADER + "gok.gdshader") -> DirectionalLight3D:
 			e.tonemap_mode = Environment.TONE_MAPPER_AGX
 		_:
 			e.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	e.tonemap_exposure = o["pozlama"]
-	e.tonemap_white = o["beyaz"]
 
-	var p: Array = o["parlama"]  # yoğunluk, güç, bloom, hdr eşiği
 	e.glow_enabled = true
-	e.glow_intensity = p[0]
-	e.glow_strength = p[1]
-	e.glow_bloom = p[2]
-	e.glow_hdr_threshold = p[3]
-	e.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT if p[0] < 0.5 else Environment.GLOW_BLEND_MODE_SCREEN
+	match o.get("parlama_kip", ""):
+		"screen":
+			e.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
+		"softlight":
+			e.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT
+		"additive":
+			e.glow_blend_mode = Environment.GLOW_BLEND_MODE_ADDITIVE
+		_:
+			e.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT if o["parlama"][0] < 0.5 else Environment.GLOW_BLEND_MODE_SCREEN
 	var seviye: Array = o.get("parlama_seviye", [0.0, 0.3, 0.6, 0.9, 1.0, 0.8, 0.5])
 	for i in 7:
 		e.set_glow_level(i, seviye[i])
 
-	var s: Array = o["sis"]  # yoğunluk, renk, güneş saçılımı, gökyüzü etkisi
 	e.fog_enabled = true
-	e.fog_density = s[0]
-	e.fog_light_color = s[1]
-	e.fog_sun_scatter = s[2]
-	e.fog_sky_affect = s[3]
-	e.fog_aerial_perspective = o.get("hava_perspektif", 0.2)
 	if o.has("sis_yukseklik"):  # [yükseklik, yoğunluk]: alçak yerlerde pus
 		e.fog_height = o["sis_yukseklik"][0]
 		e.fog_height_density = o["sis_yukseklik"][1]
-
 	var h: Array = o["hacim_sis"]  # yoğunluk, renk, anizotropi, uzunluk
 	if h[0] > 0.0:
 		e.volumetric_fog_enabled = true
-		e.volumetric_fog_density = h[0]
-		e.volumetric_fog_albedo = h[1]
-		e.volumetric_fog_anisotropy = h[2]
 		e.volumetric_fog_length = h[3]
 		e.volumetric_fog_detail_spread = 1.5
 		e.volumetric_fog_sky_affect = 0.0
@@ -132,7 +129,6 @@ func ortam_kur(gok_shader := SHADER + "gok.gdshader") -> DirectionalLight3D:
 	e.sdfgi_cascades = o.get("sdfgi_kademe", 4)
 	e.sdfgi_min_cell_size = o.get("sdfgi_hucre", 0.25)
 	e.ssao_enabled = o["ssao"] > 0.0
-	e.ssao_intensity = o["ssao"] * 2.0
 	e.ssao_radius = 1.2
 	e.ssil_enabled = true
 	e.ssr_enabled = o["ssr"]
@@ -140,31 +136,102 @@ func ortam_kur(gok_shader := SHADER + "gok.gdshader") -> DirectionalLight3D:
 	e.ssr_fade_in = 0.05
 	e.ssr_fade_out = 1.5
 	e.adjustment_enabled = true
-	e.adjustment_saturation = o["doygunluk"]
-	e.adjustment_contrast = o["kontrast"]
-	e.adjustment_brightness = o["parlaklik"]
 	var we := WorldEnvironment.new()
 	we.environment = e
 	kok.add_child(we)
 
+	gunes = DirectionalLight3D.new()
+	kok.add_child(gunes)
+	gunes.light_volumetric_fog_energy = 1.6
+	gunes.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_AND_SKY
+	gunes.shadow_enabled = true
+	gunes.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+
+	_gok_ayarla()
+	_ortam_ayarla()
+	_gunes_ayarla()
+	return gunes
+
+
+## Işık geçişi (K12): profil değişince sürekli değerleri yeniden ayarlar.
+func guncelle(p: Dictionary) -> void:
+	profil = p
+	if gok_malzeme:
+		_gok_ayarla()
+	if ortam:
+		_ortam_ayarla()
+	if gunes:
+		_gunes_ayarla()
+	for ad in _malzemeler:
+		if _malzemeler[ad]:
+			_malzeme_ayarla(ad, _malzemeler[ad])
+	for b in _baglar:
+		(b[0] as Object).set(b[1], (b[2] as Callable).call(p))
+
+
+## Profilden okunan bir değeri bir nesnenin özelliğine bağlar: hemen atar,
+## guncelle()'de yeniden hesaplar. fn: Callable(profil) -> değer.
+func bagla(nesne: Object, ozellik: StringName, fn: Callable) -> void:
+	nesne.set(ozellik, fn.call(profil))
+	_baglar.append([nesne, ozellik, fn])
+
+
+## Profildeki bir yolu okuyan bağ fonksiyonu, ör. yol("parcacik/nur_renk", 2.0).
+func yol(y: String, carpan := 1.0) -> Callable:
+	var parca := y.split("/")
+	return func(p: Dictionary) -> Variant:
+		var d: Variant = p
+		for s in parca:
+			d = d[int(s)] if d is Array else d[s]
+		return d * carpan
+
+
+func _gok_ayarla() -> void:
+	var g: Dictionary = profil["gok"]
+	for k in g:
+		gok_malzeme.set_shader_parameter(k, g[k])
+
+
+func _ortam_ayarla() -> void:
+	var o: Dictionary = profil["ortam"]
+	var e := ortam
+	e.ambient_light_energy = o["ambient"]
+	e.tonemap_exposure = o["pozlama"]
+	e.tonemap_white = o["beyaz"]
+	var p: Array = o["parlama"]  # yoğunluk, güç, bloom, hdr eşiği
+	e.glow_intensity = p[0]
+	e.glow_strength = p[1]
+	e.glow_bloom = p[2]
+	e.glow_hdr_threshold = p[3]
+	var s: Array = o["sis"]  # yoğunluk, renk, güneş saçılımı, gökyüzü etkisi
+	e.fog_density = s[0]
+	e.fog_light_color = s[1]
+	e.fog_sun_scatter = s[2]
+	e.fog_sky_affect = s[3]
+	e.fog_aerial_perspective = o.get("hava_perspektif", 0.2)
+	if e.volumetric_fog_enabled:
+		var h: Array = o["hacim_sis"]
+		e.volumetric_fog_density = h[0]
+		e.volumetric_fog_albedo = h[1]
+		e.volumetric_fog_anisotropy = h[2]
+	e.ssao_intensity = o["ssao"] * 2.0
+	e.adjustment_saturation = o["doygunluk"]
+	e.adjustment_contrast = o["kontrast"]
+	e.adjustment_brightness = o["parlaklik"]
+
+
+func _gunes_ayarla() -> void:
 	var gp: Dictionary = profil["gunes"]
-	var gunes := DirectionalLight3D.new()
 	var el := deg_to_rad(gp["yukseklik"])
 	var az := deg_to_rad(gp["yon"])
 	var yon := Vector3(cos(el) * sin(az), sin(el), cos(el) * cos(az))
-	kok.add_child(gunes)
 	gunes.position = yon * 100.0
 	gunes.look_at(Vector3.ZERO, Vector3.UP if absf(yon.y) < 0.99 else Vector3.FORWARD)
 	gunes.light_color = gp["renk"]
 	gunes.light_energy = gp["enerji"]
 	gunes.light_angular_distance = gp["yumusak"]
-	gunes.light_volumetric_fog_energy = 1.6
-	gunes.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_AND_SKY
-	gunes.shadow_enabled = true
 	gunes.shadow_blur = gp.get("golge_bulanik", 1.5)
-	gunes.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
 	gunes.directional_shadow_max_distance = gp.get("golge_mesafe", 120.0)
-	return gunes
 
 
 # --------------------------------------------------------------------------
@@ -181,6 +248,14 @@ func malzeme(ad: String) -> Material:
 	var satir: Array = MALZEME_TABLOSU[ad]
 	var m := ShaderMaterial.new()
 	m.shader = load(SHADER + satir[0] + ".gdshader")
+	_malzeme_ayarla(ad, m)
+	_malzemeler[ad] = m
+	return m
+
+
+## Sıra önemli: ortak, sonra tablodaki sabitler, en son profilin malzemeye özel değerleri.
+func _malzeme_ayarla(ad: String, m: ShaderMaterial) -> void:
+	var satir: Array = MALZEME_TABLOSU[ad]
 	var ortak: Dictionary = profil["ortak"]
 	for k in ortak:
 		m.set_shader_parameter(k, ortak[k])
@@ -191,8 +266,6 @@ func malzeme(ad: String) -> Material:
 		m.set_shader_parameter(k, ozel[k])
 	if ad == "uzak":
 		m.set_shader_parameter("doygunluk", float(ortak.get("doygunluk", 1.0)) * 0.7)
-	_malzemeler[ad] = m
-	return m
 
 
 func boya(n: Node) -> void:
@@ -278,7 +351,9 @@ func yuvarlak_doku() -> Texture2D:
 	return t
 
 
-func parcacik(adet: int, merkez: Vector3, alan: Vector3, boy: float, renk: Color, isik: float,
+## renk bir Color ya da Callable(profil) -> Color olabilir (yol() ile); Callable ise
+## ışık geçişinde profile göre güncellenir.
+func parcacik(adet: int, merkez: Vector3, alan: Vector3, boy: float, renk: Variant, isik: float,
 		yercekimi: Vector3, hiz: float, omur: float, billboard := BaseMaterial3D.BILLBOARD_ENABLED) -> GPUParticles3D:
 	var p := GPUParticles3D.new()
 	p.amount = adet
@@ -317,7 +392,10 @@ func parcacik(adet: int, merkez: Vector3, alan: Vector3, boy: float, renk: Color
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD if isik > 0.0 else BaseMaterial3D.BLEND_MODE_MIX
 	mat.vertex_color_use_as_albedo = true
-	mat.albedo_color = renk * (1.0 + isik)
+	if renk is Callable:
+		bagla(mat, "albedo_color", func(p: Dictionary) -> Color: return (renk as Callable).call(p) * (1.0 + isik))
+	else:
+		mat.albedo_color = renk * (1.0 + isik)
 	mat.albedo_texture = yuvarlak_doku()
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	q.material = mat

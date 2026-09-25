@@ -2,10 +2,18 @@ extends Node3D
 ## Cennet mekânı (Faz 2a, K10): ilk katın içi ya da 8 tabakanın dıştan kesiti,
 ## seçilen stille.
 ##
-##   godot --path game res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=yagli_boya --zb-kamera=ufuk
-##   --zb-anim:   pixar | yagli_boya  (ghibli, arcane, sky: sırada)
+##   godot --path game res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur_ori --zb-kamera=ufuk
+##   --zb-anim:   nur_ori (varsayılan: Nur ↔ Ori ışık geçişi, K12-K13) | nur | sky | pixar | yagli_boya
 ##   --zb-kamera: ufuk | arsa | kesit
 ##   (ekran görüntüsü için ayrıca --zb-ekran=/yol.png --zb-kare=30; Game autoload yakalar)
+##
+## nur_ori kipinde ışık zemin olarak Nur'dur; zikir tamamlanınca ya da bir olayda
+## Ori'ye geçer ve döner (IsikGecisi, IsikKaristirici). Geliştirici için:
+##   --zb-isik=0.5                 ışığı sabitler (0 Nur, 1 Ori)
+##   --zb-dizi=/yol/onek           Nur'dan Ori'ye geçişi kare kare çeker (onek_00.png ...) ve çıkar
+##       --zb-dizi-adim=13 --zb-dizi-bekle=3 --zb-isinma=16
+##   --zb-ayar="ortam/parlama/0=0.2;ortam/parlama_kip=screen"   profil değerlerini dener
+##   N tuşu: zikir tamamlanmış gibi geçişi başlatır
 ##
 ## Modeller ve yerleşim (game/data/dunya_cennet.json) model fabrikasında üretilir:
 ##   python3 tools/model_factory/build_all.py dunya
@@ -17,34 +25,126 @@ const YERLESIM := "res://data/dunya_cennet.json"
 const GOK := "res://scenes/stil/shader/gok_cennet.gdshader"
 const FILTRE := "res://scenes/stil/shader/resim_filtresi.gdshader"
 
-var anim := "yagli_boya"
+const BULUT_RENK := [Color("ffffff"), Color("c8d4f0")]
+
+var anim := "nur_ori"
 var kamera_modu := "ufuk"
 var profil: Dictionary
 var yer: Dictionary
 var k: SahneKurucu
 var _vp: Viewport
+var _kesit := false
+## Işık geçişi (yalnız nur_ori kipinde; diğer stillerde null).
+var gecis: IsikGecisi
+var _son_t := -1.0
+## nur_ori kipinde karışımın iki ucu: [Nur, Ori] (bir kez hesaplanır)
+var _uclar: Array = []
+## --zb-ayar ile denenen profil değerleri: [yol, değer]
+var _ayarlar: Array = []
+var _arg := {}
 
 
 func _ready() -> void:
 	for a in OS.get_cmdline_user_args():
-		if a.begins_with("--zb-anim="):
-			anim = a.get_slice("=", 1)
-		elif a.begins_with("--zb-kamera="):
-			kamera_modu = a.get_slice("=", 1)
+		if a.begins_with("--zb-") and a.contains("="):
+			_arg[a.get_slice("=", 0).trim_prefix("--zb-")] = a.substr(a.find("=") + 1)
+	anim = _arg.get("anim", anim)
+	kamera_modu = _arg.get("kamera", kamera_modu)
 	if kamera_modu == "derece":
 		kamera_modu = "kesit"
-	var kesit := kamera_modu == "kesit"
-	profil = AnimasyonStilleri.al(anim, kesit)
+	_kesit = kamera_modu == "kesit"
+	_ayar_coz(_arg.get("ayar", ""))
+	if anim == "nur_ori":
+		_uclar = [AnimasyonStilleri.al(IsikKaristirici.UC_NUR, _kesit), AnimasyonStilleri.al(IsikKaristirici.UC_ORI, _kesit)]
+		gecis = IsikGecisi.new()
+		if _arg.has("isik"):
+			gecis.zorla(float(_arg["isik"]))
+		Game.olay.connect(gecis.olay)
+	profil = _profil_hesapla(gecis.t if gecis else 0.0)
+	_son_t = gecis.t if gecis else 0.0
 	yer = JSON.parse_string(FileAccess.get_file_as_string(YERLESIM))
 	k = SahneKurucu.new(self, profil)
 	_vp = _filtre_kur() if profil.has("filtre") else get_viewport()
 	k.goruntu_kalitesi(_vp)
 	k.ortam_kur(GOK)
-	if kesit:
+	if _kesit:
 		_kesit_kur()
 	else:
 		_kat_kur()
 	_kamera_kur()
+	if gecis and _arg.has("dizi"):
+		_dizi_cek.call_deferred(_arg["dizi"])
+
+
+# --------------------------------------------------------------------------
+# Işık geçişi (K12, K13)
+# --------------------------------------------------------------------------
+
+func _profil_hesapla(t: float) -> Dictionary:
+	var p := IsikKaristirici.karistir(_uclar[0], _uclar[1], t) if anim == "nur_ori" else AnimasyonStilleri.al(anim, _kesit)
+	for a in _ayarlar:
+		IsikKaristirici.yaz(p, a[0], a[1])
+	return p
+
+
+func _process(dt: float) -> void:
+	if gecis == null:
+		return
+	gecis.ilerle(dt)
+	if absf(gecis.t - _son_t) > 0.001 or (gecis.t != _son_t and (gecis.t == 0.0 or gecis.t == 1.0)):
+		_isik_uygula(gecis.t)
+
+
+func _isik_uygula(t: float) -> void:
+	_son_t = t
+	profil = _profil_hesapla(t)
+	k.guncelle(profil)
+
+
+func _unhandled_input(e: InputEvent) -> void:
+	if gecis and e is InputEventKey and e.pressed and not e.echo and (e as InputEventKey).keycode == KEY_N:
+		gecis.tetikle("tamamlandi")
+
+
+## "yol=değer;yol=değer": sayı, #renk, true/false, Color(...) gibi metinler ya da düz metin.
+func _ayar_coz(metin: String) -> void:
+	for parca in metin.split(";", false):
+		var i := parca.find("=")
+		if i < 0:
+			continue
+		var d := parca.substr(i + 1).strip_edges()
+		var deger: Variant = d
+		if d.is_valid_float():
+			deger = float(d)
+		elif d.begins_with("#"):
+			deger = Color(d)
+		elif d == "true" or d == "false":
+			deger = d == "true"
+		elif d.contains("("):
+			deger = str_to_var(d)
+		_ayarlar.append([parca.substr(0, i).strip_edges(), deger])
+
+
+## Geliştirici: Nur'dan Ori'ye geçişi eşit zaman aralıklarıyla kare kare çeker.
+## Kareler arasında birkaç kare beklenir ki gökyüzü ışığı ve GI yetişsin.
+func _dizi_cek(onek: String) -> void:
+	var adim := int(_arg.get("dizi-adim", "13"))
+	var bekle := int(_arg.get("dizi-bekle", "3"))
+	gecis.zorla(0.0)
+	_isik_uygula(0.0)
+	for i in int(_arg.get("isinma", "16")):
+		await get_tree().process_frame
+	for i in adim:
+		var faz := float(i) / float(maxi(adim - 1, 1))
+		var t := faz * faz * (3.0 - 2.0 * faz)
+		gecis.zorla(t)
+		_isik_uygula(t)
+		for j in bekle:
+			await get_tree().process_frame
+		var yol := "%s_%02d.png" % [onek, i]
+		var err := _vp.get_texture().get_image().save_png(yol)
+		print("Dizi karesi: %s t=%.3f (%s)" % [yol, t, error_string(err)])
+	get_tree().quit()
 
 
 ## Yağlı boya gibi resim filtreleri: sahne SubViewport'a çizilir, ekrana
@@ -102,27 +202,27 @@ func _kat_kur() -> void:
 ## Oyuncunun arsası: ışıklı Tûbâ çekirdeği, tek fidan, ilk çiçekler, nur tohumları.
 func _arsa_kur() -> void:
 	var a: Dictionary = yer["arsa"]
-	var pc: Dictionary = profil["parcacik"]
+	var nur_renk := k.yol("parcacik/nur_renk")
 	var tuba := k.ornek("ZB_agac_tuba_a1", a["tuba"])
 	for isaret in tuba.find_children("isik_*", "", true, false):
 		var l := OmniLight3D.new()
-		l.light_color = pc["nur_renk"]
+		k.bagla(l, "light_color", nur_renk)
 		l.light_energy = 2.2
 		l.omni_range = 5.0
 		l.omni_attenuation = 1.6
 		l.shadow_enabled = false
 		isaret.add_child(l)
 		var pos := (isaret as Node3D).global_position
-		k.parcacik(40, pos + Vector3(0, 0.25, 0), Vector3(0.35, 0.3, 0.35), 0.05, pc["nur_renk"], 3.0,
+		k.parcacik(40, pos + Vector3(0, 0.25, 0), Vector3(0.35, 0.3, 0.35), 0.05, nur_renk, 3.0,
 			Vector3(0, 0.12, 0), 0.08, 4.0)
-		_hale(pos, 1.6, pc["nur_renk"], 1.2)
+		_hale(pos, 1.6, nur_renk, 1.2)
 	k.coklu("ZB_obje_inci_cakil", yer["inci_cakil"], false)
 	for f in a["fidan"]:
 		k.ornek(f[5], f.slice(0, 5))
 	for c in a["cicek"]:
 		k.ornek("ZB_cicek_lale_a3", c)
 	for p in a["nur_tohumu"]:
-		k.parcacik(10, Vector3(p[0], p[1], p[2]), Vector3(0.2, 0.08, 0.2), 0.04, pc["nur_renk"], 3.0,
+		k.parcacik(10, Vector3(p[0], p[1], p[2]), Vector3(0.2, 0.08, 0.2), 0.04, nur_renk, 3.0,
 			Vector3(0, 0.1, 0), 0.05, 3.0)
 
 
@@ -143,17 +243,17 @@ func _bitkiler_kur() -> void:
 ## Gökteki bulut kümeleri: çağlayanların indiği bulutlar, merdivenin ucunu saran
 ## bulut ve ışık, ufuk üstünde süzülen birkaç küme. Üst tabaka görünmez (K10).
 func _gok_kur() -> void:
-	var pc: Dictionary = profil["parcacik"]
+	var nur_renk := k.yol("parcacik/nur_renk")
 	var i := 0
 	for s in yer["gok_selale"]:
 		var g: float = s[3]
 		_bulut_kumesi(Vector3(s[0], s[1] + 40.0, s[2]), g * 6.0, 46, 50 + i, 2.2)
-		_hale(Vector3(s[0], s[1] - 10.0, s[2]), g * 5.0, profil["parcacik"]["nur_renk"], 0.5)
+		_hale(Vector3(s[0], s[1] - 10.0, s[2]), g * 5.0, nur_renk, 0.5)
 		i += 1
 	var u: Array = yer["merdiven_ust"]
 	var ust := Vector3(u[0], u[1], u[2])
 	_bulut_kumesi(ust + Vector3(0, 18, 0), 220.0, 40, 90)
-	_hale(ust + Vector3(0, 25, 0), 260.0, pc["nur_renk"], 1.0)
+	_hale(ust + Vector3(0, 25, 0), 260.0, nur_renk, 1.0)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
 	for j in 9:
@@ -210,21 +310,29 @@ func _fiskiye(pos: Vector3) -> void:
 
 
 func _parcaciklar_kur() -> void:
-	var pc: Dictionary = profil["parcacik"]
-	# Havada süzülen nur zerreleri (Müslim, Cennet 14-22: ışık her şeyden hafifçe yayılır)
-	if pc["nur"] > 0:
-		k.parcacik(pc["nur"], Vector3(-8, 3.5, -40), Vector3(36, 3.0, 36), 0.05, pc["nur_renk"], 2.5,
+	# Havada süzülen nur zerreleri (Müslim, Cennet 14-22: ışık her şeyden hafifçe yayılır).
+	# Geçişte sayı amount_ratio ile değişir: en çok zerre baştan kurulur.
+	var en_cok := _en_cok_zerre()
+	if en_cok > 0:
+		var z := k.parcacik(en_cok, Vector3(-8, 3.5, -40), Vector3(36, 3.0, 36), 0.05, k.yol("parcacik/nur_renk"), 2.5,
 			Vector3(0, 0.03, 0), 0.08, 14.0)
+		k.bagla(z, "amount_ratio", func(p: Dictionary) -> float: return float(p["parcacik"]["nur"]) / en_cok)
 	# Gökten inen çağlayanların dibinde yükselen su sisi
 	for s in yer["selale_dip"]:
 		var g: float = s[3]
 		k.parcacik(60, Vector3(s[0], s[1] + g * 0.5, s[2]), Vector3(g * 1.2, g * 0.5, g * 0.8), g * 2.4,
-			pc["sis_renk"], 0.0, Vector3(0, 0.6, 0), 1.2, 10.0)
+			k.yol("parcacik/sis_renk"), 0.0, Vector3(0, 0.6, 0), 1.2, 10.0)
 	# Selsebil levhasının dibinde ince serpinti
 	for t in yer["selsebil"]:
 		var y := Vector3(t[0], t[1] + 0.6, t[2])
 		k.parcacik(30, y + Basis(Vector3.UP, deg_to_rad(t[3])) * Vector3(0, 0, 1.2), Vector3(0.5, 0.05, 0.2), 0.03,
 			Color(0.9, 0.97, 1.0), 0.4, Vector3(0, -1.0, 0), 0.3, 1.2)
+
+
+func _en_cok_zerre() -> int:
+	if anim != "nur_ori":
+		return int(profil["parcacik"]["nur"])
+	return maxi(int(_uclar[0]["parcacik"]["nur"]), int(_uclar[1]["parcacik"]["nur"]))
 
 
 # --------------------------------------------------------------------------
@@ -252,18 +360,18 @@ func _kesit_kur() -> void:
 			_bulut_kumesi(Vector3(rng.randf_range(-4200, 4200), kk * kh - 22.0, rng.randf_range(-1150, -150)),
 				rng.randf_range(260.0, 420.0), 10, 400 + kk * 20 + j, 2.2)
 	# Firdevs'in üstü: her şeyi kuşatan ışık (Arş tasvir edilmez)
-	var pc: Dictionary = profil["parcacik"]
+	var nur_renk := k.yol("parcacik/nur_renk")
 	for isaret in kesit.find_children("isik_*", "", true, false):
 		var pos := (isaret as Node3D).global_position
 		var l := OmniLight3D.new()
-		l.light_color = pc["nur_renk"]
+		k.bagla(l, "light_color", nur_renk)
 		l.light_energy = 6.0
 		l.omni_range = 1400.0
 		l.omni_attenuation = 1.3
 		isaret.add_child(l)
-		_hale(pos + Vector3(0, 60, 0), 5200.0, pc["nur_renk"], 0.75, true)
-		_huzme(pos + Vector3(0, 900, 0), Vector2(900, 1900), pc["nur_renk"], 0.7)
-		k.parcacik(300, pos + Vector3(0, 150, 0), Vector3(1600, 120, 900), 12.0, pc["nur_renk"], 3.0,
+		_hale(pos + Vector3(0, 60, 0), 5200.0, nur_renk, 0.75, true)
+		_huzme(pos + Vector3(0, 900, 0), Vector2(900, 1900), nur_renk, 0.7)
+		k.parcacik(300, pos + Vector3(0, 150, 0), Vector3(1600, 120, 900), 12.0, nur_renk, 3.0,
 			Vector3(0, 8.0, 0), 5.0, 30.0)
 
 
@@ -303,7 +411,6 @@ func _bulut_doku() -> Texture2D:
 func _bulut_kumesi(merkez: Vector3, boyut: float, adet: int, tohum: int, yatay := 1.0) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = tohum
-	var renk: Array = profil.get("bulut_renk", [Color("ffffff"), Color("c8d4f0")])
 	var doku := _bulut_doku()
 	for i in adet:
 		var o := Vector3(rng.randf_range(-0.75, 0.75) * yatay, rng.randf_range(-0.22, 0.28), rng.randf_range(-0.5, 0.5)) * boyut
@@ -316,9 +423,13 @@ func _bulut_kumesi(merkez: Vector3, boyut: float, adet: int, tohum: int, yatay :
 		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		m.albedo_texture = doku
 		var yuk := clampf(o.y / (boyut * 0.3) * 0.5 + 0.5, 0.0, 1.0)
-		var c: Color = (renk[1] as Color).lerp(renk[0], yuk * 0.8 + rng.randf() * 0.2)
-		c.a = 0.72
-		m.albedo_color = c
+		var f := yuk * 0.8 + rng.randf() * 0.2
+		var renk_fn := func(p: Dictionary) -> Color:
+			var r: Array = p.get("bulut_renk", BULUT_RENK)
+			var c: Color = (r[1] as Color).lerp(r[0], f)
+			c.a = 0.72
+			return c
+		k.bagla(m, "albedo_color", renk_fn)
 		q.material = m
 		var mi := MeshInstance3D.new()
 		mi.mesh = q
@@ -347,8 +458,8 @@ func _isik_doku() -> Texture2D:
 	return _isik_doku_onbellek
 
 
-## Işık halesi: her yöne bakan yumuşak, eklemeli parıltı.
-func _hale(pos: Vector3, boy: float, renk: Color, guc: float, yumusak := false) -> void:
+## Işık halesi: her yöne bakan yumuşak, eklemeli parıltı. renk: Color ya da k.yol(...).
+func _hale(pos: Vector3, boy: float, renk: Variant, guc: float, yumusak := false) -> void:
 	var q := QuadMesh.new()
 	q.size = Vector2(boy, boy)
 	var m := StandardMaterial3D.new()
@@ -357,7 +468,7 @@ func _hale(pos: Vector3, boy: float, renk: Color, guc: float, yumusak := false) 
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	m.albedo_texture = _isik_doku() if yumusak else k.yuvarlak_doku()
-	m.albedo_color = renk * guc
+	_renk_bagla(m, renk, guc)
 	m.disable_fog = true
 	q.material = m
 	var mi := MeshInstance3D.new()
@@ -368,7 +479,7 @@ func _hale(pos: Vector3, boy: float, renk: Color, guc: float, yumusak := false) 
 
 
 ## Göğe uzanan dikey ışık hüzmesi (Arş tasvir edilmez; ışık yukarıda söner).
-func _huzme(pos: Vector3, boyut: Vector2, renk: Color, guc: float) -> void:
+func _huzme(pos: Vector3, boyut: Vector2, renk: Variant, guc: float) -> void:
 	var img := Image.create(64, 256, false, Image.FORMAT_RGBA8)
 	for y in 256:
 		var v := float(y) / 255.0
@@ -384,7 +495,7 @@ func _huzme(pos: Vector3, boyut: Vector2, renk: Color, guc: float) -> void:
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	m.albedo_texture = ImageTexture.create_from_image(img)
-	m.albedo_color = renk * guc
+	_renk_bagla(m, renk, guc)
 	m.disable_fog = true
 	m.cull_mode = BaseMaterial3D.CULL_DISABLED
 	q.material = m
@@ -393,6 +504,13 @@ func _huzme(pos: Vector3, boyut: Vector2, renk: Color, guc: float) -> void:
 	mi.position = pos
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(mi)
+
+
+func _renk_bagla(m: BaseMaterial3D, renk: Variant, guc: float) -> void:
+	if renk is Callable:
+		k.bagla(m, "albedo_color", func(p: Dictionary) -> Color: return (renk as Callable).call(p) * guc)
+	else:
+		m.albedo_color = renk * guc
 
 
 # --------------------------------------------------------------------------
