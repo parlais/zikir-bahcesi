@@ -99,7 +99,7 @@ void fragment() {
 		a = saydamlik * mix(0.95, 0.6, ince) * yay * tepe * dagilma;
 		ROUGHNESS = 0.3;
 		SPECULAR = 0.5;
-		EMISSION = (kopuk * kop * 0.8 + govde * 0.25 + mix(su_renk, kopuk, 0.5) * ince * 0.5) * isima_guc;
+		EMISSION = (kopuk * kop * 0.8 + govde * 0.4 + mix(su_renk, kopuk, 0.5) * ince * 0.5) * isima_guc;
 	}
 	ALBEDO = zb_renk(c);
 	ALPHA = clamp(a, 0.0, 1.0);

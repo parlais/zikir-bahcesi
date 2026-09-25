@@ -148,9 +148,9 @@ const PROFILLER := {
 				"akis": Vector2(0.0, 0.35)},
 			"bal": {"isima_guc": 0.3, "isima": Color("ffb040"), "akis": Vector2(0.0, 0.25), "puruz": 0.06},
 			"serbet": {"isima_guc": 0.2, "isima": Color("ff6070"), "akis": Vector2(0.0, 0.4)},
-			# Çağlayan suyu ırmaklarla aynı doygun turkuazdır: altın ışığın karşısında su olarak
-			# okunur (sıcak renkli su ışık sütunu, gri su duman sütunu gibi okunuyordu).
-			"selale": {"su_renk": Color("7fd0d8"), "derin_renk": Color("2a8fa6"), "isima_guc": 0.4,
+			# Çağlayan suyu doygun camgöbeği-mavidir: altın pusla karışınca açık mavi kalır, su
+			# olarak okunur (sıcak renkli su ışık sütunu, gri-yeşil su duman sütunu gibi okunuyordu).
+			"selale": {"su_renk": Color("9fe6f5"), "derin_renk": Color("3ba3d0"), "isima_guc": 0.5,
 				"gecirgenlik": 0.35, "gecirgen_renk": Color("ffdca0")},
 			"tugla": {"tugla_a": Color("f0c878"), "tugla_b": Color("ece8e2"), "isima_guc": 0.0},
 			"cini": {"isima_guc": 0.05},
