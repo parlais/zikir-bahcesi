@@ -55,9 +55,11 @@ Kullanıcının son geri bildirimleri:
 - Cennet uçsuz bucaksız 8 yatay tabakadır: en üstte Firdevs, içeriden bakınca üst tabaka görünmez, dışarıdan kesit görünür. Ayrıntı `docs/kararlar.md` K10 ve `docs/plan-faz2a.md` "Revizyon 2" bölümünde.
 - Yağlı boya taslakları `docs/goruntuler/cennet/taslak_yagli_{ufuk,arsa,kesit}.png`. Kullanıcıya gönderildi, geri bildirim bekleniyor.
 
-**Sıradaki iş:** Kullanıcının yağlı boya taslakları hakkındaki geri bildirimini al ve işle. Onaydan sonra:
-1. Ghibli, Arcane ve Sky/Ori profillerini `animasyon_stilleri.gd` içine yaz (Pixar ve yağlı boya hazır). Ghibli ve Arcane için `resim_filtresi.gdshader` parametreleri ve kontur eklenebilir.
-2. 5 stil × 3 kamera (`ufuk`, `arsa`, `derece`) çek: 1600×900, `docs/goruntuler/cennet/`, ardından karşılaştırma panoları.
+**Stil (K11):** Yağlı boya filtresi ve Pixar beğenilmedi. Kullanıcı Nur ile Sky/Ori'yi istedi. İkisi `nur` ve `sky` profili olarak eklendi ve yeni mekânda çekildi: `docs/goruntuler/cennet/karsilastirma_nur_ori.jpg`. Kullanıcıya gönderildi.
+
+**Sıradaki iş:** Kullanıcının Nur/Ori tercihini ve geri bildirimini al. Sonra:
+1. Seçilen stili derinleştir. Hazır profiller: nur, sky, pixar, yagli_boya. Ghibli ve Arcane henüz yazılmadı.
+2. Seçilen stil(ler)de 3 kamera (`ufuk`, `arsa`, `kesit`) 1600×900 son çekimler ve panolar.
 3. Taslakta kalan kalite işleri: gökten inen çağlayanların görünümü, kesitin derinliği, kuşlar ve kelebekler, köşk ayrıntısı.
 
 Açık sorular:
@@ -92,7 +94,7 @@ godot --headless --path game --import                  # içe aktarım (yeni mod
 godot --headless --path game -s res://tests/run_tests.gd   # testler
 # Geliştirici argümanları (Game autoload): --zb-senaryo=demo|kart --zb-kartsiz=1 --zb-ekran=yol.png --zb-kare=N
 # Stil sahnesi: res://scenes/stil/stil_sahnesi.tscn -- --zb-stil=nur|ghibli|mucevher|gercekci --zb-kamera=portre|sinematik
-# Cennet sahnesi: res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=yagli_boya|pixar --zb-kamera=ufuk|arsa|kesit
+# Cennet sahnesi: res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur|sky|pixar|yagli_boya --zb-kamera=ufuk|arsa|kesit
 #   (640x360, 8 kare ~1,5 dk; üç kamera paralel ~3 dk; 800x450, 16 kare paralel ~6 dk)
 ```
 
@@ -102,7 +104,8 @@ godot --headless --path game -s res://tests/run_tests.gd   # testler
 - **Köşe renkleri:** Godot glTF importer'ı köşe rengini malzemeye bağlamıyor. `vertex_color_use_as_albedo` elle açılmalı (bkz. `bahce.gd` `_susle`) ya da shader override kullanılmalı.
 - **Mesh özellikleri:** `smooth(aci)` yumuşak gölge verir; `kure_normal`/`eksen_normal` yaprak kütlesine yumuşak ışık verir; `weight(fn)` rüzgâr ağırlığını COLOR_0.a'ya yazar.
 - **Büyük araziler:** `Mesh.CV` (köşe renkleri) verilirse dışa aktarım indeksli olur ve dosya yaklaşık 4 kat küçülür; bu durumda `NV` de verilmelidir. `zemin` shader'ı köşe ağırlığı (`COLOR.a`) 1'den küçük yerlerde köşe rengini gösterir (toprak, kum, arsa çimeni).
-- **Ton eşleme:** AgX cennet sahnesinde soluk verdi; Pixar profili ACES kullanır.
+- **Ton eşleme:** AgX cennet sahnesinde soluk verdi; profiller ACES kullanır.
+- **Sis ve parıltı:** Bu sahne kilometrelerce derin. Hacim sisi, `fog_sun_scatter` ve güçlü parıltı birlikte kullanılırsa görüntü beyaza boğulur (Nur ve Ori'nin ilk denemeleri). Hacim sisi yoğunluğu ~0,0003-0,0004 ve sis ~0,0003 civarında kalmalı.
 - **Resim filtresi:** Profilde `filtre` varsa sahne SubViewport'a çizilir, `resim_filtresi.gdshader` ile TextureRect'te boyanır.
   - SubViewport boyutu `get_window().size` olmalı. Proje `canvas_items` ölçekleme kullandığı için görünür alan tuval biriminde büyüktür (ör. 2275×1280).
   - TextureRect için `set_anchors_and_offsets_preset(FULL_RECT)` kullanılmalı; boyutu elle verilmemeli.

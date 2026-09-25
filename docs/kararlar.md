@@ -113,3 +113,13 @@ Asset listesinin açık bıraktığı yerler için seçilen değerler aşağıda
   - Ufuktaki dev Tûbâ kaldırıldı. Oyuncunun Tûbâ'sı arsasında çekirdekten büyür.
   - İlk ara durak yağlı boya stilinde çekilir.
 
+## K11 — Stil: yağlı boya filtresi ve Pixar tutmadı; Nur ve Sky/Ori deneniyor (2026-09-25)
+- Kullanıcı yağlı boya taslaklarında "yağlı boya hissi hiç olmamış" dedi; Pixar'ı da sevmedi.
+- İlk stil karşılaştırmasındaki Nur ile Sky/Journey/Ori'yi yeni mekânda görmek istedi.
+- İkisi de yeni kurguya (K10) göre profil olarak eklendi: `animasyon_stilleri.gd` içinde `nur` ve `sky`. Resim filtresi yok.
+- Nur'un eski hâlindeki güneş diski K5 gereği kaldırıldı; ışık arkadan ve alçaktan gelen altın bir parıltıdır.
+- Çekimler:
+  - `docs/goruntuler/cennet/taslak_{nur,ori}_{ufuk,arsa,kesit}.png`
+  - `docs/goruntuler/cennet/karsilastirma_nur_ori.jpg`
+- Eski mekân: Çarbağ sahnesi (`scenes/stil/`) depoda duruyor ve yeniden çekilebilir. Pixar taslağındaki koni-dağ, derece duvarları ve dev Tûbâ K10 ile koddan kaldırıldı; git geçmişinde duruyor.
+

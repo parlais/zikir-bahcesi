@@ -10,7 +10,7 @@ extends RefCounted
 ## "gunes" yalnızca yumuşak gölgenin yönünü verir; gökteki parıltı (nur_yon)
 ## ufuktaki ışıktadır.
 
-const SIRA := ["pixar", "ghibli", "arcane", "sky", "yagli_boya"]
+const SIRA := ["nur", "sky", "pixar", "yagli_boya", "ghibli", "arcane"]
 
 const PROFILLER := {
 	# ------------------------------------------------------------------
@@ -108,6 +108,109 @@ const PROFILLER := {
 				"parilti": 1.0},
 			"ortam": {"sis": [0.000002, Color("fff0e0"), 0.2, 0.0], "hava_perspektif": 0.0, "sdfgi": false,
 				"ssr": false, "ssao": 0.0, "ambient": 0.55, "pozlama": 0.95, "kontrast": 1.1, "doygunluk": 1.2},
+		},
+	},
+	# ------------------------------------------------------------------
+	# Nur: ilk stil karşılaştırmasındaki Nur'un cennet mekânına uyarlaması. Altın ışık,
+	# ışık hüzmeleri, sıcak pus, parlayan su. Güneş diski yok (K5): ışık üst derecelerin
+	# ardındaki nurdan gelir gibi arkadan ve alçaktan vurur.
+	"nur": {
+		"ad": "Nur", "alt": "Ruhani ve sakin: altın ışık, ışık hüzmeleri, sıcak pus, parlayan su",
+		"gunes": {"yukseklik": 22.0, "yon": 160.0, "renk": Color("ffd490"), "enerji": 1.9, "yumusak": 3.0,
+			"golge_mesafe": 220.0, "golge_bulanik": 2.0},
+		"gok": {"tepe": Color("5a86d0"), "orta": Color("a4c2e8"), "ufuk": Color("ffd298"), "alt": Color("e8c7a0"),
+			"ufuk_kalin": 0.35, "nur_yon": Vector3(0.32, 0.37, -0.87), "nur_renk": Color("ffcf8a"), "nur_guc": 1.0,
+			"nur_cekirdek": 1.6, "bulut": 0.42, "bulut_olcek": 0.8, "bulut_yukseklik": 0.3,
+			"bulut_acik": Color("fff2dc"), "bulut_golge": Color("e0b8a4"), "bulut_kenar": Color("ffd9a0"),
+			"kozmik": 0.0, "parlaklik": 1.0},
+		"ortam": {"ambient": 0.45, "ton": "aces", "pozlama": 0.95, "beyaz": 6.0,
+			"parlama": [0.45, 0.9, 0.04, 1.3], "sis": [0.00032, Color("ffd9a6"), 0.25, 0.12],
+			"hava_perspektif": 0.35, "hacim_sis": [0.00035, Color("ffe6c4"), 0.5, 220.0],
+			"sdfgi": true, "sdfgi_hucre": 0.4, "ssao": 0.9, "ssr": true,
+			"doygunluk": 1.12, "kontrast": 1.12, "parlaklik": 0.98},
+		"ortak": {"toon": 0.0, "doygunluk": 0.97, "renk_carpan": Color("fff4e4"), "sarma": 0.35,
+			"kenar": 0.45, "kenar_renk": Color("ffd9a0"), "spek": 0.3},
+		"malzeme": {
+			"yaprak": {"gecirgenlik": 1.6, "gecirgen_renk": Color("ffd070"), "ton_a": Color("e4f0c8"), "ton_b": Color("fff0c0")},
+			"zemin": {"cimen_acik": Color("b6c86a"), "cimen_koyu": Color("5b7f3c"), "kuru": Color("e4c77a"),
+				"kuru_miktar": 0.4, "cicek_yogun": 0.45, "filiz_miktar": 0.3},
+			"cimen": {"dip": Color("476b2c"), "uc": Color("e2dc84"), "gecirgenlik": 1.4, "gecirgen_renk": Color("ffd070")},
+			"su": {"derin": Color("20464e"), "sig": Color("5fa8a0"), "isima_guc": 0.1, "isima": Color("ffd48a"),
+				"akis": Vector2(0.0, 0.5)},
+			"sut": {"derin": Color("efe2cc"), "sig": Color("fff8ea"), "isima_guc": 0.2, "isima": Color("ffe8c0"),
+				"akis": Vector2(0.0, 0.35)},
+			"bal": {"isima_guc": 0.3, "isima": Color("ffb040"), "akis": Vector2(0.0, 0.25), "puruz": 0.06},
+			"serbet": {"isima_guc": 0.2, "isima": Color("ff6070"), "akis": Vector2(0.0, 0.4)},
+			"selale": {"su_renk": Color("fff0d8"), "derin_renk": Color("c0a890"), "isima_guc": 0.5},
+			"tugla": {"tugla_a": Color("f0c878"), "tugla_b": Color("ece8e2")},
+			"cini": {"isima_guc": 0.05},
+			"cicek": {"isima_guc": 0.08},
+			"inci": {"isima": Color("fff0dc"), "isima_guc": 0.18},
+			"nur": {"isima_guc": 4.0},
+			"tavan": {"guc": 1.0, "bulut": 0.35},
+		},
+		"bulut_renk": [Color(1.3, 1.16, 0.98), Color(0.98, 0.84, 0.8)],
+		"parcacik": {"nur": 700, "nur_renk": Color(1.0, 0.9, 0.6), "sis_renk": Color(1.0, 0.95, 0.85, 0.45)},
+		"kesit": {
+			"gunes": {"yukseklik": 30.0, "yon": 340.0, "enerji": 1.6, "golge_mesafe": 6000.0},
+			"gok": {"kozmik": 1.0, "tepe": Color("5a5aa8"), "ufuk": Color("ffe0a8"), "nur_yon": Vector3(0.0, 0.93, -0.36),
+				"nur_guc": 1.3, "nur_cekirdek": 1.8, "bulutsu_a": Color("f0b890"), "bulutsu_b": Color("7a6ab8"),
+				"parilti": 1.2},
+			"ortam": {"sis": [0.000002, Color("ffe8d0"), 0.2, 0.0], "hava_perspektif": 0.0, "sdfgi": false,
+				"ssr": false, "ssao": 0.0, "ambient": 0.55, "hacim_sis": [0.0, Color.WHITE, 0.0, 0.0]},
+		},
+	},
+	# ------------------------------------------------------------------
+	# Sky / Journey / Ori: ışıklı, sade, rüya gibi. Derin gök mavisi ve turkuaz; güçlü
+	# parıltı; mavi-yeşil pus uzakları katman katman silüete çevirir; su, çiçek ve
+	# nur kendi ışığıyla parlar; gölgeler mavidir.
+	"sky": {
+		"ad": "Sky / Ori", "alt": "Işıklı ve rüya gibi: turkuaz pus, katman katman silüetler, kendi ışığıyla parlayan su ve çiçekler",
+		"gunes": {"yukseklik": 30.0, "yon": 205.0, "renk": Color("fff2dc"), "enerji": 1.3, "yumusak": 4.0,
+			"golge_mesafe": 200.0, "golge_bulanik": 3.0},
+		"gok": {"tepe": Color("0e3a8c"), "orta": Color("2f86d0"), "ufuk": Color("c4f4ff"), "alt": Color("a8e0f0"),
+			"ufuk_kalin": 0.3, "nur_yon": Vector3(-0.05, 0.3, -1.0), "nur_renk": Color("fff0c8"), "nur_guc": 0.9,
+			"nur_cekirdek": 1.6, "bulut": 0.5, "bulut_olcek": 0.6, "bulut_yukseklik": 0.4,
+			"bulut_acik": Color("ffffff"), "bulut_golge": Color("7fa6e0"), "bulut_kenar": Color("fff0c0"),
+			"kozmik": 0.0, "parlaklik": 1.0},
+		"ortam": {"ambient": 0.5, "ton": "aces", "pozlama": 0.92, "beyaz": 5.0,
+			"parlama": [0.55, 1.0, 0.06, 1.15], "sis": [0.00036, Color("5cc0e0"), 0.15, 0.12],
+			"hava_perspektif": 0.75, "hacim_sis": [0.0003, Color("b8ecff"), 0.4, 200.0],
+			"sdfgi": true, "sdfgi_hucre": 0.4, "ssao": 0.6, "ssr": true,
+			"doygunluk": 1.25, "kontrast": 1.05, "parlaklik": 1.0},
+		"ortak": {"toon": 0.25, "toon_esik": 0.45, "toon_yumusak": 0.2, "golge_renk": Color("4a6ad8"),
+			"doygunluk": 1.15, "renk_carpan": Color("f0fbff"), "sarma": 0.5, "kenar": 0.9, "kenar_renk": Color("c8fff4"),
+			"spek": 0.25},
+		"malzeme": {
+			"yaprak": {"gecirgenlik": 1.4, "gecirgen_renk": Color("c8ffb0"), "ton_a": Color("d8ffe0"), "ton_b": Color("e8fff0")},
+			"zemin": {"cimen_acik": Color("7fdc8a"), "cimen_koyu": Color("1f7a5a"), "kuru": Color("c8f0a0"),
+				"kuru_miktar": 0.2, "cicek_yogun": 0.6, "filiz_miktar": 0.4,
+				"cicek_a": Color("f4fffe"), "cicek_b": Color("ffb8e8"), "cicek_c": Color("fff0a0")},
+			"cimen": {"dip": Color("1a6a50"), "uc": Color("a8f0b0"), "gecirgenlik": 1.2, "gecirgen_renk": Color("d0ffc0")},
+			"su": {"derin": Color("0a4a8a"), "sig": Color("2fb8d8"), "isima_guc": 0.14, "isima": Color("7ffff0"),
+				"akis": Vector2(0.0, 0.5), "puruz": 0.16},
+			"sut": {"derin": Color("e0f4f8"), "sig": Color("ffffff"), "isima_guc": 0.35, "isima": Color("f0ffff"),
+				"akis": Vector2(0.0, 0.35)},
+			"bal": {"isima_guc": 0.5, "isima": Color("ffc050"), "akis": Vector2(0.0, 0.25), "puruz": 0.06},
+			"serbet": {"isima_guc": 0.45, "isima": Color("ff6090"), "akis": Vector2(0.0, 0.4)},
+			"selale": {"su_renk": Color("e0ffff"), "derin_renk": Color("60c0e0"), "isima_guc": 0.9},
+			"tugla": {"tugla_a": Color("f4d890"), "tugla_b": Color("eaf6ff"), "isima_guc": 0.05},
+			"cini": {"isima_guc": 0.25},
+			"cicek": {"isima_guc": 0.6},
+			"inci": {"isima": Color("e8ffff"), "isima_guc": 0.35},
+			"nur": {"isima_guc": 6.0},
+			"tavan": {"guc": 1.05, "bulut": 0.3},
+		},
+		"bulut_renk": [Color(1.35, 1.42, 1.5), Color(0.7, 0.86, 1.25)],
+		"parcacik": {"nur": 1200, "nur_renk": Color(0.85, 1.0, 0.95), "sis_renk": Color(0.85, 0.97, 1.0, 0.4)},
+		"kesit": {
+			"gunes": {"yukseklik": 35.0, "yon": 340.0, "enerji": 1.3, "golge_mesafe": 6000.0},
+			"gok": {"kozmik": 1.0, "tepe": Color("071a4a"), "ufuk": Color("c8fff0"), "nur_yon": Vector3(0.0, 0.93, -0.36),
+				"nur_guc": 1.4, "nur_cekirdek": 2.0, "bulutsu_a": Color("2a8ad0"), "bulutsu_b": Color("0a2a70"),
+				"parilti": 2.0},
+			"ortam": {"sis": [0.000002, Color("a0e8ff"), 0.2, 0.0], "hava_perspektif": 0.0, "sdfgi": false,
+				"ssr": false, "ssao": 0.0, "ambient": 0.5, "hacim_sis": [0.0, Color.WHITE, 0.0, 0.0],
+				"parlama": [0.5, 1.0, 0.06, 1.2]},
 		},
 	},
 }
