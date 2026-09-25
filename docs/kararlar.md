@@ -147,3 +147,14 @@ Asset listesinin açık bıraktığı yerler için seçilen değerler aşağıda
   - Süreler ilk tahmindir ve tek yerden ayarlanır (`game/scenes/dunya/isik_gecisi.gd`).
 - **Canlılar:** Kuş ve kelebek gibi canlılar model fabrikasında sade, parçalı modeller olarak üretilir; kanat çırpma Godot'da yapılır. K8'deki "AI 3D aracı ya da karma üretim" sorusu canlılar için kapandı; K2 geçerli.
 
+
+## K14 — Geri bildirim: ışık geçişi ve çağlayanlar tamam; genel yön daha detaylı ve gerçekçi (2026-09-25)
+- Kullanıcı Faz 2b'nin ilk sonuçlarına baktı: "Şu anki durum fena olmamış."
+- **Işık geçişi:** Süreler "gayet iyi"; onaylandı.
+  - Nur'dan Ori'ye 6 sn'de çıkış, Ori'den Nur'a 40 sn'de dönüş.
+  - Ori'de kalış: tamamlanan zikir 40 sn, esma 60 sn, Tûbâ aşaması 90 sn, kat geçişi ve ziyaret 30 sn, açılış 20 sn.
+- **Çağlayanlar:** "İyi gibi sanki." Kabul edildi; genel ayrıntı artışından onlar da payını alır.
+- **Genel yön:** "Her şeyin daha detaylı ve gerçekçi olmasını istiyorum."
+  - Sıradaki kalite işlerinin ölçütü budur: kesit, ağaç ve köşk modelleri, kuşlar ve kelebekler.
+  - Açık konu (yeni oturumda kullanıcıya sorulacak): "Gerçekçi" ne kadar gerçekçi? K6'daki ilke "gerçekçi değil, rüya gibi; biçimler tanıdık, nitelik ve ışık dünya dışı" idi. Yüksek ayrıntı ve inandırıcılık mı isteniyor, yoksa fotogerçekçi dokular ve malzemeler mi?
+  - Açık konu: Gerçekçilik için CC0 doku kütüphaneleri (Poly Haven, ambientCG; lisans riski yok) kullanılabilir mi, yoksa dokular da prosedürel mi üretilsin (K2)?

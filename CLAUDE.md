@@ -10,16 +10,20 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 - Kullanıcı görsel olarak çok titiz; "ultra kaliteli", etkileyici bir sonuç istiyor. Dini hassasiyetler önemli: dayanak, temsil dili ve danışma kurulu teyidi.
 
 ## Okunacak belgeler (sırayla)
-1. `docs/kararlar.md`: bütün kararlar (K1-K13). Özellikle K10 (mekân), K11 (stil), K12 (ışık) ve K13 (ışık geçişinin tetikleyicisi, sıra, canlılar).
-2. `docs/plan-faz2b.md`: **sıradaki işlerin planı.** Kullanıcı 2026-09-25'te onayladı (K13).
+1. `docs/kararlar.md`: bütün kararlar (K1-K14). Özellikle şunlar:
+   - K10 (mekân), K11 (stil), K12 (ışık)
+   - K13 (ışık geçişinin tetikleyicisi, sıra, canlılar)
+   - K14 (son geri bildirim: "her şey daha detaylı ve gerçekçi")
+2. `docs/plan-faz2b.md`: **sıradaki işlerin planı** (K13'te onaylandı). Işık geçişi ve çağlayanlar yapıldı; sırada öteki kalite işleri var.
 3. `docs/mekan-kurgusu.md`: cennet mekânının dayanakları (ayet, hadis, Risale-i Nur, Ali Ünal), 28. Söz'deki koni misalinin metni, danışma kurulu soruları.
 4. `docs/plan-faz2a.md`: geçmiş kaydı. En üstteki "Revizyon 2" bölümü, Faz 2a'nın son hâlini anlatır.
 5. `docs/asset-listesi.md`: içeriğin tek kaynağı (157 asset, 99+2 esma, tarifler). `docs/rapor.md`: fizibilite raporu. `docs/stil-karsilastirmasi.md`: ilk (çarbağ) stil karşılaştırması.
 
 ## Dallar
-- Deponun varsayılan dalı `claude/busy-allen-p76wgo`, 2026-09-25'te kullanıcının onayıyla `claude/sleepy-bell-nc2a9a` ile aynı noktaya ilerletildi. İkisi de Faz 2a'nın son hâlini içerir.
+- **En güncel iş `claude/confident-volta-gmupfz` dalında** (Faz 2b: ışık geçişi, çağlayanlar). Son commit'i "Oturum devri: Faz 2b ışık geçişi ve çağlayanlar".
+- Varsayılan dal `claude/busy-allen-p76wgo` ise Faz 2a'da kaldı; Faz 2b'yi içermez. Varsayılan dal yalnızca kullanıcı onaylarsa ilerletilir.
 - Yeni oturum kendi dalında çalışır ve commit'lerini oraya gönderir.
-- Emin olmak için `git log --oneline -3` ile son commit'in "Oturum devri" ya da daha yeni olduğuna bak.
+- Başlarken `git log --oneline -3` çalıştır. Son commit "Oturum devri: Faz 2b ışık geçişi ve çağlayanlar" ya da daha yeni değilse şunu yap: `git fetch origin claude/confident-volta-gmupfz && git merge FETCH_HEAD`.
 
 ## Şu anki durum (2026-09-25)
 **Onaylanmış yön:**
@@ -36,6 +40,10 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - Geçiş zikre ve olaylara bağlıdır (K13). Zemin Nur'dur. Zikir, dua, sure ya da esma tamamlanınca ışık Ori'ye geçer, bir süre kalır, Nur'a döner. Tûbâ aşaması, kat değiştirme, ziyaret ve açılış da geçişi başlatır. Gerçek saate bağlanmaz.
   - Gece yok, güneş diski yok (K5).
   - Pixar ve yağlı boya beğenilmedi; kodu duruyor, kullanılmıyor.
+- **Son geri bildirim (K14):**
+  - "Şu anki durum fena olmamış."
+  - Işık geçişinin süreleri onaylandı; çağlayanlar kabul edildi.
+  - Genel yön: **"Her şeyin daha detaylı ve gerçekçi olmasını istiyorum."**
 
 **Yapılanlar:**
 - **Faz 1:** İçerik veri katmanı, oyun çekirdeği (`game/core`, 34 test), model fabrikası, küçük adada oynanabilir ilk dilim (`game/scenes/main.tscn`).
@@ -66,12 +74,19 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - Kavram eskizleri: `eskiz_*.png`
 
 **Sıradaki iş (`docs/plan-faz2b.md`, onaylı sıra):**
-1. ~~Nur ↔ Ori ışık geçişi~~ (yapıldı).
-2. Kalite: ~~gökten inen çağlayanlar~~ (yapıldı); sırada kesitin derinliği; ağaç ve köşk modelleri; kuşlar ve kelebekler (model fabrikasında, K13).
+1. ~~Nur ↔ Ori ışık geçişi~~ (yapıldı, onaylandı).
+2. Kalite, K14'e göre "daha detaylı ve gerçekçi":
+   - ~~gökten inen çağlayanlar~~ (yapıldı, kabul edildi)
+   - kesitin derinliği
+   - ağaç ve köşk modelleri: ağaçlar lolipop gibi, köşk ve çadırda yakın ayrıntı eksik
+   - kuşlar ve kelebekler (model fabrikasında, K13)
+   - Başlamadan önce K14'teki iki soruyu sor ve sırayı teyit ettir.
 3. Plandaki mekanikler: nur tohumu ve bahar açılışı, açılış ve katlar arası geçiş (nur izi), merdivenle kat değiştirme, farklı katlardaki arkadaş bahçeleri, Firdevs ve nur katı çekimi.
 4. Arayüz (K7) sonra.
 
 **Açık sorular:**
+- K14: "Gerçekçi"nin K6'daki "rüya gibi" ilkesiyle dengesi ne olacak? Yüksek ayrıntı ve inandırıcılık mı, fotogerçekçi dokular mı?
+- K14: Gerçekçilik için CC0 dokular (Poly Haven, ambientCG) kullanılabilir mi, yoksa dokular da prosedürel mi üretilsin?
 - Danışma kurulu soruları: `mekan-kurgusu.md`.
 
 ## Ortam kurulumu (her yeni bulut oturumunda gerekir)
@@ -89,7 +104,13 @@ apt-get update -qq && apt-get install -y -qq mesa-vulkan-drivers xvfb
 cd /home/user/zikir-bahcesi/tools/preview && npm install
 ```
 - Render çekimi: `xvfb-run` ile, `VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.json`, `--rendering-method forward_plus --rendering-driver vulkan`. Örnek komutlar `docs/stil-karsilastirmasi.md` dosyasında.
-- lavapipe yavaş: cennet sahnesi 640×360'ta 8 kare ~1,5 dk, 800×450'de 16 kare ~5 dk. Önce düşük çözünürlükte dene. Uzun çekimleri arka planda çalıştır (komut süre sınırı).
+- Kurulumun hepsi tek komutta, arka planda ~3 dk sürer. Sonra doğrula: `godot --version`, içe aktarım ve testler (47 test).
+- lavapipe yavaş. Önce düşük çözünürlükte dene; uzun çekimleri arka planda çalıştır (komut süre sınırı var). Yaklaşık süreler:
+  - 640×360, 8 kare: ~1,5 dk
+  - 800×450, 16 kare: ~5 dk
+  - dikey 720×1280, 8 kare: ~2 dk
+  - 48 karelik film (640×360): ~4 dk
+- 4 çekirdek var. Çok çekimi `xargs -P 3` kuyruğuyla üçer üçer çalıştır; dört paralel de olur ama her biri yavaşlar.
 - Ağ: çoğu web sitesi (erisale, archive.org, sorularlaislamiyet vb.) ağ kurallarınca engelli. WebSearch çalışır. Google Fonts için raw.githubusercontent.com erişilebilir; npm ve pypi erişilebilir.
 
 ## Komutlar
@@ -107,6 +128,7 @@ godot --headless --path game -s res://tests/run_tests.gd   # testler
 tools/render/cek.sh nur ufuk 800x450 16 /tmp/nur_ufuk.png   # cennet sahnesi çekimi (lavapipe; ~5 dk, üçü paralel olur)
 tools/render/cek.sh nur_ori arsa 800x450 16 /tmp/a.png --zb-isik=0.5   # ek argümanlar sahneye geçer
 tools/render/dizi.sh ufuk 640x360 /tmp/dizi/ufuk            # Nur -> Ori geçişi kare kare (~5 dk)
+tools/render/film.sh nur_ori selale 640x360 /tmp/film/s --zb-isik=1   # sabit zaman adımlı akış filmi (48 kare, ~4 dk)
 python3 tools/render/pano.py gif /tmp/gecis.gif --gidis-donus /tmp/dizi/ufuk_*.png   # ayrıca: pano, serit
 ```
 
@@ -133,5 +155,7 @@ python3 tools/render/pano.py gif /tmp/gecis.gif --gidis-donus /tmp/dizi/ufuk_*.p
 - **Uzak ayrıntı:** Desen `fwidth` ile söndürülürken ortalama görünüşe geçilmeli. Yalnızca söndürülürse zemin rengi kalır; çağlayan uzakta gri bir duman sütununa dönüyordu.
 - **Denetim kipi:** `godot --check-only --script` autoload'ları yüklemez; "Identifier not found: Game" hatası yanıltıcıdır. Sahneyi başsız birkaç kare çalıştırmak daha güvenilirdir.
 - **Çekimler ve kod:** `taslak_nur_kesit.png`, profilin son ayarından önce çekilmişti; kod 13 ton daha koyu çiziyordu. Taslak çekimi profil değişince yenilenmeli; karşılaştırma yaparken önce eski kodla (git worktree) doğrulanmalı.
+- **Uzak görünüşü değerlendirmek:** Oyun dikey ekranda (720×1280) çalışır. 800×450'lik deneme çekimi dikey ekranın üçte biri kadar ayrıntı gösterir. Uzaktaki ayrıntıyı (çağlayan, kesit) dikey çekimle değerlendir; hareketli öğeler için film çek.
+- **Çekim sürerken dosya değiştirmek:** Godot betik ve shader'ları sahne yüklenirken okur (~30 sn). Bu sürede `.gd` ya da `.gdshader` değiştirme. Çekim sürerken modelleri (`.glb`) yeniden üretme.
 - **Commit:** Mesajlar Türkçe. Her adım ayrı commit, sonra oturumun kendi dalına `git push -u origin <dal>`. PR açma (kullanıcı istemedi). Dünya modelleri büyüktür (toplam ~13 MB); ara denemelerde değil, anlamlı adımlarda commit et.
 - **Kullanıcının yüklediği dosyalar:** Ali Ünal epub'ları ve Sorularla İslamiyet PDF'i depoya konmaz (telif). Bulgular `docs/mekan-kurgusu.md` dosyasına işlendi.
