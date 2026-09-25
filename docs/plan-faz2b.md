@@ -75,6 +75,59 @@ Bu belge sıradaki işleri toplar.
 - **Modeller:**
   - Ağaçlar lolipop gibi; taç ve dal ayrıntısı ister.
   - Köşk ve çadırda yakın plan ayrıntısı eksik.
+- **Ağaçlar, durum (2026-09-25): yapıldı (K15'e göre ilk iş).**
+  - **Üreteç (`tools/model_factory/mf/agac.py`):**
+    - Tür parametreli dallanan iskelet: gövde, 2-3 dal seviyesi; paralel taşınan çerçevelerle kıvrılan borular.
+    - Gövde dibinde kök genişlemesi ve payanda kök lobları.
+    - Kabukta UV var (dokunun bir tekrarı `kabuk_doku` metre).
+    - Yapraklar, son dal seviyelerine dizilen yaprak kümesi kartlarıdır: 2×3 köşe, ortadan bükük.
+    - Kart normalleri taç zarfına (elips) bükülür: taç tek bir kabarık kütle gibi ışık alır. Taç içi ve altı köşe renginde koyulaşır.
+    - Rüzgâr ağırlığı yalnız konuma bağlıdır; kabuk, kart ve meyve aynı yerde aynı salınır.
+    - İsteğe bağlı öz hacim (`oz`): tacın içinde koyu bir elips. Uzaktan taç dolu görünür (koru, uzak ağaç, selvi).
+    - Meyve yerleri (`meyve_yerleri`), şerit yapraklar (`models/agaclar.py`: hurma, muz).
+  - **Dokular (`mf/doku.py`, prosedürel, `game/assets/dokular/`):**
+    - Yaprak kümesi atlasları (2×2): koru, sidr, nar, selvi, üzüm (beş loplu yaprak).
+    - Tüysü hurma yaprağı ve yırtıklı muz yaprağı şeritleri.
+    - Kabuk, hurma gövdesi (yaprak dibi kalıntıları) ve muzun yalancı gövdesi; normal haritalarıyla.
+    - Godot içe aktarımı mipmap'li (`_import_ayari`).
+    - CC0 kütüphaneleri ağ politikasınca engelli (K15); erişim açılırsa kabuk ve taş dokuları değiştirilebilir.
+  - **Türler:**
+    - koru (Rahmân 64, koyu yeşil ve dolgun; 5,1 bin üçgen)
+    - sidr a3/a4 (şemsiye taç, sarkan dallar, çift çift kirazlar)
+    - nar (dipten çatallanan gövdeler, sarkan narlar)
+    - selvi (sık, koyu sütun)
+    - hurma a3/a4 (tüysü yapraklar, sarmal dizilim, salkımlar)
+    - talh a3/a4 (muz kümesi, kat kat eller, mor tomurcuk)
+    - üzüm a4 (çardağa yayılan asma, salkımlar)
+    - uzak ağaç (korunun 600 üçgenlik hâli)
+    - ufuk ağacı (700 m ötesi ve kesit için 100 üçgen)
+    - a1 (tohum) ve a2 (filiz) aşamaları ile üzümün a3 aşaması (kazığa sarılan fidan) eski hâlinde kaldı.
+  - **Godot:**
+    - `yaprak_kart.gdshader` (alfa kesme, mipmap'te alfa artışı, titreme) ve `kabuk.gdshader` (doku ve normal haritası).
+    - `ortak.gdshaderinc` içinde `golge_alma`: yapraklar gölgeyi yarı alır. Sık taçta kartlar birbirini gölgeleyince taç Nur'un arka ışığında kapkara bir silüete dönüyordu.
+    - `meyve` malzemesi. Çiçek shader'ının rüzgârı yapraklarla aynı formüle getirildi.
+    - `SahneKurucu.coklu(..., parca)`: örnekler ızgara parçalarına bölünür, LOD her parçada ayrı seçilir.
+    - `yaprak_*` ve `kabuk_*` malzemeleri adından dokusunu bulur.
+    - İnceleme kamerası: `--zb-kamera=model --zb-model=ZB_bitki_koru_agac [--zb-model-aci=30 --zb-model-yukseklik=6 --zb-model-doluluk=0.85]`.
+  - **Üçgen bütçesi (sahnede):**
+
+    | Öğe | Önce | Sonra |
+    | --- | --- | --- |
+    | Korular (286 örnek) | 1,61 milyon | 1,46 milyon |
+    | Uzak ağaçlar | 0,34 milyon | 1,09 milyon (1496 dallı, 1904 ufuk ağacı) |
+    | Kesit | 0,42 milyon | 0,42 milyon |
+
+    Telefonda ölçülmedi; gerçek cihazda LOD ve görünürlük uzaklıkları ayarlanmalı.
+  - **Çekimler (`docs/goruntuler/cennet/`):**
+    - `agac_once_sonra.jpg` (koru, sidr, nar, selvi, hurma; üstte önce, altta sonra)
+    - `agac_hurma_talh_uzum.jpg`
+    - `agac_sahne_once_sonra.jpg` (dikey ufuk ve arsa)
+    - `agac_sahne_ori.jpg`
+  - **Öğrenilenler:**
+    - three.js önizlemesi (`contact.mjs`) ince yaprakçıkları (hurma, üzüm) mipmap'te yok eder; kartlı modeller Godot'ta (`--zb-kamera=model`) değerlendirilmeli.
+    - Yaprak kümesi hücreye sığdırılmalı (`_sigdir`). Kenarda kesilen yaprak kartta düz bir çizgi bırakır.
+    - Kartlar tacın ortalama rengini düşürür; atlas renkleri eski düz renklerden bir ton açık seçilmeli.
+    - Taç içi koyulaşma kabukta daha hafif tutulmalı; yoksa gövde siyah görünür.
 - **Canlılık:** Kuşlar ve kelebekler: model fabrikasında sade, parçalı modeller; kanat çırpma Godot'da (K13).
 
 ## 3. Planda bekleyen mekân ve mekanik öğeleri

@@ -20,11 +20,11 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 5. `docs/asset-listesi.md`: içeriğin tek kaynağı (157 asset, 99+2 esma, tarifler). `docs/rapor.md`: fizibilite raporu. `docs/stil-karsilastirmasi.md`: ilk (çarbağ) stil karşılaştırması.
 
 ## Dallar
-- **En güncel iş Faz 2b'dir** (ışık geçişi, çağlayanlar). Bu iş `claude/confident-volta-gmupfz` dalında yapıldı.
-- Varsayılan dal `claude/busy-allen-p76wgo`, 2026-09-25'te kullanıcının onayıyla aynı noktaya ileri sarıldı. İki dal da Faz 2b'nin son hâlini içerir.
+- **En güncel iş Faz 2b'nin ağaçlarıdır** (K15). Bu iş `claude/optimistic-fermi-u1sscb` dalında yapıldı.
+- Işık geçişi ve çağlayanlar `claude/confident-volta-gmupfz` dalında yapıldı. Varsayılan dal `claude/busy-allen-p76wgo` da o noktadadır; ağaçları içermez.
 - Varsayılan dal yalnızca kullanıcı onaylarsa ilerletilir.
 - Yeni oturum kendi dalında çalışır ve commit'lerini oraya gönderir.
-- Başlarken `git log --oneline -3` çalıştır. Son commit "Oturum devri: Faz 2b ışık geçişi ve çağlayanlar" ya da daha yeni değilse şunu yap: `git fetch origin claude/confident-volta-gmupfz && git merge FETCH_HEAD`.
+- Başlarken `git log --oneline -3` çalıştır. Son commit "Oturum devri: Faz 2b ağaçlar" ya da daha yeni değilse şunu yap: `git fetch origin claude/optimistic-fermi-u1sscb && git merge FETCH_HEAD`.
 
 ## Şu anki durum (2026-09-25)
 **Onaylanmış yön:**
@@ -67,10 +67,15 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - **Çağlayanlar:** at kuyruğu perde, pus zarfı, dip sisi, su rengi gövde (`selale.gdshader`). Ayrıntılar `plan-faz2b.md` içinde.
   - **Nur kesiti:** kullanıcının gördüğü açık, pastel taslağa eşlendi (kontrast, parlaklık, doygunluk).
   - **Araçlar:** `tools/render/dizi.sh` (geçiş dizisi), `film.sh` (akış filmi), `pano.py` (pano, GIF, şerit).
+  - **Ağaçlar (K15):** dallanan ağaç üreteci (`mf/agac.py`), prosedürel yaprak ve kabuk dokuları (`mf/doku.py`, `game/assets/dokular/`), türler `models/agaclar.py` içinde.
+    - Yenilenenler: koru, sidr, nar, selvi, hurma, talh, üzüm, uzak ağaç ve ufuk ağacı.
+    - Godot: `yaprak_kart` ve `kabuk` shader'ları, `golge_alma`, parçalı `coklu()`, inceleme kamerası `--zb-kamera=model`.
+    - Ayrıntılar, üçgen bütçesi ve öğrenilenler `plan-faz2b.md` içinde.
 - **Son çekimler (`docs/goruntuler/cennet/`):**
   - `gecis_nur_ori_pano.jpg`: ufuk, arsa ve kesit; t = 0, 0,5, 1
   - `gecis_nur_ori.gif` ve `gecis_nur_ori_serit.jpg`: Nur'dan Ori'ye geçiş
   - `selale_once_sonra.jpg`, `selale_akis_nur.gif`, `selale_akis_ori.gif` ve `selale_telefon_ekrani.jpg` (dikey 720×1280): çağlayanlar
+  - `agac_once_sonra.jpg`, `agac_hurma_talh_uzum.jpg`, `agac_sahne_once_sonra.jpg`, `agac_sahne_ori.jpg`: ağaçlar (dikey)
   - Eski taslaklar: `karsilastirma_nur_ori.jpg`, `taslak_*.png`
   - Kavram eskizleri: `eskiz_*.png`
 
@@ -78,10 +83,11 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 1. ~~Nur ↔ Ori ışık geçişi~~ (yapıldı, onaylandı).
 2. Kalite, K14'e göre "daha detaylı ve gerçekçi":
    - ~~gökten inen çağlayanlar~~ (yapıldı, kabul edildi)
-   - kesitin derinliği
-   - ağaç ve köşk modelleri: ağaçlar lolipop gibi, köşk ve çadırda yakın ayrıntı eksik
+   - ~~ağaçlar~~ (yapıldı; kullanıcının görüşü bekleniyor)
+   - kesitin derinliği (sıradaki)
+   - köşk ve çadır: yakın plan ayrıntı eksik
    - kuşlar ve kelebekler (model fabrikasında, K13)
-   - K15: önce ağaçlar, sonra kesit, köşk ve çadır, kuşlar ve kelebekler.
+   - K15'teki sıra: ağaçlar, kesit, köşk ve çadır, kuşlar ve kelebekler.
 3. Plandaki mekanikler: nur tohumu ve bahar açılışı, açılış ve katlar arası geçiş (nur izi), merdivenle kat değiştirme, farklı katlardaki arkadaş bahçeleri, Firdevs ve nur katı çekimi.
 4. Arayüz (K7) sonra.
 
@@ -120,12 +126,13 @@ cd /home/user/zikir-bahcesi/tools/preview && npm install
 ```sh
 python3 tools/content/build_content.py                 # asset listesi -> game/data/*.json
 python3 tools/model_factory/build_all.py [filtre]      # modeller -> game/assets/models/*.glb (+ sahne_carbag.json, dunya_cennet.json)
-node tools/preview/contact.mjs [filtre] [çıktı.png]    # model kontakt sayfası
+node tools/preview/contact.mjs [filtre] [çıktı.png] [hücre]   # model kontakt sayfası (hücre boyu, varsayılan 320)
 godot --headless --path game --import                  # içe aktarım (yeni model/shader sonrası şart)
 godot --headless --path game -s res://tests/run_tests.gd   # testler
 # Geliştirici argümanları (Game autoload): --zb-senaryo=demo|kart --zb-kartsiz=1 --zb-ekran=yol.png --zb-kare=N
 # Stil sahnesi: res://scenes/stil/stil_sahnesi.tscn -- --zb-stil=nur|ghibli|mucevher|gercekci --zb-kamera=portre|sinematik
-# Cennet sahnesi: res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur_ori|nur|sky|pixar|yagli_boya --zb-kamera=ufuk|arsa|kesit
+# Cennet sahnesi: res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur_ori|nur|sky|pixar|yagli_boya --zb-kamera=ufuk|arsa|kesit|model
+#   model: tek modeli arsada inceleme, ör. --zb-model=ZB_agac_hurma_a4 --zb-model-aci=0 (cek.sh ek argümanıyla)
 #   nur_ori (varsayılan): Nur ↔ Ori geçişi. --zb-isik=0..1 ışığı sabitler; --zb-ayar="ortam/parlama/0=0.2;gok/bulut=0.5"
 #   profil değerlerini dosyaya dokunmadan dener; N tuşu geçişi başlatır.
 tools/render/cek.sh nur ufuk 800x450 16 /tmp/nur_ufuk.png   # cennet sahnesi çekimi (lavapipe; ~5 dk, üçü paralel olur)
@@ -157,6 +164,11 @@ python3 tools/render/pano.py gif /tmp/gecis.gif --gidis-donus /tmp/dizi/ufuk_*.p
 - **Köşe renginde veri:** `gltf_export` köşe renklerini sRGB'den doğrusala çevirir. Renk kanalına veri (ör. enine konum) yazılacaksa `_lin2srgb` ile ters çevrilerek yazılır (bkz. `cennet.py` `_gok_selalesi`).
 - **Uzak ayrıntı:** Desen `fwidth` ile söndürülürken ortalama görünüşe geçilmeli. Yalnızca söndürülürse zemin rengi kalır; çağlayan uzakta gri bir duman sütununa dönüyordu.
 - **Denetim kipi:** `godot --check-only --script` autoload'ları yüklemez; "Identifier not found: Game" hatası yanıltıcıdır. Sahneyi başsız birkaç kare çalıştırmak daha güvenilirdir.
+- **Palet dışı renkler:** Primitiflere (`icosphere`, `cylinder`...) palet adı yerine demet verilirse 0-1 aralığında olmalı. 0-255 demet beyaz çizilir.
+- **Dokulu modeller:** UV `Mesh.UV` ile verilir. `yaprak_<tür>` ve `kabuk_<tür>` malzemeleri dokusunu adından bulur (`game/assets/dokular/`, `SahneKurucu._satir`).
+  - Yeni doku `mf/doku.py` içinde üretilir, `dokulari_yaz` ile yazılır. Bu fonksiyon Godot içe aktarım ayarını da mipmap'li yapar.
+  - Kartlı modeller (yaprak kartları, hurma ve üzüm yaprakları) three.js önizlemesinde mipmap yüzünden seyrek ya da hiç görünmez. Godot'ta `--zb-kamera=model` ile değerlendirilmeli.
+- **Yaprak ışığı:** Yaprak kartları gölgenin yarısını alır (`golge_alma` 0,5); tam gölgede sık taç Nur'da siyaha döner. Kart normalleri taç zarfına bükülür; shader arka yüzde normali çevirmez.
 - **Çekimler ve kod:** `taslak_nur_kesit.png`, profilin son ayarından önce çekilmişti; kod 13 ton daha koyu çiziyordu. Taslak çekimi profil değişince yenilenmeli; karşılaştırma yaparken önce eski kodla (git worktree) doğrulanmalı.
 - **Uzak görünüşü değerlendirmek:** Oyun dikey ekranda (720×1280) çalışır. 800×450'lik deneme çekimi dikey ekranın üçte biri kadar ayrıntı gösterir. Uzaktaki ayrıntıyı (çağlayan, kesit) dikey çekimle değerlendir; hareketli öğeler için film çek.
 - **Çekim sürerken dosya değiştirmek:** Godot betik ve shader'ları sahne yüklenirken okur (~30 sn). Bu sürede `.gd` ya da `.gdshader` değiştirme. Çekim sürerken modelleri (`.glb`) yeniden üretme.
