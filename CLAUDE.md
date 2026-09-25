@@ -61,7 +61,7 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 - **Son çekimler (`docs/goruntuler/cennet/`):**
   - `gecis_nur_ori_pano.jpg`: ufuk, arsa ve kesit; t = 0, 0,5, 1
   - `gecis_nur_ori.gif` ve `gecis_nur_ori_serit.jpg`: Nur'dan Ori'ye geçiş
-  - `selale_once_sonra.jpg`, `selale_akis_nur.gif` ve `selale_akis_ori.gif`: çağlayanlar
+  - `selale_once_sonra.jpg`, `selale_akis_nur.gif`, `selale_akis_ori.gif` ve `selale_telefon_ekrani.jpg` (dikey 720×1280): çağlayanlar
   - Eski taslaklar: `karsilastirma_nur_ori.jpg`, `taslak_*.png`
   - Kavram eskizleri: `eskiz_*.png`
 
