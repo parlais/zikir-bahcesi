@@ -172,3 +172,18 @@ K14'teki iki açık soru ve iş sırası kullanıcıya soruldu.
   - CC0 3D modeller kullanılmaz.
   - Bulut ortamının ağ politikası bu siteleri engelliyor; kullanıcının izin vermesi gerekir. İzin gelene kadar dokular prosedürel üretilir.
 - **Sıra:** Önce ağaçlar gelir. Ekranda en çok görünen ve "lolipop" hissini en çok veren öğe ağaçlardır; iyileşmeleri ufuk, arsa ve kesit çekimlerini birlikte yükseltir. Sonra kesit, köşk ve çadır, kuşlar ve kelebekler gelir.
+
+## K16 — Mekândaki her şey zikirle oluşur; ağaç asset'leri çoğalacak (2026-09-25)
+- Kullanıcı yeni ağaçları çok beğendi.
+- Kullanıcının ifadesi: "Mekândaki ağaçlardan tut, nehirler, yapılar vs. ne var ne yoksa zikirle oluşacak zaten oyunda."
+- **Anlamı:**
+  - Mekândaki her öğe (ağaç, ırmak, yapı...) asset listesindeki bir asset'tir ve oyunda zikirle oluşur.
+  - Cennet sahnesindeki korular, köşkler ve ırmaklar dolu bir bahçenin vitrinidir; oyunun başlangıç görüntüsü değildir.
+  - Koru, uzak ağaç ve ufuk ağacı asset değildir; yalnız vitrin ve kesit çekimlerini doldurur.
+  - Her bitki oyuncunun gözü önünde büyür. Bu yüzden bütün aşamalar (tohum, filiz, fidan, olgun) aynı kalitede olmalı. Şu an a1 ve a2 eski low-poly hâlindedir.
+- **Ağaç asset'leri (asset listesi B, 12 tür):**
+  - Tamam (yeni üreteçle, a3-a4): hurma, sidr, talh, üzüm.
+  - Sahne modeli var, aşamalı asset hâli yok: nar (`ZB_agac_nar_a1-a4`), servi (`ZB_agac_servi_a1-a4`).
+  - Yalnız çekirdeği var: Tûbâ (5 aşama, MVP).
+  - Hiç yok: çınar (MVP), zeytin, incir, Toros sediri, defne (v2).
+- Açık: oyunun başlangıç görüntüsü (hangi öğeler hazır bulunur) mekanikler adımında netleşecek.

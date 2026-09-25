@@ -10,10 +10,11 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 - Kullanıcı görsel olarak çok titiz; "ultra kaliteli", etkileyici bir sonuç istiyor. Dini hassasiyetler önemli: dayanak, temsil dili ve danışma kurulu teyidi.
 
 ## Okunacak belgeler (sırayla)
-1. `docs/kararlar.md`: bütün kararlar (K1-K14). Özellikle şunlar:
+1. `docs/kararlar.md`: bütün kararlar (K1-K16). Özellikle şunlar:
    - K10 (mekân), K11 (stil), K12 (ışık)
    - K13 (ışık geçişinin tetikleyicisi, sıra, canlılar)
    - K14 (son geri bildirim: "her şey daha detaylı ve gerçekçi")
+   - K15 (gerçekçilik ölçütü, CC0 dokular), K16 (her şey zikirle oluşur; ağaç asset'lerinin durumu)
 2. `docs/plan-faz2b.md`: **sıradaki işlerin planı** (K13'te onaylandı). Işık geçişi ve çağlayanlar yapıldı; sırada öteki kalite işleri var.
 3. `docs/mekan-kurgusu.md`: cennet mekânının dayanakları (ayet, hadis, Risale-i Nur, Ali Ünal), 28. Söz'deki koni misalinin metni, danışma kurulu soruları.
 4. `docs/plan-faz2a.md`: geçmiş kaydı. En üstteki "Revizyon 2" bölümü, Faz 2a'nın son hâlini anlatır.
@@ -35,6 +36,7 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - Katlar arası çiçekli taş merdivenler bulutlara yükselir. Kullanıcının referansı: çiçek ve sarmaşıkla kaplı, göğe kıvrılan taş merdiven.
   - Dışarıdan (açılış, geçiş): tabakaların kesiti, Dünya'nın katman resimleri gibi.
 - **Arsa:** Kadife çimenli boş çayır, inci ve yakut çakıl sınırı, ortada ışıklı Tûbâ çekirdeği. Dev Tûbâ yok.
+- **Her şey zikirle oluşur (K16):** Mekândaki ağaç, ırmak, yapı gibi her öğe bir asset'tir ve oyunda zikirle oluşur. Cennet sahnesindeki dolu görünüm bir vitrindir. Bitkilerin bütün aşamaları aynı kalitede olmalı.
 - **Stil ve ışık (K11, K12):**
   - Filtresiz 3D.
   - Işık ara sıra Nur (altın) ile Sky/Ori (beyaz-turkuaz, nurani parıltılar) arasında değişir. Su, çiçek ve nur kendi ışığıyla parlar.
@@ -83,7 +85,7 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 1. ~~Nur ↔ Ori ışık geçişi~~ (yapıldı, onaylandı).
 2. Kalite, K14'e göre "daha detaylı ve gerçekçi":
    - ~~gökten inen çağlayanlar~~ (yapıldı, kabul edildi)
-   - ~~ağaçlar~~ (yapıldı; kullanıcının görüşü bekleniyor)
+   - ~~ağaçlar~~ (yapıldı; kullanıcı çok beğendi). Kalan ağaç asset'leri K16'da: Tûbâ aşamaları, çınar, servi, nar (aşamalı), zeytin, incir, Toros sediri, defne; bütün türlerin tohum ve filiz aşamaları.
    - kesitin derinliği (sıradaki)
    - köşk ve çadır: yakın plan ayrıntı eksik
    - kuşlar ve kelebekler (model fabrikasında, K13)
