@@ -148,6 +148,7 @@ godot --headless --path game -s res://tests/run_tests.gd   # testler
 # Cennet sahnesi: res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur_ori|nur|sky|pixar|yagli_boya --zb-kamera=ufuk|arsa|kesit|model
 #   model: tek modeli arsada inceleme, ör. --zb-model=ZB_agac_hurma_a4 --zb-model-aci=0 (cek.sh ek argümanıyla)
 #   --zb-tuba=1..5: arsadaki Tûbâ'nın aşaması (tohum, filiz, fidan, olgun, ulu)
+#   --zb-kam="x,y,z;hx,hy,hz;fov": kamerayı dosyaya dokunmadan dener (konum; hedef; görüş açısı)
 #   nur_ori (varsayılan): Nur ↔ Ori geçişi. --zb-isik=0..1 ışığı sabitler; --zb-ayar="ortam/parlama/0=0.2;gok/bulut=0.5"
 #   profil değerlerini dosyaya dokunmadan dener; N tuşu geçişi başlatır.
 tools/render/cek.sh nur ufuk 800x450 16 /tmp/nur_ufuk.png   # cennet sahnesi çekimi (lavapipe; ~5 dk, üçü paralel olur)

@@ -9,6 +9,7 @@ extends Node3D
 ##     --zb-model-aci=30 (bakış yönü, derece) --zb-model-yukseklik=6 (kamera yükseltisi, derece)
 ##     --zb-model-doluluk=0.85 (modelin kadrajı doldurma oranı)
 ##   --zb-tuba=1..5: arsadaki Tûbâ'nın aşaması (tohum, filiz, fidan, olgun, ulu; K17)
+##   --zb-kam="x,y,z;hx,hy,hz;fov": kamerayı yerleşim dosyasına dokunmadan dener (konum; hedef; görüş açısı)
 ##   (ekran görüntüsü için ayrıca --zb-ekran=/yol.png --zb-kare=30; Game autoload yakalar)
 ##
 ## nur_ori kipinde ışık zemin olarak Nur'dur; zikir tamamlanınca ya da bir olayda
@@ -589,6 +590,14 @@ func _kamera_kur() -> void:
 	kam.position = Vector3(kn[0], kn[1], kn[2])
 	kam.look_at(Vector3(hd[0], hd[1], hd[2]))
 	kam.fov = tanim["fov"]
+	if _arg.has("kam"):
+		# Geliştirme: --zb-kam="x,y,z;hx,hy,hz;fov" kamerayı yerleşim dosyasına dokunmadan dener
+		var p: PackedStringArray = str(_arg["kam"]).split(";")
+		var a := p[0].split_floats(",")
+		var b := p[1].split_floats(",")
+		kam.position = Vector3(a[0], a[1], a[2])
+		kam.look_at(Vector3(b[0], b[1], b[2]))
+		kam.fov = float(p[2])
 	if _inceleme_modeli:
 		_model_kamerasi(kam)
 	kam.near = 0.15
