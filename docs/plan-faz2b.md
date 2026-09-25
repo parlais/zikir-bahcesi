@@ -14,9 +14,10 @@ Bu belge sıradaki işleri toplar.
 **Geri bildirim (K14, 2026-09-25):**
 - Işık geçişi ve süreleri onaylandı; çağlayanlar kabul edildi.
 - Genel istek: "her şey daha detaylı ve gerçekçi". Kalan kalite işleri (kesit, ağaç ve köşk modelleri, kuşlar ve kelebekler) bu ölçütle yapılır.
-- Başlamadan önce kullanıcıya iki soru sorulacak (K14):
-  - "Gerçekçi"nin K6'daki "rüya gibi" ilkesiyle dengesi ne olacak?
-  - CC0 dokular kullanılabilir mi?
+- İki soru soruldu ve cevaplandı (K15):
+  - Biçim ve malzeme gerçekçi, ışık rüya gibi.
+  - Modeller fabrikada üretilir; yüzey dokuları CC0 kütüphanelerinden gelebilir.
+  - İlk iş ağaçlar.
 
 ## 1. Işık geçişi: Nur ↔ Ori (K12)
 - `animasyon_stilleri.gd` içindeki `nur` ve `sky` profilleri iki uç durumdur. Bir karıştırıcı bunları zamanla yumuşakça birbirine geçirir.
@@ -67,7 +68,7 @@ Bu belge sıradaki işleri toplar.
       - Suyu okutan şeyler: doygun su rengi, uzun paralel çizgiler ve akış (film).
       - Uzak görünüş oyunun dikey ekranında (720×1280) değerlendirilmeli. 800×450'lik deneme çekimi, dikey ekranın üçte biri kadar ayrıntı gösterir.
     - İnceleme için `selale` kamerası (360 m) ve akış filmi (`tools/render/film.sh`).
-- **Sıradaki (yeni oturum):** Kesit, sonra modeller, sonra canlılık. Sıra, kullanıcıya teyit ettirilir.
+- **Sıra (K15):** önce ağaçlar, sonra kesit, köşk ve çadır, en son kuşlar ve kelebekler.
 - **Kesit (dış görünüm):**
   - Şema gibi duruyor. Derinlik, ışık ve her katın farklı karakteri güçlenmeli (Rahmân 46-76: üst katlarda çeşitlilik artar).
   - Katlar arası merdivenler seçilir olmalı.

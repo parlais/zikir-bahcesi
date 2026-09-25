@@ -81,13 +81,15 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
    - kesitin derinliği
    - ağaç ve köşk modelleri: ağaçlar lolipop gibi, köşk ve çadırda yakın ayrıntı eksik
    - kuşlar ve kelebekler (model fabrikasında, K13)
-   - Başlamadan önce K14'teki iki soruyu sor ve sırayı teyit ettir.
+   - K15: önce ağaçlar, sonra kesit, köşk ve çadır, kuşlar ve kelebekler.
 3. Plandaki mekanikler: nur tohumu ve bahar açılışı, açılış ve katlar arası geçiş (nur izi), merdivenle kat değiştirme, farklı katlardaki arkadaş bahçeleri, Firdevs ve nur katı çekimi.
 4. Arayüz (K7) sonra.
 
+**Gerçekçilik ölçütü (K15):**
+- Biçim ve malzeme gerçekçi, ışık rüya gibi (Nur/Ori). Fotogerçekçilik hedeflenmez.
+- Modeller fabrikada üretilir (K2). Yüzey dokuları CC0 kütüphanelerinden (Poly Haven, ambientCG) gelebilir. Bu siteler ortamın ağ politikasında izinli değilse dokular prosedürel üretilir.
+
 **Açık sorular:**
-- K14: "Gerçekçi"nin K6'daki "rüya gibi" ilkesiyle dengesi ne olacak? Yüksek ayrıntı ve inandırıcılık mı, fotogerçekçi dokular mı?
-- K14: Gerçekçilik için CC0 dokular (Poly Haven, ambientCG) kullanılabilir mi, yoksa dokular da prosedürel mi üretilsin?
 - Danışma kurulu soruları: `mekan-kurgusu.md`.
 
 ## Ortam kurulumu (her yeni bulut oturumunda gerekir)

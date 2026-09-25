@@ -158,3 +158,17 @@ Asset listesinin açık bıraktığı yerler için seçilen değerler aşağıda
   - Sıradaki kalite işlerinin ölçütü budur: kesit, ağaç ve köşk modelleri, kuşlar ve kelebekler.
   - Açık konu (yeni oturumda kullanıcıya sorulacak): "Gerçekçi" ne kadar gerçekçi? K6'daki ilke "gerçekçi değil, rüya gibi; biçimler tanıdık, nitelik ve ışık dünya dışı" idi. Yüksek ayrıntı ve inandırıcılık mı isteniyor, yoksa fotogerçekçi dokular ve malzemeler mi?
   - Açık konu: Gerçekçilik için CC0 doku kütüphaneleri (Poly Haven, ambientCG; lisans riski yok) kullanılabilir mi, yoksa dokular da prosedürel mi üretilsin (K2)?
+
+## K15 — Gerçekçilik ölçütü: biçim ve malzeme gerçekçi, ışık rüya gibi; dokular CC0; ilk iş ağaçlar (2026-09-25)
+K14'teki iki açık soru ve iş sırası kullanıcıya soruldu.
+- **Gerçekçilik ve K6 dengesi:** Biçim, ayrıntı ve malzeme inandırıcı olur.
+  - Ağaçlar gerçekten dallanır ve binlerce yaprak taşır.
+  - Taşta ve mermerde doku, yapılarda oyma ve çini bulunur.
+  - Işık, renk ve parıltı Nur ile Ori'deki gibi dünya dışı kalır.
+  - K6'daki ilke korunur: biçimler tanıdık, nitelik ve ışık dünya dışı. Fotogerçekçilik hedeflenmez.
+- **Dokular (karma):**
+  - Modeller model fabrikasında üretilmeye devam eder (K2 geçerli).
+  - Yüzey dokuları CC0 kütüphanelerinden (Poly Haven, ambientCG) gelebilir: ağaç kabuğu, taş, mermer, toprak. Cennet paletine göre renklendirilir.
+  - CC0 3D modeller kullanılmaz.
+  - Bulut ortamının ağ politikası bu siteleri engelliyor; kullanıcının izin vermesi gerekir. İzin gelene kadar dokular prosedürel üretilir.
+- **Sıra:** Önce ağaçlar gelir. Ekranda en çok görünen ve "lolipop" hissini en çok veren öğe ağaçlardır; iyileşmeleri ufuk, arsa ve kesit çekimlerini birlikte yükseltir. Sonra kesit, köşk ve çadır, kuşlar ve kelebekler gelir.
