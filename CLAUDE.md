@@ -79,7 +79,7 @@ unzip -o -q godot.zip && ln -sf $PWD/Godot_v4.7.2-stable_linux.x86_64 /usr/local
 # Python paketleri
 pip install numpy pygltflib pillow scipy
 # Forward+ (Vulkan) için yazılım sürücüsü (GPU yok)
-apt-get update -qq && apt-get install -y -qq mesa-vulkan-drivers
+apt-get update -qq && apt-get install -y -qq mesa-vulkan-drivers xvfb
 # Model önizleme için
 cd /home/user/zikir-bahcesi/tools/preview && npm install
 ```
