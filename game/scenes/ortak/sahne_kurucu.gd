@@ -49,7 +49,10 @@ const MALZEME_TABLOSU := {
 	# Dallanan ağaçlar (K15): kabuk dokusu; "yaprak_*" adları _satir() ile yaprak_kart'a gider.
 	"kabuk": ["kabuk", {"doku": DOKULAR + "kabuk.png", "doku_n": DOKULAR + "kabuk_n.png", "golge_alma": 0.75,
 		"spek": 0.1}, ""],
-	# Tûbâ'nın yaprakları (K17): kenarlarındaki altın-beyaz ışıltı kendi ışığıyla parlar
+	# Tûbâ (K17): gümüş-fildişi kabuk hafifçe kendi ışığıyla parlar; yaprak kenarlarındaki
+	# altın-beyaz ışıltı da öyle
+	"kabuk_tuba": ["kabuk", {"doku": DOKULAR + "kabuk_tuba.png", "doku_n": DOKULAR + "kabuk_tuba_n.png",
+		"golge_alma": 0.6, "spek": 0.15, "isima_guc": 0.22, "isima_renk": Color(1.0, 0.93, 0.78)}, ""],
 	"yaprak_tuba": ["yaprak_kart", {"doku": DOKULAR + "yaprak_tuba.png", "golge_alma": 0.5, "spek": 0.05,
 		"isima_guc": 0.9, "isima_renk": Color(1.0, 0.88, 0.6)}, "yaprak"],
 }

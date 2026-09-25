@@ -335,15 +335,22 @@ def tuba_agaci(ad: str, olcek: float, seviye: int | None = None) -> Node:
     V = yapraklar[0].V
     merkez = V.mean(0)
     yari = np.maximum(np.percentile(np.abs(V - merkez), 92, axis=0), 0.3)
-    cicek = _nur_cicekleri(V, merkez, yari, int(60 + 240 * min(olcek, 1.0)), 0.035 + 0.03 * olcek, 97)
+    cicek = _nur_cicekleri(V, merkez, yari, int(25 + 260 * min(olcek, 1.0) ** 2), 0.02 + 0.045 * olcek, 97)
     if cicek is not None:
         cicek.W = ruzgar(cicek.V).astype(np.float32)
         root.add(cicek)
     r_gov = TUBA.govde_r * olcek
-    root.add(nur_kokleri(r_gov * 1.4, r_gov * 1.4 + 0.6 + 2.5 * olcek, 9, 0.012 + 0.02 * olcek, y=0.02))
     if olcek < 0.3:
-        root.add(dikim_yeri(0.6 + r_gov, 0.1, tohum=94))
-    root.add(Node("isik_cekirdek", translation=(0.0, 0.3 + 0.3 * olcek, 0.0)))
+        # Fidan: çekirdeğin nur kökleri hâlâ toprağın üstünde, dipte küçük bir nur
+        root.add(nur_kokleri(r_gov * 1.4, r_gov * 1.4 + 0.9, 8, 0.012, y=0.02), dikim_yeri(0.6 + r_gov, 0.1, tohum=94))
+        root.add(Node("isik_cekirdek", translation=(0.0, 0.25, 0.0), scale=(0.55, 0.55, 0.55)))
+    else:
+        # Olgun ve ulu: nur, gövdenin dibinde kök aralarından sızar (payanda köklerin arası)
+        for i in range(TUBA.kok_lob):
+            a = 2 * math.pi * (i + 0.5) / TUBA.kok_lob - 0.7 / TUBA.kok_lob
+            rr = r_gov * (1.0 + 1.4 * TUBA.kok * 0.45)
+            root.add(Node(f"isik_kok_{i}", translation=(rr * math.cos(a), 0.15 + 0.2 * olcek, rr * math.sin(a)),
+                          scale=(0.6 * olcek + 0.3,) * 3))
     root.add(Node("nur_tac", translation=tuple(float(x) for x in merkez), scale=tuple(float(x) for x in yari)))
     return root
 

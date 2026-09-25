@@ -11,6 +11,9 @@ uniform float normal_guc = 1.0;
 uniform float puruz = 0.9;
 uniform float ruzgar = 0.08;
 uniform float ruzgar_hiz = 1.3;
+// Işıma (Tûbâ'nın kabuğu): hafif, kendi ışığı; gölgede de açık renkli kalır
+uniform float isima_guc = 0.0;
+uniform vec3 isima_renk : source_color = vec3(1.0);
 
 void vertex() {
 	vec3 w = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
@@ -27,5 +30,6 @@ void fragment() {
 	NORMAL_MAP_DEPTH = normal_guc;
 	ROUGHNESS = puruz;
 	SPECULAR = 0.3;
-	EMISSION = kenar * pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0) * kenar_renk * 0.3;
+	EMISSION = kenar * pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0) * kenar_renk * 0.3
+		+ ALBEDO * isima_renk * isima_guc;
 }

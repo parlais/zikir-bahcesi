@@ -151,8 +151,8 @@ CINAR = AgacTuru(
 # aşamadır (10000 tevhid): ~22 m boy, ~26 m taç; arsanın tamamını gölgeler (Küllî Kaideler 1).
 TUBA = AgacTuru(
     boy=9.0, govde_r=1.05, govde_uc=0.22, govde_egim=2.0, govde_kivrim=0.1, govde_segment=16, kok=1.1,
-    kok_lob=7, kok_boy=3.5, kabuk_renk=(226, 220, 204), kabuk_renk_uc=(222, 214, 190), kabuk_doku=1.6,
-    tohum=91,
+    kok_lob=7, kok_boy=3.5, kabuk_renk=(128, 128, 128), kabuk_renk_uc=(128, 126, 118), kabuk_doku=1.6,
+    kabuk_malzeme="kabuk_tuba", tohum=91,
     seviyeler=[
         Seviye(sayi=8, bas=0.45, son=0.98, aci=62, aci_sapma=10, uzunluk=1.25, sekil="yarim_kure", egim=0.45,
                kivrim=0.35, yaricap=0.6, uc=0.2, segment=10, adim=0.9),
@@ -323,7 +323,7 @@ def _serit_mesh(parcalar, merkez, malzeme, golge_dip=0.72, dis=0.45, dip_ruzgar=
 def hurma_modeli(ad: str, olcek: float = 1.0, meyveli: bool = True) -> Node:
     """Olgun hurma (olcek 1): 5,5 m gövde, 26 yaprak, dört salkım. Fidanda olcek küçüktür."""
     rng = np.random.default_rng(31 + int(olcek * 10))
-    boy = 5.5 * olcek
+    boy = 5.5 * olcek if olcek >= 0.3 else 0.22           # genç hurmada gövde yaprak dipleriyle örtülü
     # Gövde: hafif eğik ve kıvrık; dipte kök genişlemesi, tepede yaprak diplerinin kalınlığı
     egim = rng.uniform(0, 2 * math.pi)
     P = []
@@ -332,7 +332,7 @@ def hurma_modeli(ad: str, olcek: float = 1.0, meyveli: bool = True) -> Node:
         P.append([0.35 * olcek * t * t * math.cos(egim), -0.1 * olcek + boy * t, 0.35 * olcek * t * t * math.sin(egim)])
     P = np.array(P)
     s = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(P, axis=0), axis=1))])
-    R = (0.23 - 0.03 * s / s[-1] + 0.05 * np.clip((s / s[-1] - 0.9) / 0.1, 0, 1)) * max(olcek, 0.45)
+    R = (0.23 - 0.03 * s / s[-1] + 0.05 * np.clip((s / s[-1] - 0.9) / 0.1, 0, 1)) * max(olcek, 0.3)
     dal = Dal(P, R, 0, 12, s)
     Vg, Fg, Ng, UVg = _boru(dal, HURMA_GOVDE, True)
     renk = np.array([222, 204, 178], np.float32) / 255

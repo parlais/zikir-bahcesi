@@ -466,7 +466,7 @@ def muz_govdesi(n=512, tohum=14):
     kin = _fbm(n, 3, 1, rng, 3)
     kenar = np.abs(((np.arange(n)[None] / n * 3 + kin * 1.2) % 1.0) - 0.5) * 2
     leke = np.clip((_fbm(n, 8, 12, rng, 4) - 0.66) / 0.1, 0, 1)
-    l = 0.55 + 0.14 * (lif - 0.5) - 0.12 * np.clip(1 - kenar / 0.08, 0, 1)
+    l = 0.7 + 0.14 * (lif - 0.5) - 0.12 * np.clip(1 - kenar / 0.08, 0, 1)
     rgb = np.stack([l * 0.95, l * 1.02, l * 0.78], -1)
     rgb = rgb * (1 - 0.45 * leke[..., None]) + np.array([0.32, 0.2, 0.16]) * 0.45 * leke[..., None]
     h = lif * 0.3 + np.clip(kenar / 0.1, 0, 1) * 0.5
@@ -642,6 +642,35 @@ def toprak_dokusu(n=512, tohum=21):
     return albedo, _normal(h, 5.0)
 
 
+def tuba_kabugu(n=512, tohum=19):
+    """Tûbâ kabuğu: pürüzsüz, açık gümüş-fildişi; hafif dikey damarlar, yatay küçük
+    kovucuklar (lentisel) ve ince altın damarlar. Renk dokudadır. Döşenebilir."""
+    rng = np.random.default_rng(tohum)
+    iri = _fbm(n, 3, 2, rng, 4)
+    dikey = _fbm(n, 24, 3, rng, 4)
+    ince = _fbm(n, 64, 64, rng, 3)
+    l = 0.82 + 0.06 * (iri - 0.5) + 0.05 * (dikey - 0.5) + 0.03 * (ince - 0.5)
+    rgb = np.stack([l * 0.99, l * 0.97, l * 0.9], -1)
+    h = iri * 0.3 + dikey * 0.2
+    # Lentiseller: kısa yatay koyu çizgiler
+    y, x = np.mgrid[0:n, 0:n]
+    for _ in range(90):
+        cx, cy = rng.uniform(0, n), rng.uniform(0, n)
+        L, k = rng.uniform(6, 16), rng.uniform(1.2, 2.2)
+        for ox in (-n, 0, n):
+            for oy in (-n, 0, n):
+                m = np.clip(1 - np.abs(x - cx - ox) / L, 0, 1) * np.clip(1 - np.abs(y - cy - oy) / k, 0, 1)
+                if m.any():
+                    rgb = rgb * (1 - 0.35 * m[..., None])
+                    h = h - m * 0.3
+    # İnce altın damarlar: dikey, kıvrık
+    faz = (x / n) * 7 + (_fbm(n, 3, 5, rng, 3) - 0.5) * 2.5
+    damar = np.clip(1 - np.abs((faz % 1.0) - 0.5) / 0.02, 0, 1) * np.clip((dikey - 0.45) / 0.2, 0, 1)
+    rgb = rgb * (1 - 0.5 * damar[..., None]) + np.array([0.95, 0.8, 0.45]) * 0.5 * damar[..., None]
+    albedo = Image.fromarray(np.round(np.clip(rgb, 0, 1) * 255).astype(np.uint8), "RGB")
+    return albedo, _normal(h, 3.0)
+
+
 def cinar_kabugu(n=512, tohum=17):
     """Çınar kabuğu: pul pul dökülen, alacalı levhalar (krem, zeytin grisi, açık kahve).
     Renkler dokudadır; köşe rengi griye yakın verilir. Döşenebilir; albedo ve normal."""
@@ -715,6 +744,7 @@ def dokulari_yaz(klasor: Path) -> list[Path]:
         yazilan.append(klasor / "yaprak_tek.png")
     for ad, (albedo, normal) in (("kabuk", kabuk_dokusu()), ("kabuk_hurma", hurma_kabugu()),
                                  ("kabuk_muz", muz_govdesi()), ("kabuk_cinar", cinar_kabugu()),
+                                 ("kabuk_tuba", tuba_kabugu()),
                                  ("yuzey_toprak", toprak_dokusu())):
         for img, dosya in ((albedo, f"{ad}.png"), (normal, f"{ad}_n.png")):
             img.save(klasor / dosya, optimize=True)
