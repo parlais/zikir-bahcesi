@@ -250,7 +250,8 @@ func _gok_kur() -> void:
 	var i := 0
 	for s in yer["gok_selale"]:
 		var g: float = s[3]
-		_bulut_kumesi(Vector3(s[0], s[1] + 40.0, s[2]), g * 6.0, 46, 50 + i, 2.2)
+		# Perdenin başı bulutun içinden çıksın: bulutun altı perdenin tepesini örter
+		_bulut_kumesi(Vector3(s[0], s[1] + 15.0, s[2]), g * 6.0, 46, 50 + i, 2.2)
 		_hale(Vector3(s[0], s[1] - 10.0, s[2]), g * 5.0, nur_renk, 0.5)
 		i += 1
 	var u: Array = yer["merdiven_ust"]
@@ -320,11 +321,16 @@ func _parcaciklar_kur() -> void:
 		var z := k.parcacik(en_cok, Vector3(-8, 3.5, -40), Vector3(36, 3.0, 36), 0.05, k.yol("parcacik/nur_renk"), 2.5,
 			Vector3(0, 0.03, 0), 0.08, 14.0)
 		k.bagla(z, "amount_ratio", func(p: Dictionary) -> float: return float(p["parcacik"]["nur"]) / en_cok)
-	# Gökten inen çağlayanların dibinde yükselen su sisi
+	# Gökten inen çağlayanlar: dipte ağaçların üstüne taşan kabarık su sisi, perdenin alt
+	# yarısından yanlara saçılan serpinti (bulut dokusuyla, kabarık)
+	var sis_renk := k.yol("parcacik/sis_renk")
 	for s in yer["selale_dip"]:
 		var g: float = s[3]
-		k.parcacik(60, Vector3(s[0], s[1] + g * 0.5, s[2]), Vector3(g * 1.2, g * 0.5, g * 0.8), g * 2.4,
-			k.yol("parcacik/sis_renk"), 0.0, Vector3(0, 0.6, 0), 1.2, 10.0)
+		var dip := Vector3(s[0], s[1], s[2])
+		k.parcacik(60, dip + Vector3(0, g * 0.8, 0), Vector3(g * 1.5, g * 0.6, g * 0.9), g * 2.0, sis_renk, 0.0,
+			Vector3(0, 0.7, 0), 1.2, 16.0, BaseMaterial3D.BILLBOARD_ENABLED, _bulut_doku())
+		k.parcacik(140, dip + Vector3(0, g * 2.4, 0), Vector3(g * 1.1, g * 2.0, g * 0.5), g * 0.35, sis_renk, 0.15,
+			Vector3(0, -2.0, 0), 4.0, 7.0, BaseMaterial3D.BILLBOARD_ENABLED, _bulut_doku())
 	# Selsebil levhasının dibinde ince serpinti
 	for t in yer["selsebil"]:
 		var y := Vector3(t[0], t[1] + 0.6, t[2])

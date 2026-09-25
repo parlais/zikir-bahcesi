@@ -39,6 +39,7 @@ MATERIALS = {
     "bal": dict(roughness=0.1, metallic=0.0, alpha=0.85),
     "serbet": dict(roughness=0.1, metallic=0.0, alpha=0.85),
     "selale": dict(roughness=0.2, metallic=0.0, alpha=0.8),
+    "selale_pus": dict(roughness=1.0, metallic=0.0, alpha=0.3),
     "tugla": dict(roughness=0.4, metallic=0.4),
     "kumas": dict(roughness=0.95, metallic=0.0),
     "bulut": dict(roughness=1.0, metallic=0.0),

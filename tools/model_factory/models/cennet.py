@@ -319,42 +319,67 @@ def dunya_cennet() -> Node:
 # ZB_dunya_selaleler: gökten, bulutların içinden inen dört çağlayan
 # --------------------------------------------------------------------------
 
+def _lin2srgb(x):
+    """gltf_export.srgb_to_linear'ın tersi: shader köşe verisini yazıldığı gibi okusun."""
+    x = np.clip(np.asarray(x, float), 0.0, 1.0)
+    return np.where(x <= 0.0031308, x * 12.92, 1.055 * np.power(x, 1 / 2.4) - 0.055)
+
+
 def _gok_selalesi(x, z, y_alt, y_ust, gen, bakis, seed):
-    """Dikey, hafif dalgalı su perdesi: tepesi bulutun içinde, dibi gölcükte.
-    bakis: perdenin yüzünün döndüğü yatay yön (oyuncuya)."""
+    """Gökten, bulutun içinden inen çağlayan (at kuyruğu biçimi). İki mesh döner:
+      perde ("selale"): tepede dar, aşağı doğru genişleyen, hafif kıvrımlı su perdesi
+      pus ("selale_pus"): perdenin arkasında daha geniş, ince serpinti zarfı
+    bakis: perdenin yüzünün döndüğü yatay yön (oyuncuya).
+
+    Köşe verisi shader içindir (selale.gdshader):
+      COLOR.r  perdenin eni boyunca konum (0 sol kenar, 1 sağ kenar)
+      COLOR.g  tepe genişliği / 200 m (akış çizgilerinin ölçeği)
+      COLOR.b  çağlayana özgü rastgele sayı (desenler her çağlayanda farklı)
+      COLOR.a  tepeden dibe 1 -> 0
+    Dışa aktarım renkleri sRGB'den doğrusala çevirdiği için r, g, b ters çevrilerek yazılır."""
     rng = np.random.default_rng(seed)
     b = np.asarray(bakis, float)
     b /= np.linalg.norm(b)
     yan = np.array([-b[1], b[0]])
-    nv, nu = 40, 6
-    V, W = [], []
-    for j in range(nv + 1):
-        v = j / nv                                              # 0 tepe, 1 dip
-        y = y_ust + (y_alt - y_ust) * v
-        g = gen * (0.8 + 0.7 * v ** 2)
-        kivrim = 3.0 * math.sin(v * 7.0 + seed) * v
-        for i in range(nu + 1):
-            u = i / nu * 2 - 1
-            ic = (1 - u * u) * gen * 0.12                       # perde ortası hafif öne kabarık
-            px = x + yan[0] * (u * g / 2 + kivrim) + b[0] * ic
-            pz = z + yan[1] * (u * g / 2 + kivrim) + b[1] * ic
-            V.append([px, y, pz])
-            W.append(1 - v)
-    CV = np.tile(np.array(renk("su")), (len(V), 1))
-    m = _izgara(V, nu, nv, CV, "selale", W=W)
-    return _yuz_yonu(m, (b[0], 0, b[1]))
+    faz = rng.uniform(0, 2 * math.pi)
+    tohum = rng.uniform(0.05, 0.95)
+    nv, nu = 64, 16
+
+    def perde(genislik, geri, malzeme):
+        V, W, CV = [], [], []
+        for j in range(nv + 1):
+            v = j / nv                                          # 0 tepe, 1 dip
+            y = y_ust + (y_alt - y_ust) * v
+            g = genislik(v)
+            kivrim = gen * 0.14 * math.sin(v * 4.2 + faz) * v   # rüzgârla hafif kıvrılır
+            for i in range(nu + 1):
+                u = i / nu * 2 - 1
+                ic = (1 - u * u) * gen * 0.14 * (0.4 + v) - geri  # ortası öne kabarık, aşağıda daha çok
+                px = x + yan[0] * (u * g / 2 + kivrim) + b[0] * ic
+                pz = z + yan[1] * (u * g / 2 + kivrim) + b[1] * ic
+                V.append([px, y, pz])
+                W.append(1 - v)
+                CV.append([i / nu, gen * 0.55 / 200.0, tohum])
+        CV = _lin2srgb(np.asarray(CV))
+        m = _izgara(V, nu, nv, CV, malzeme, W=W)
+        return _yuz_yonu(m, (b[0], 0, b[1]))
+
+    ana = perde(lambda v: gen * (0.55 + 1.25 * v ** 1.7), 0.0, "selale")
+    pus = perde(lambda v: gen * (0.9 + 2.3 * v ** 1.5), gen * 0.18, "selale_pus")
+    return ana, pus
 
 
 @model("ZB_dunya_selaleler")
 def dunya_selaleler() -> Node:
     irmaklar = _irmaklar()
-    parca = []
+    ana, pus = [], []
     for k, ir in enumerate(irmaklar):
         x, z = ir.P[0]
-        parca.append(_gok_selalesi(x, z, float(ir.wl[0]) - 1.5, SELALE_UST + 30 * k, ir.gen * 4.0,
-                                   (-x, -z), 11 + k))
+        a, p = _gok_selalesi(x, z, float(ir.wl[0]) - 1.5, SELALE_UST + 30 * k, ir.gen * 4.0, (-x, -z), 11 + k)
+        ana.append(a)
+        pus.append(p)
     root = Node("ZB_dunya_selaleler")
-    root.add(merge(*parca))
+    root.add(merge(*pus), merge(*ana))
     return root
 
 
@@ -474,14 +499,16 @@ def _kesit_irmaklari(k):
 
 
 def _kesit_selaleleri():
-    parca = []
+    ana, pus = [], []
     for k in range(KAT - 1):
         for j in range(4):
             x, z = kesit_selale(k, j)
             y_alt = float(kesit_zemin_y(k, x, z)) + 2.0
             y_ust = (k + 1) * KAT_H + 2.0
-            parca.append(_gok_selalesi(x, z, y_alt, y_ust, 75.0, (0.25, 1.0), 40 + k * 4 + j))
-    return merge(*parca)
+            a, p = _gok_selalesi(x, z, y_alt, y_ust, 75.0, (0.25, 1.0), 40 + k * 4 + j)
+            ana.append(a)
+            pus.append(p)
+    return [merge(*pus), merge(*ana)]
 
 
 def _kesit_merdivenleri():
@@ -549,7 +576,7 @@ def dunya_kesit() -> Node:
     kaynak = lathe([(60, 0), (52, 6), (20, 10), (0, 12)], 24, "nur_beyaz").translate(0, float(kesit_zemin_y(KAT - 1, 0, -650)) + 2, -650)
     root.add(Node("zeminler", [merge(*zemin)]), Node("kesit_yuzu", [merge(*yuz)]), Node("tavanlar", [merge(*tavan)]),
              Node("gokler", [merge(*arka)]), Node("irmaklar", [merge(*v) for v in irmak.values()]),
-             Node("selaleler", [_kesit_selaleleri()]), Node("koskler", [_kesit_koskleri()]),
+             Node("selaleler", _kesit_selaleleri()), Node("koskler", [_kesit_koskleri()]),
              Node("merdivenler", list(_kesit_merdivenleri())),
              Node("kaynak", [kaynak.with_material("nur")]))
     root.add(Node("isik_firdevs", translation=(0.0, KAT * KAT_H + 80.0, -650.0)))
@@ -768,6 +795,9 @@ def yerlesim() -> dict:
         "ufuk": {"konum": [12.0, _yerde(12, 38, irmaklar) + 17.0, 38.0], "hedef": [-10.0, 60.0, -700.0], "fov": 55.0},
         "arsa": {"konum": [9.0, 5.8, 21.0], "hedef": [-2.0, 4.0, -40.0], "fov": 55.0},
         "kesit": {"konum": [0.0, 2600.0, 16500.0], "hedef": [0.0, 1230.0, -700.0], "fov": 10.5},
+        # Geliştirme: gökten inen su çağlayanına 360 m'den yakın bakış (kalite incelemesi)
+        "selale": {"konum": [-250.0, _yerde(-250, -900, irmaklar) + 60.0, -900.0], "hedef": [-330.0, 170.0, -1250.0],
+                   "fov": 55.0},
     }
     return d
 

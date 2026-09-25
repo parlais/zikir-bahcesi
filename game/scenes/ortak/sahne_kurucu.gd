@@ -40,6 +40,7 @@ const MALZEME_TABLOSU := {
 	"bal": ["su", {"derin": Color("8a4a08"), "sig": Color("eaa030")}, "bal"],
 	"serbet": ["su", {"derin": Color("5a0618"), "sig": Color("d8305a")}, "serbet"],
 	"selale": ["selale", {}, "selale"],
+	"selale_pus": ["selale", {"pus": 1.0}, "selale"],
 	"tugla": ["tugla", {}, "tugla"],
 	"kumas": ["yuzey", {"puruz": 0.95, "detay": 0.05, "detay_olcek": 14.0, "spek": 0.08}, "kumas"],
 	"tavan": ["tavan", {}, "tavan"],
@@ -368,9 +369,10 @@ func yuvarlak_doku() -> Texture2D:
 
 
 ## renk bir Color ya da Callable(profil) -> Color olabilir (yol() ile); Callable ise
-## ışık geçişinde profile göre güncellenir.
+## ışık geçişinde profile göre güncellenir. doku verilmezse yumuşak yuvarlak leke.
 func parcacik(adet: int, merkez: Vector3, alan: Vector3, boy: float, renk: Variant, isik: float,
-		yercekimi: Vector3, hiz: float, omur: float, billboard := BaseMaterial3D.BILLBOARD_ENABLED) -> GPUParticles3D:
+		yercekimi: Vector3, hiz: float, omur: float, billboard := BaseMaterial3D.BILLBOARD_ENABLED,
+		doku: Texture2D = null) -> GPUParticles3D:
 	var p := GPUParticles3D.new()
 	p.amount = adet
 	p.lifetime = omur
@@ -412,7 +414,7 @@ func parcacik(adet: int, merkez: Vector3, alan: Vector3, boy: float, renk: Varia
 		bagla(mat, "albedo_color", func(p: Dictionary) -> Color: return (renk as Callable).call(p) * (1.0 + isik))
 	else:
 		mat.albedo_color = renk * (1.0 + isik)
-	mat.albedo_texture = yuvarlak_doku()
+	mat.albedo_texture = doku if doku else yuvarlak_doku()
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	q.material = mat
 	p.draw_pass_1 = q
