@@ -143,7 +143,7 @@ Asset listesinin açık bıraktığı yerler için seçilen değerler aşağıda
   - Işığın zemini Nur'dur (altın). Bir zikir, dua ya da sure tamamlanınca ya da bir esma tamamlanınca ışık yavaşça Ori'nin beyaz-turkuaz nurani ışığına geçer. Bir süre öyle kalır, sonra yavaşça Nur'a döner. Zikir sürdükçe Ori'de kalır.
   - Olaylar da aynı geçişi başlatır: Tûbâ'nın aşama atlaması, kat değiştirme, arkadaş bahçesini ziyaret, açılış.
   - Işık gerçek saate ya da akan zamana bağlanmaz; değişim sabah-akşam gibi okunmasın (K5). Meryem 62 sorusu danışma kurulunda duruyor.
-  - Geçiş sırasında gölgelerin yönü ve gökteki ışığın yeri değişmez. Güneş hareket ediyormuş gibi görünmez; yalnızca ışığın rengi ve havası değişir.
+  - Işık çapraz geçer: Nur'un ışığı, gölgeleri ve gökteki parıltısı yerinde söner; Ori'ninkiler kendi yerinde belirir. Gölgeler dönmez, güneş hareket ediyormuş gibi görünmez. İki uç da onaylanan hâliyle kalır: Nur'un altın arka ışığı, Ori'nin ırmaktaki beyaz parıltısı.
   - Süreler ilk tahmindir ve tek yerden ayarlanır (`game/scenes/dunya/isik_gecisi.gd`).
 - **Canlılar:** Kuş ve kelebek gibi canlılar model fabrikasında sade, parçalı modeller olarak üretilir; kanat çırpma Godot'da yapılır. K8'deki "AI 3D aracı ya da karma üretim" sorusu canlılar için kapandı; K2 geçerli.
 

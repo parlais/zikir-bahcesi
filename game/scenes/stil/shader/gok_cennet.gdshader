@@ -10,6 +10,10 @@ uniform vec3 ufuk : source_color = vec3(0.98, 0.93, 0.85);
 uniform vec3 alt : source_color = vec3(0.9, 0.87, 0.84);
 uniform float ufuk_kalin = 0.2;
 uniform vec3 nur_yon = vec3(0.0, 0.25, -1.0);
+// Işık geçişi (K12): ikinci parıltı. nur_karisim 0'da yalnız nur_yon, 1'de yalnız
+// nur_yon_b parlar; arada biri yerinde söner, öbürü yerinde belirir (gezinmez).
+uniform vec3 nur_yon_b = vec3(0.0, 0.25, -1.0);
+uniform float nur_karisim = 0.0;
 uniform vec3 nur_renk : source_color = vec3(1.0, 0.9, 0.7);
 uniform float nur_guc = 1.0;          // geniş parıltı
 uniform float nur_cekirdek = 1.5;     // yoğun merkez
@@ -82,23 +86,31 @@ vec3 bosluk(vec3 d, float nd) {
 void sky() {
 	vec3 d = EYEDIR;
 	vec3 ny = normalize(nur_yon);
-	float nd = dot(d, ny);
+	vec3 nyb = normalize(nur_yon_b);
+	float nda = dot(d, ny);
+	float ndb = dot(d, nyb);
+	float nd = mix(nda, ndb, nur_karisim);
 	vec3 c = mix(gunduz(d), bosluk(d, nd), kozmik);
 	// Nur parıltısı: geniş hale ve yumuşak çekirdek (disk yok)
-	float yakin = clamp(nd, 0.0, 1.0);
-	c += nur_renk * (pow(yakin, mix(5.0, 14.0, kozmik)) * nur_guc * 0.5 + pow(yakin, mix(40.0, 180.0, kozmik)) * nur_cekirdek);
+	float ya = clamp(nda, 0.0, 1.0);
+	float yb = clamp(ndb, 0.0, 1.0);
+	float us_hale = mix(5.0, 14.0, kozmik);
+	float us_cekirdek = mix(40.0, 180.0, kozmik);
+	float hale = mix(pow(ya, us_hale), pow(yb, us_hale), nur_karisim);
+	float cekirdek = mix(pow(ya, us_cekirdek), pow(yb, us_cekirdek), nur_karisim);
+	c += nur_renk * (hale * nur_guc * 0.5 + cekirdek * nur_cekirdek);
 
 	if (bulut > 0.0 && d.y > 0.0 && kozmik < 0.99) {
 		vec2 bp = d.xz / (d.y + 0.1) * 0.55 * bulut_olcek + vec2(TIME * 0.003, TIME * 0.001);
 		float n = fbm(bp);
 		float yogun = smoothstep(1.0 - bulut, 1.0 - bulut + 0.28, n);
 		// Işığa bakan kenarlar açık, gölge tarafı mavimsi (2B kümülüs gölgelemesi)
-		vec2 lyon = normalize(ny.xz + vec2(1e-4)) * 0.06;
+		vec2 lyon = normalize(mix(ny.xz, nyb.xz, nur_karisim) + vec2(1e-4)) * 0.06;
 		float n2 = fbm(bp + lyon);
 		float isik = clamp(0.55 + (n - n2) * 5.0, 0.0, 1.0);
 		float ic = fbm(bp * 2.3 + 5.0);
 		vec3 bc = mix(bulut_golge, bulut_acik, clamp(isik * 0.8 + ic * 0.35, 0.0, 1.0));
-		bc += bulut_kenar * (pow(yakin, 6.0) * 0.8 + (1.0 - yogun) * 0.3 * isik);
+		bc += bulut_kenar * (mix(pow(ya, 6.0), pow(yb, 6.0), nur_karisim) * 0.8 + (1.0 - yogun) * 0.3 * isik);
 		float katman = smoothstep(0.02, 0.12, d.y) * (1.0 - smoothstep(bulut_yukseklik, bulut_yukseklik + 0.45, d.y) * 0.75);
 		c = mix(c, bc, yogun * katman * (1.0 - kozmik));
 	}

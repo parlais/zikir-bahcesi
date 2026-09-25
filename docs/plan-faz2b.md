@@ -22,14 +22,16 @@ Bu belge sıradaki işleri toplar.
   - Zemin Nur'dur. Zikir, dua, sure ya da esma tamamlanınca ışık Ori'ye geçer, bir süre kalır, Nur'a döner.
   - Olaylar da aynı geçişi başlatır: Tûbâ aşaması, kat değiştirme, ziyaret, açılış.
   - Süreler ilk tahmindir; çekimlere bakarak ayarlanır.
-- Geçişte güneşin yönü ve gökteki nurun yeri sabit kalır; gölgeler dönmez, gün dönümü gibi okunmaz.
+- Işık çapraz geçer: Nur'un ışığı ve gökteki parıltısı yerinde söner, Ori'ninkiler kendi yerinde belirir. Gölgeler dönmez, gün dönümü gibi okunmaz.
 - Doğrulama: `t` = 0, 0.5 ve 1'de üç çekim; ayrıca kısa bir geçiş dizisi (kare dizisi).
 
 **Durum (2026-09-25): yapıldı.**
-- `game/scenes/dunya/isik_karistirici.gd` (IsikKaristirici): iki profili karıştırır. `SABIT` listesindekiler Nur'dan alınır:
-  - güneşin yönü ve gökteki nurun yeri
-  - bulut deseninin ölçeği
-  - gölge mesafesi ve sis hacminin uzunluğu
+- `game/scenes/dunya/isik_karistirici.gd` (IsikKaristirici): iki profili karıştırır.
+  - Işık yönü karışmaz, çapraz geçer. Nur'un güneşi `gunes` olarak (1 − t) ile söner, Ori'ninki `gunes_b` olarak t ile belirir.
+  - Gökte de iki parıltı var: `nur_yon`, `nur_yon_b` ve `nur_karisim` (`gok_cennet.gdshader`).
+  - İlk denemede güneşin yönü Nur'da sabitlenmişti. Ori'nin ırmaktaki beyaz parıltısı ve soldaki pusu kayboldu, bu yüzden çapraz geçişe geçildi.
+  - `SABIT` listesindekiler Nur'dan alınır: bulut deseninin ölçeği (bulutlar kaymasın diye) ve sis hacminin uzunluğu.
+- Işıklar yalnız geçiş sırasında birlikte yanar; sönmüş ışık gizlenir, gölgesi çizilmez.
 - `game/scenes/dunya/isik_gecisi.gd` (IsikGecisi): zamanlayıcı.
   - Nur'dan Ori'ye 6 sn'de çıkar, Ori'den Nur'a 40 sn'de döner.
   - Ori'de kalış olaya göre değişir: tamamlanan zikir 40 sn, esma 60 sn, Tûbâ aşaması 90 sn; kat geçişi ve ziyaret 30 sn, açılış 20 sn.

@@ -11,17 +11,19 @@ extends RefCounted
 ## ve sözlükler eleman eleman karışır. Metin ve bool gibi kesikli değerler yarıda
 ## el değiştirir; bu yüzden iki uçta aynı tutulmalıdır (test eder).
 ##
+## Işığın yönü karışmaz, çapraz geçer (K13): Nur'un ışığı ("gunes") ve gökteki
+## parıltısı (nur_yon) yerinde söner, Ori'ninkiler ("gunes_b", nur_yon_b) kendi
+## yerinde belirir. Gölgeler dönmez, ışık gökte gezinmez; geçiş güneşin hareketi ya
+## da gün dönümü gibi okunmaz. İki uç da profillerin kendisidir: Ori'nin ırmaktaki
+## parıltısı ve pusu, Nur'un altın arka ışığı olduğu gibi kalır.
+##
 ## SABIT listesindekiler her t'de Nur'dan alınır:
-##   - güneşin yönü ve gökteki nurun yeri: gölgeler dönmez, ışık kaynağı gezinmez;
-##     geçiş güneşin hareketi ya da gün dönümü gibi okunmaz (K13)
 ##   - bulut deseninin ölçeği: bulutlar gökte büyüyüp kaymaz
-##   - gölge mesafesi ve hacim sisinin uzunluğu: gölge kademeleri ve sis hacmi
-##     geçiş boyunca yeniden kurulmaz
+##   - hacim sisinin uzunluğu: sis hacmi geçiş boyunca yeniden kurulmaz
 
 const UC_NUR := "nur"
 const UC_ORI := "sky"
-const SABIT := ["gunes/yon", "gunes/yukseklik", "gok/nur_yon", "gok/bulut_olcek", "gunes/golge_mesafe",
-	"ortam/hacim_sis/3"]
+const SABIT := ["gok/bulut_olcek", "ortam/hacim_sis/3"]
 ## Karıştırılmayan üst düzey alanlar (Nur'dan alınır). "kesit" üst yazımı
 ## AnimasyonStilleri.al() tarafından zaten uygulanmıştır.
 const ATLA := ["ad", "alt", "kesit"]
@@ -43,6 +45,14 @@ static func karistir(a: Dictionary, b: Dictionary, t: float) -> Dictionary:
 	p = p.duplicate(true)
 	for yol in SABIT:
 		yaz(p, yol, oku(a, yol))
+	# Çapraz geçiş: iki ışık, iki parıltı
+	p["gunes"] = (a["gunes"] as Dictionary).duplicate(true)
+	p["gunes"]["enerji"] = float(a["gunes"]["enerji"]) * (1.0 - t)
+	p["gunes_b"] = (b["gunes"] as Dictionary).duplicate(true)
+	p["gunes_b"]["enerji"] = float(b["gunes"]["enerji"]) * t
+	p["gok"]["nur_yon"] = a["gok"]["nur_yon"]
+	p["gok"]["nur_yon_b"] = b["gok"]["nur_yon"]
+	p["gok"]["nur_karisim"] = t
 	return p
 
 

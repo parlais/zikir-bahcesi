@@ -28,27 +28,44 @@ func test_uclar_profillerin_kendisi() -> void:
 	var ori := AnimasyonStilleri.al("sky")
 	var p0 := IsikKaristirici.profil(0.0)
 	var p1 := IsikKaristirici.profil(1.0)
-	for yol in ["gunes/enerji", "gunes/renk", "gok/tepe", "ortam/pozlama", "ortam/sis/0", "ortam/sis/1",
+	for yol in ["gok/tepe", "ortam/pozlama", "ortam/sis/0", "ortam/sis/1",
 			"ortak/kenar", "malzeme/su/isima_guc", "malzeme/cicek/isima_guc", "bulut_renk/0", "parcacik/nur_renk"]:
 		_yakin(IsikKaristirici.oku(p0, yol), IsikKaristirici.oku(nur, yol), "t=0 " + yol)
 		_yakin(IsikKaristirici.oku(p1, yol), IsikKaristirici.oku(ori, yol), "t=1 " + yol)
 	esit(p1["parcacik"]["nur"], ori["parcacik"]["nur"], "t=1 nur zerresi sayısı")
+	# Uçlarda yalnız o ucun ışığı yanar, olduğu gibi
+	for alan in ["yon", "yukseklik", "renk", "enerji", "yumusak", "golge_bulanik", "golge_mesafe"]:
+		_yakin(p0["gunes"][alan], nur["gunes"][alan], "t=0 Nur ışığı " + alan)
+		_yakin(p1["gunes_b"][alan], ori["gunes"][alan], "t=1 Ori ışığı " + alan)
+	_yakin(p0["gunes_b"]["enerji"], 0.0, "t=0 Ori ışığı sönük")
+	_yakin(p1["gunes"]["enerji"], 0.0, "t=1 Nur ışığı sönük")
 
 
 func test_ortada_yari_yarim() -> void:
 	var nur := AnimasyonStilleri.al("nur")
 	var ori := AnimasyonStilleri.al("sky")
 	var p := IsikKaristirici.profil(0.5)
-	_yakin(p["gunes"]["enerji"], (nur["gunes"]["enerji"] + ori["gunes"]["enerji"]) * 0.5, "güneş enerjisi")
+	_yakin(p["gunes"]["enerji"], nur["gunes"]["enerji"] * 0.5, "Nur ışığı yarı yarıya")
+	_yakin(p["gunes_b"]["enerji"], ori["gunes"]["enerji"] * 0.5, "Ori ışığı yarı yarıya")
 	_yakin(p["gok"]["ufuk"], (nur["gok"]["ufuk"] as Color).lerp(ori["gok"]["ufuk"], 0.5), "ufuk rengi")
 	_yakin(p["ortam"]["hacim_sis"][0], (nur["ortam"]["hacim_sis"][0] + ori["ortam"]["hacim_sis"][0]) * 0.5, "hacim sisi")
 	esit(typeof(p["parcacik"]["nur"]), TYPE_INT, "zerre sayısı tam sayı kalır")
 
 
-func test_gunes_ve_gokteki_isik_yerinde_kalir() -> void:
+func test_isik_capraz_gecer_gezinmez() -> void:
+	# Işıklar ve gökteki parıltılar yerinde kalır, yalnız güçleri değişir (K13).
 	var nur := AnimasyonStilleri.al("nur")
+	var ori := AnimasyonStilleri.al("sky")
 	for t in [0.0, 0.3, 0.7, 1.0]:
 		var p := IsikKaristirici.profil(t)
+		for alan in ["yon", "yukseklik"]:
+			_yakin(p["gunes"][alan], nur["gunes"][alan], "t=%s Nur ışığının %s" % [t, alan])
+			_yakin(p["gunes_b"][alan], ori["gunes"][alan], "t=%s Ori ışığının %s" % [t, alan])
+		_yakin(p["gok"]["nur_yon"], nur["gok"]["nur_yon"], "t=%s Nur parıltısının yeri" % t)
+		_yakin(p["gok"]["nur_yon_b"], ori["gok"]["nur_yon"], "t=%s Ori parıltısının yeri" % t)
+		_yakin(p["gok"]["nur_karisim"], t, "t=%s parıltı karışımı" % t)
+		_yakin(p["gunes"]["enerji"], nur["gunes"]["enerji"] * (1.0 - t), "t=%s Nur ışığı söner" % t)
+		_yakin(p["gunes_b"]["enerji"], ori["gunes"]["enerji"] * t, "t=%s Ori ışığı belirir" % t)
 		for yol in IsikKaristirici.SABIT:
 			_yakin(IsikKaristirici.oku(p, yol), IsikKaristirici.oku(nur, yol), "t=%s %s" % [t, yol])
 

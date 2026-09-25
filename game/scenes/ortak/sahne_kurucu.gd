@@ -50,6 +50,8 @@ var profil: Dictionary
 var ortam: Environment
 var gok_malzeme: ShaderMaterial
 var gunes: DirectionalLight3D
+## Işık geçişinde ikinci ışık (profilde "gunes_b" varsa): çapraz geçiş, K13.
+var gunes_b: DirectionalLight3D
 var _malzemeler: Dictionary = {}
 ## [nesne, özellik, Callable(profil) -> değer]
 var _baglar: Array = []
@@ -140,12 +142,9 @@ func ortam_kur(gok_shader := SHADER + "gok.gdshader") -> DirectionalLight3D:
 	we.environment = e
 	kok.add_child(we)
 
-	gunes = DirectionalLight3D.new()
-	kok.add_child(gunes)
-	gunes.light_volumetric_fog_energy = 1.6
-	gunes.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_AND_SKY
-	gunes.shadow_enabled = true
-	gunes.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+	gunes = _isik_kur()
+	if profil.has("gunes_b"):
+		gunes_b = _isik_kur()
 
 	_gok_ayarla()
 	_ortam_ayarla()
@@ -220,18 +219,35 @@ func _ortam_ayarla() -> void:
 	e.adjustment_brightness = o["parlaklik"]
 
 
+func _isik_kur() -> DirectionalLight3D:
+	var l := DirectionalLight3D.new()
+	kok.add_child(l)
+	l.light_volumetric_fog_energy = 1.6
+	l.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_AND_SKY
+	l.shadow_enabled = true
+	l.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+	return l
+
+
 func _gunes_ayarla() -> void:
-	var gp: Dictionary = profil["gunes"]
+	_isik_ayarla(gunes, profil["gunes"])
+	if gunes_b:
+		_isik_ayarla(gunes_b, profil["gunes_b"])
+
+
+func _isik_ayarla(l: DirectionalLight3D, gp: Dictionary) -> void:
 	var el := deg_to_rad(gp["yukseklik"])
 	var az := deg_to_rad(gp["yon"])
 	var yon := Vector3(cos(el) * sin(az), sin(el), cos(el) * cos(az))
-	gunes.position = yon * 100.0
-	gunes.look_at(Vector3.ZERO, Vector3.UP if absf(yon.y) < 0.99 else Vector3.FORWARD)
-	gunes.light_color = gp["renk"]
-	gunes.light_energy = gp["enerji"]
-	gunes.light_angular_distance = gp["yumusak"]
-	gunes.shadow_blur = gp.get("golge_bulanik", 1.5)
-	gunes.directional_shadow_max_distance = gp.get("golge_mesafe", 120.0)
+	l.position = yon * 100.0
+	l.look_at(Vector3.ZERO, Vector3.UP if absf(yon.y) < 0.99 else Vector3.FORWARD)
+	l.light_color = gp["renk"]
+	l.light_energy = gp["enerji"]
+	l.light_angular_distance = gp["yumusak"]
+	l.shadow_blur = gp.get("golge_bulanik", 1.5)
+	l.directional_shadow_max_distance = gp.get("golge_mesafe", 120.0)
+	# Çapraz geçişte sönmüş ışık gizlenir; gölgesi boşuna çizilmez.
+	l.visible = float(gp["enerji"]) > 0.0005
 
 
 # --------------------------------------------------------------------------
