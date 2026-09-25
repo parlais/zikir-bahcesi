@@ -123,3 +123,13 @@ Asset listesinin açık bıraktığı yerler için seçilen değerler aşağıda
   - `docs/goruntuler/cennet/karsilastirma_nur_ori.jpg`
 - Eski mekân: Çarbağ sahnesi (`scenes/stil/`) depoda duruyor ve yeniden çekilebilir. Pixar taslağındaki koni-dağ, derece duvarları ve dev Tûbâ K10 ile koddan kaldırıldı; git geçmişinde duruyor.
 
+## K12 — Işık: aynı mekânda Nur ile Ori arasında ara sıra değişen ışık (2026-09-25)
+- Kullanıcı iki stili de sevdi. Altın ışık (Nur) güzel bir his veriyor; Ori'deki beyaz, nurani parıltılar da.
+- Mekân aynı kalır; ışık ara sıra Nur'un altın ışığından Ori'nin beyaz-turkuaz nurani ışığına, sonra geri döner.
+- Bu bir gece-gündüz döngüsü değildir (K5): karanlık yok, güneş diski yok, yalnızca ışığın tonu ve havası değişir.
+- Suların, çiçeklerin ve nurun kendi ışığıyla parlaması (Ori'deki gibi) iki ışıkta da kalır.
+- Açık konular:
+  - Geçişin neye bağlı olacağı (zaman, zikir, olay, oyuncunun seçimi) kullanıcıyla belirlenecek.
+  - Danışma kuruluna sorulan "ışık tonunda hafif sabah-akşam farkı" sorusu (Meryem 62) bu kararla doğrudan ilgili.
+- Pixar ve yağlı boya profilleri ile `resim_filtresi.gdshader` kodda duruyor ama kullanılmıyor (K9, K11).
+

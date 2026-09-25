@@ -10,61 +10,63 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 - Kullanıcı görsel olarak çok titiz; "ultra kaliteli", etkileyici bir sonuç istiyor. Dini hassasiyetler önemli: dayanak, temsil dili ve danışma kurulu teyidi.
 
 ## Okunacak belgeler (sırayla)
-1. `docs/kararlar.md`: bütün kararlar (K1-K8) ve onay bekleyen tasarım değerleri.
-2. `docs/plan-faz2a.md`: **şu anki plan.** Kullanıcı onay vermedi; başlamadan önce kullanıcıya teyit ettir.
-3. `docs/mekan-kurgusu.md`: cennet mekânının ayet, hadis, Risale-i Nur ve Ali Ünal dayanakları; danışma kurulu soruları; asset listesinde yeniden düşünülecekler.
-4. `docs/stil-karsilastirmasi.md`: yapılmış 4 stillik karşılaştırma (Nur, Boyalı, Mücevher, Gerçekçi) ve nasıl yeniden çekileceği.
-5. `docs/asset-listesi.md`: içeriğin tek kaynağı (157 asset, 99+2 esma, tarifler). `docs/rapor.md`: fizibilite raporu.
+1. `docs/kararlar.md`: bütün kararlar (K1-K12). Özellikle K10 (mekân), K11 (stil) ve K12 (ışık).
+2. `docs/plan-faz2b.md`: **sıradaki işlerin taslak planı.** Kullanıcı henüz onaylamadı; başlamadan önce kısaca özetle ve öncelikleri teyit ettir.
+3. `docs/mekan-kurgusu.md`: cennet mekânının dayanakları (ayet, hadis, Risale-i Nur, Ali Ünal), 28. Söz'deki koni misalinin metni, danışma kurulu soruları.
+4. `docs/plan-faz2a.md`: geçmiş kaydı. En üstteki "Revizyon 2" bölümü, Faz 2a'nın son hâlini anlatır.
+5. `docs/asset-listesi.md`: içeriğin tek kaynağı (157 asset, 99+2 esma, tarifler). `docs/rapor.md`: fizibilite raporu. `docs/stil-karsilastirmasi.md`: ilk (çarbağ) stil karşılaştırması.
 
-## Şu anki durum (2026-09-24)
-Çalışma dalı: `claude/sleepy-bell-nc2a9a` (önceki işler `claude/busy-allen-p76wgo` dalındaydı; bu dal onun devamı).
+## Dallar (önemli)
+- Güncel iş `claude/sleepy-bell-nc2a9a` dalındadır.
+- Deponun varsayılan dalı `claude/busy-allen-p76wgo` eski durumda kalmıştır (Faz 2a öncesi).
+- Yeni oturum başka bir dalda açıldıysa önce `git fetch origin claude/sleepy-bell-nc2a9a` yapıp kendi dalına birleştirmeli ya da onun üstüne kurmalı. Ardından bu dosyayı güncel hâliyle yeniden okumalıdır.
+- Commit'ler oturumun kendi dalına gönderilir.
 
-Yapılanlar:
-- **Faz 1:**
-  - içerik veri katmanı
-  - oyun çekirdeği (`game/core`; 34 test geçiyor)
-  - model fabrikası ve 22 model
-  - küçük adada dokunmatik tesbihle oynanabilir ilk dilim (`game/scenes/main.tscn`)
-- **Stil karşılaştırması:**
-  - büyük çarbağ sahnesi (`game/scenes/stil/`), stil shader'ları, 4 stil profili
-  - arayüz önizlemesi (`game/ui/arayuz_onizleme.gd`)
-  - çekimler `docs/goruntuler/stil/` altında
+## Şu anki durum (2026-09-25)
+**Onaylanmış yön:**
+- **Mekân (K10):** Cennet uçsuz bucaksız 8 yatay tabakadır.
+  - En üstte Firdevs vardır, ortasında dört ırmağın kaynağı bulunur. Üstte ışık vardır; Arş tasvir edilmez.
+  - İçeriden: ufuk açıktır; göğe bakınca üst tabaka görünmez, atmosfer gibi.
+  - Irmaklar uzakta bulutların içinden inen çağlayanlarla başlar.
+  - Katlar arası çiçekli taş merdivenler bulutlara yükselir. Kullanıcının referansı: çiçek ve sarmaşıkla kaplı, göğe kıvrılan taş merdiven.
+  - Dışarıdan (açılış, geçiş): tabakaların kesiti, Dünya'nın katman resimleri gibi.
+- **Arsa:** Kadife çimenli boş çayır, inci ve yakut çakıl sınırı, ortada ışıklı Tûbâ çekirdeği. Dev Tûbâ yok.
+- **Stil ve ışık (K11, K12):**
+  - Filtresiz 3D.
+  - Işık ara sıra Nur (altın) ile Sky/Ori (beyaz-turkuaz, nurani parıltılar) arasında değişir. Su, çiçek ve nur kendi ışığıyla parlar.
+  - Gece yok, güneş diski yok (K5).
+  - Pixar ve yağlı boya beğenilmedi; kodu duruyor, kullanılmıyor.
 
-- **Faz 2a, ara durak:**
-  - Kullanıcı planı onayladı. Mekân önce yalnız Pixar stilinde gösterilecek, onaydan sonra dört stile geçilecek.
-  - Model fabrikası:
-    - `models/cennet.py`: ova, dört ırmak, derece duvarları, çağlayanlar, koni-dağ; yerleşim `game/data/dunya_cennet.json`
-    - `models/cennet_bitkileri.py`: sidr, talh, üzüm a1-a4; koru ve uzak ağaç; Tûbâ çekirdeği; dev Tûbâ
-    - `models/cennet_yapilari.py`: su köşkü, inci çadır, sedir köşesi, selsebil, âb-ı hayat pınarı, inci çakıl
-  - Godot:
-    - `scenes/ortak/sahne_kurucu.gd` (SahneKurucu), `scenes/dunya/cennet_sahnesi.tscn`
-    - `animasyon_stilleri.gd`: şimdilik yalnız Pixar profili
-    - yeni shader'lar: `gok_cennet`, `selale`, `tugla`, `bulut_denizi`
-  - Taslak çekimler (800×450): `docs/goruntuler/cennet/taslak_pixar_{ufuk,arsa,derece}.png`. Kullanıcıya gönderildi, geri bildirim bekleniyor.
-  - Arsa çıplak toprak yerine kadife çimenli boş çayır ve inci/yakut çakıl sınırı olarak yorumlandı (gerekçe `mekan-kurgusu.md`). Kullanıcıya soruldu.
+**Yapılanlar:**
+- **Faz 1:** İçerik veri katmanı, oyun çekirdeği (`game/core`, 34 test), model fabrikası, küçük adada oynanabilir ilk dilim (`game/scenes/main.tscn`).
+- **İlk stil karşılaştırması:** Çarbağ sahnesi `game/scenes/stil/`, çekimler `docs/goruntuler/stil/`.
+- **Faz 2a, model fabrikası (`tools/model_factory/models/`):**
+  - `cennet.py`:
+    - `ZB_dunya_cennet`: 9 km'lik ova ve dört ırmak
+    - `ZB_dunya_selaleler`: gökten inen çağlayanlar
+    - `ZB_dunya_kesit`: 8 tabakanın kesiti
+    - yerleşim `game/data/dunya_cennet.json`
+  - `cennet_bitkileri.py`: sidr, talh, üzüm (a1-a4), koru ve uzak ağaç, Tûbâ çekirdeği.
+  - `cennet_yapilari.py`: su köşkü, inci çadır, sedir köşesi, selsebil, âb-ı hayat pınarı, inci çakıl, kat merdiveni.
+- **Faz 2a, Godot:**
+  - `scenes/ortak/sahne_kurucu.gd` (SahneKurucu: malzeme, çoğaltma, parçacık, ortam).
+  - `scenes/dunya/cennet_sahnesi.tscn`: kameralar `ufuk`, `arsa`, `kesit`.
+  - `scenes/dunya/animasyon_stilleri.gd`: profiller `nur`, `sky`, `pixar`, `yagli_boya`.
+  - Shader'lar (`scenes/stil/shader/`): `gok_cennet`, `selale`, `tugla`, `tavan`, `bulut_denizi`, `resim_filtresi`.
+- **Son çekimler:**
+  - `docs/goruntuler/cennet/karsilastirma_nur_ori.jpg`
+  - `taslak_nur_*.png` ve `taslak_ori_*.png` (800×450)
+  - Kavram eskizleri: `eskiz_*.png`
 
-Kullanıcının son geri bildirimleri:
-- Çarbağ "fena değil" ama istenen cennet hissi değil. Yeni mekân: katlı koni-dağ (bkz. K4 ve `mekan-kurgusu.md`).
-- Gece-gündüz ve mevsim yok (K5).
-- Stil animasyon stili olarak seçilecek; dördü birden gösterilecek (K6).
-- Arayüz sonra baştan ele alınacak (K7).
+**Sıradaki iş:** `docs/plan-faz2b.md` planını kullanıcıya kısaca özetle ve onay al. Öne çıkanlar:
+1. Nur ↔ Ori ışık geçişi (profil karıştırıcı). Tetikleyici kullanıcıya sorulacak.
+2. Kalite: gökten inen çağlayanlar su gibi görünmeli; kesitin derinliği; ağaç ve köşk modelleri; kuşlar ve kelebekler.
+3. Plandaki mekanikler: nur tohumu ve bahar açılışı, açılış ve katlar arası geçiş (nur izi), merdivenle kat değiştirme, farklı katlardaki arkadaş bahçeleri, Firdevs ve nur katı çekimi.
+4. Arayüz (K7) sonra.
 
-**Kullanıcının taslaklara cevabı (K9):** İstediği bu değildi. Yağlı boya beşinci stil olarak eklenecek (yalnızca boya estetiği, gece veya chiaroscuro değil).
-
-**Yeni kurgu (K10) ve ara durak 2:**
-- Cennet uçsuz bucaksız 8 yatay tabakadır: en üstte Firdevs, içeriden bakınca üst tabaka görünmez, dışarıdan kesit görünür. Ayrıntı `docs/kararlar.md` K10 ve `docs/plan-faz2a.md` "Revizyon 2" bölümünde.
-- Yağlı boya taslakları `docs/goruntuler/cennet/taslak_yagli_{ufuk,arsa,kesit}.png`. Kullanıcıya gönderildi, geri bildirim bekleniyor.
-
-**Stil (K11):** Yağlı boya filtresi ve Pixar beğenilmedi. Kullanıcı Nur ile Sky/Ori'yi istedi. İkisi `nur` ve `sky` profili olarak eklendi ve yeni mekânda çekildi: `docs/goruntuler/cennet/karsilastirma_nur_ori.jpg`. Kullanıcıya gönderildi.
-
-**Sıradaki iş:** Kullanıcının Nur/Ori tercihini ve geri bildirimini al. Sonra:
-1. Seçilen stili derinleştir. Hazır profiller: nur, sky, pixar, yagli_boya. Ghibli ve Arcane henüz yazılmadı.
-2. Seçilen stil(ler)de 3 kamera (`ufuk`, `arsa`, `kesit`) 1600×900 son çekimler ve panolar.
-3. Taslakta kalan kalite işleri: gökten inen çağlayanların görünümü, kesitin derinliği, kuşlar ve kelebekler, köşk ayrıntısı.
-
-Açık sorular:
+**Açık sorular:**
 - Canlılar için AI 3D aracı ya da karma üretim kabul edilir mi?
-- Çizim tarzı: yumuşak, toon ya da ara?
+- Işık geçişinin tetikleyicisi ne olacak?
 - Danışma kurulu soruları: `mekan-kurgusu.md`.
 
 ## Ortam kurulumu (her yeni bulut oturumunda gerekir)
@@ -82,7 +84,7 @@ apt-get update -qq && apt-get install -y -qq mesa-vulkan-drivers
 cd /home/user/zikir-bahcesi/tools/preview && npm install
 ```
 - Render çekimi: `xvfb-run` ile, `VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.json`, `--rendering-method forward_plus --rendering-driver vulkan`. Örnek komutlar `docs/stil-karsilastirmasi.md` dosyasında.
-- lavapipe yavaş: 800×450'de 20 kare yaklaşık 1 dakika sürer. Önce yarım çözünürlükte dene, sonra tam çözünürlükte çek. 4 çekim aynı anda çalışırsa süre sınırı (1500 sn) aşılabilir.
+- lavapipe yavaş: cennet sahnesi 640×360'ta 8 kare ~1,5 dk, 800×450'de 16 kare ~5 dk. Önce düşük çözünürlükte dene. Uzun çekimleri arka planda çalıştır (komut süre sınırı).
 - Ağ: çoğu web sitesi (erisale, archive.org, sorularlaislamiyet vb.) ağ kurallarınca engelli. WebSearch çalışır. Google Fonts için raw.githubusercontent.com erişilebilir; npm ve pypi erişilebilir.
 
 ## Komutlar
@@ -95,7 +97,7 @@ godot --headless --path game -s res://tests/run_tests.gd   # testler
 # Geliştirici argümanları (Game autoload): --zb-senaryo=demo|kart --zb-kartsiz=1 --zb-ekran=yol.png --zb-kare=N
 # Stil sahnesi: res://scenes/stil/stil_sahnesi.tscn -- --zb-stil=nur|ghibli|mucevher|gercekci --zb-kamera=portre|sinematik
 # Cennet sahnesi: res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur|sky|pixar|yagli_boya --zb-kamera=ufuk|arsa|kesit
-#   (640x360, 8 kare ~1,5 dk; üç kamera paralel ~3 dk; 800x450, 16 kare paralel ~6 dk)
+tools/render/cek.sh nur ufuk 800x450 16 /tmp/nur_ufuk.png   # cennet sahnesi çekimi (lavapipe; ~5 dk, üçü paralel olur)
 ```
 
 ## Kodlama kuralları ve bilinen tuzaklar
@@ -112,5 +114,5 @@ godot --headless --path game -s res://tests/run_tests.gd   # testler
 - **Shader adları:** Godot shader dilinde `E` ve `PI` gibi adlar yerleşik sabittir; değişken adı olarak kullanılmaz.
 - **Fırça dokusu:** Ekran yönüne göre döndürülen desen moiré (parmak izi halkaları) yapar. Fırça izi, Kuwahara'nın örneklediği renklere eklenen sabit gürültüyle elde edilir.
 - **Godot'a bağımlı olmayan veri:** Test edilecek sabitler Godot'a (Game autoload) bağlı olmayan sınıflarda durmalı (örnek: `scenes/yerlesim.gd`, `ui/zikir_secenekleri.gd`). Test koşucusu derlenemeyen test dosyasını hata sayar.
-- **Commit:** Mesajlar Türkçe. Her adım ayrı commit, sonra `git push -u origin claude/sleepy-bell-nc2a9a`. PR açma (kullanıcı istemedi). Dünya modelleri büyüktür (toplam ~11 MB); ara denemelerde değil, anlamlı adımlarda commit et.
+- **Commit:** Mesajlar Türkçe. Her adım ayrı commit, sonra oturumun kendi dalına `git push -u origin <dal>`. PR açma (kullanıcı istemedi). Dünya modelleri büyüktür (toplam ~13 MB); ara denemelerde değil, anlamlı adımlarda commit et.
 - **Kullanıcının yüklediği dosyalar:** Ali Ünal epub'ları ve Sorularla İslamiyet PDF'i depoya konmaz (telif). Bulgular `docs/mekan-kurgusu.md` dosyasına işlendi.
