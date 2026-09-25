@@ -42,6 +42,7 @@ MATERIALS = {
     "tugla": dict(roughness=0.4, metallic=0.4),
     "kumas": dict(roughness=0.95, metallic=0.0),
     "bulut": dict(roughness=1.0, metallic=0.0),
+    "tavan": dict(roughness=1.0, metallic=0.0, emissive=(0.55, 0.75, 0.95)),
 }
 
 

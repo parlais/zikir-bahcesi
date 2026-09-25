@@ -144,6 +144,26 @@ class Mesh:
         m.C = np.clip(m.C * k, 0, 1)
         return m
 
+    def paylasimli(self) -> "Mesh":
+        """Köşeleri paylaşılan (indeksli) dışa aktarım: yumuşak köşe normalleri ve yüz
+        renklerinin köşe ortalaması. Yaprak ve çiçek gibi çok sayıda küçük parçada
+        dosyayı birkaç kat küçültür."""
+        m = self.copy()
+        tri = m.V[m.F]
+        fn = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
+        N = np.zeros_like(m.V)
+        CV = np.zeros_like(m.V)
+        say = np.zeros(len(m.V), np.float32)
+        for k in range(3):
+            np.add.at(N, m.F[:, k], fn)
+            np.add.at(CV, m.F[:, k], m.C)
+            np.add.at(say, m.F[:, k], 1.0)
+        elle = np.linalg.norm(m.NV, axis=1, keepdims=True) > 0.5
+        N = N / (np.linalg.norm(N, axis=1, keepdims=True) + 1e-12)
+        m.NV = np.where(elle, m.NV, N).astype(np.float32)
+        m.CV = (CV / np.maximum(say, 1)[:, None]).astype(np.float32)
+        return m
+
     @property
     def tri_count(self) -> int:
         return len(self.F)

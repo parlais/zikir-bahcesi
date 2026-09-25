@@ -1,21 +1,21 @@
-"""Cennet mekânı (Faz 2a): ilk katın içi ve katlı koni-dağın dış görünümü.
+"""Cennet mekânı (Faz 2a, K10): uzanıp giden 8 yatay tabaka.
 
-Kurgu (docs/mekan-kurgusu.md):
-  - Cennet, iç içe halkalardan oluşan, zirvesi nura açılan koni biçimli bir dağdır
-    (Risale-i Nur, 28. Söz). Oyuncu en dış halkada, ilk kattadır.
-  - Katın içinde tepede hiçbir şey yoktur. İçeriden bakınca üst dereceler ufukta,
-    ışıklı pusa karışan kat kat yamaçlar olarak görünür (Buhârî, Cihad 4).
-  - Dört ırmak (Muhammed 15) üst derecelerden çağlayan olarak iner, ovada kıvrılır.
-  - Oyuncu arsası verimli ama boş bir topraktır (Tirmizî 3462).
+Kurgu (docs/kararlar.md K10, docs/mekan-kurgusu.md):
+  - Cennet 8 yatay tabakadır, her tabaka uçsuz bucaksızdır. En üstte Firdevs;
+    ortasında dört ırmağın kaynağı; üstte her şeyi kuşatan ışık (Arş tasvir edilmez).
+  - İçeriden: ufuk açık; göğe bakınca üst tabaka görünmez (atmosfer tabakası gibi).
+    Dört ırmak (Muhammed 15) üst tabakadan gelir: uzakta bulutların içinden inen
+    çağlayanlar olarak görünür, ovada kıvrılarak akar.
+  - Katlar arası çiçekli taş merdivenler bulutların içinden ışığa yükselir.
+  - Dışarıdan (açılış, katlar arası geçiş): Dünya'nın katman resimleri gibi bir kesit.
+  - Oyuncu arsası düz ve boş bir çayırdır (Tirmizî 3462), sınırı inci ve yakut çakıl.
 
-Koordinatlar: metre, Y yukarı. Oyuncu arsası (0, 0, 0); koni-dağın merkezi
-MERKEZ (xz), arsanın kuzeyinde (-z). Kutupsal açı phi, merkezden arsaya bakan
-yönde (+z) sıfırdır.
+Koordinatlar: metre, Y yukarı. Oyuncu arsası (0, 0, 0); ırmaklar kuzeyden (-z) gelir.
 
 Modeller:
-  ZB_dunya_cennet       ilk katın ovası ve dört ırmak
-  ZB_dunya_dereceler    ufuktaki derece duvarları, sekiler ve çağlayanlar
-  ZB_dunya_derece_koni  katlı koni-dağın dıştan görünümü (açılış çekimi)
+  ZB_dunya_cennet     ilk katın ovası (ufka kadar) ve dört ırmak
+  ZB_dunya_selaleler  gökten, bulutların içinden inen dört çağlayan
+  ZB_dunya_kesit      8 tabakanın dıştan kesit görünümü
 Yerleşim game/data/dunya_cennet.json dosyasına yazılır.
 """
 from __future__ import annotations
@@ -27,32 +27,36 @@ from pathlib import Path
 import numpy as np
 from scipy.spatial import Delaunay, cKDTree
 
-from mf.mesh import Mesh, icosphere, lathe, merge
+from mf.mesh import Mesh, box, icosphere, lathe, merge
 from mf.palette import renk
 from mf.scene import Node
 
 from . import model
+from .cennet_yapilari import MERDIVEN_UST
 from .sahne import _noise2
 
-MERKEZ = np.array([0.0, -2600.0])
-# Derece duvarları: (taban yarıçapı, üst kenar yüksekliği). İlki oyuncunun katını sınırlar.
-DUVARLAR = [(1900.0, 120.0), (1450.0, 280.0), (1080.0, 420.0), (760.0, 560.0)]
-DUVAR_ACI = 100.0            # duvarların uzandığı açı (±derece)
 ARSA_R = 13.0                # oyuncu arsasının yarıçapı
 YAKIN = (-70.0, -100.0, 70.0, 45.0)   # çimen ızgarası (x0, z0, x1, z1), 1 m adım
+OVA_R = 9000.0               # ovanın uzandığı yarıçap (ötesi pusta kaybolur)
+SELALE_UST = 360.0           # gökten inen çağlayanların başladığı yükseklik (bulutun içi)
 
-# Dört ırmak: çağlayanın indiği açı (derece), genişlik, kontrol noktaları (x, z)
+# Dört ırmak: kaynak (gökten inen çağlayanın dibi) ve kontrol noktaları (x, z)
 IRMAKLAR = [
-    dict(ad="su", phi=-6.0, gen=16.0, noktalar=[(-160, -560), (-75, -450), (-120, -320), (-55, -215), (-62, -140),
-                                                   (-50, -85), (-36, -40), (-31, 0), (-38, 40), (-70, 130), (-55, 260),
-                                                   (-80, 420)]),
-    dict(ad="sut", phi=4.0, gen=12.0, noktalar=[(175, -560), (110, -440), (165, -320), (95, -200), (125, -110),
-                                                   (82, -30), (74, 40), (100, 140), (85, 300), (110, 420)]),
-    dict(ad="bal", phi=-16.0, gen=11.0, noktalar=[(-450, -620), (-395, -470), (-300, -340), (-265, -190),
-                                                     (-205, -60), (-215, 60), (-260, 200), (-230, 420)]),
-    dict(ad="serbet", phi=15.0, gen=11.0, noktalar=[(430, -610), (390, -450), (300, -320), (255, -170),
-                                                       (225, -40), (250, 90), (285, 220), (270, 420)]),
+    dict(ad="su", gen=16.0, noktalar=[(-330, -1250), (-190, -1080), (-110, -900), (-160, -560), (-75, -450),
+                                      (-120, -320), (-55, -215), (-62, -140), (-50, -85), (-36, -40), (-31, 0),
+                                      (-38, 40), (-70, 130), (-55, 260), (-80, 420)]),
+    dict(ad="sut", gen=12.0, noktalar=[(330, -1350), (210, -1150), (230, -900), (175, -560), (110, -440),
+                                       (165, -320), (95, -200), (125, -110), (82, -30), (74, 40), (100, 140),
+                                       (85, 300), (110, 420)]),
+    dict(ad="bal", gen=11.0, noktalar=[(-760, -1150), (-660, -980), (-560, -800), (-450, -620), (-395, -470),
+                                       (-300, -340), (-265, -190), (-205, -60), (-215, 60), (-260, 200),
+                                       (-230, 420)]),
+    dict(ad="serbet", gen=11.0, noktalar=[(720, -1250), (620, -1050), (520, -850), (430, -610), (390, -450),
+                                          (300, -320), (255, -170), (225, -40), (250, 90), (285, 220), (270, 420)]),
 ]
+
+# Katlar arası merdiven: ayağı ovada, ucu bulutun içinde (yerleşimde dönüş ve ölçekle)
+MERDIVEN = (70.0, -150.0, 16.0, 1.0)     # x, z, y ekseninde dönüş (derece), ölçek
 
 
 # --------------------------------------------------------------------------
@@ -62,39 +66,6 @@ IRMAKLAR = [
 def _ss(a, b, x):
     t = np.clip((np.asarray(x, float) - a) / (b - a), 0.0, 1.0)
     return t * t * (3 - 2 * t)
-
-
-def kutup(x, z):
-    dx, dz = np.asarray(x, float) - MERKEZ[0], np.asarray(z, float) - MERKEZ[1]
-    return np.hypot(dx, dz), np.arctan2(dx, dz)
-
-
-def kartezyen(rho, phi):
-    return MERKEZ[0] + rho * np.sin(phi), MERKEZ[1] + rho * np.cos(phi)
-
-
-def duvar_r(k, phi):
-    """k. derece duvarının yarıçapı: öne çıkan burunlar ve içeri giren koylar."""
-    R = DUVARLAR[k][0]
-    phi = np.asarray(phi, float)
-    return (R + (60 - 8 * k) * np.sin(4.7 * phi + 0.5 + k) + (22 + 8 * k) * np.sin(3.1 * phi + k)
-            + (11 + 4 * k) * np.sin(7.3 * phi + 2.0 * k) + 5 * np.sin(17.0 * phi + 0.7 * k))
-
-
-def duvar_ust(k, phi):
-    """k. duvarın üst kenarının yüksekliği: dalgalı sırt; yanlara doğru alçalır,
-    ufuk açılır (ortada yükselen geniş bir dağ gibi)."""
-    phi = np.asarray(phi, float)
-    alt = duvar_ust(k - 1, phi) if k > 0 else np.zeros_like(phi)
-    fark = DUVARLAR[k][1] - (DUVARLAR[k - 1][1] if k > 0 else 0.0)
-    n = 0.16 * np.sin(4.3 * phi + 1.3 * k) + 0.08 * np.sin(11.7 * phi + k) + 0.04 * np.sin(23.0 * phi + 2 * k)
-    yan = 1.0 - 0.6 * _ss(0.3, 1.25, np.abs(phi))
-    return alt + fark * (1.0 + n) * yan
-
-
-def duvar_etek(v):
-    """Duvar kesiti: ormanlı geniş etek, dik ve kaburgalı yüz, yuvarlak yeşil sırt."""
-    return 90.0 * (1 - v) ** 2.2
 
 
 def _egri(noktalar, adim):
@@ -129,39 +100,29 @@ def _kose_normalleri(V, F):
     return (N / (np.linalg.norm(N, axis=1, keepdims=True) + 1e-12)).astype(np.float32)
 
 
-def _izgara_mesh(V, nu, nv, renkler, material, W=None) -> Mesh:
-    """(nv+1) x (nu+1) köşeli ızgara; renkler (nv, nu) yüz çifti başına."""
-    F, C = [], []
+def _izgara(V, nu, nv, CV, material, W=None) -> Mesh:
+    """(nv+1) x (nu+1) köşeli ızgara; köşe renkleri CV (n, 3)."""
+    F = []
     for j in range(nv):
         for i in range(nu):
             a = j * (nu + 1) + i
             b, c, d = a + 1, a + nu + 2, a + nu + 1
             F += [[a, c, b], [a, d, c]]
-            C += [renkler[j][i], renkler[j][i]]
     F = np.asarray(F, np.int64)
     V = np.asarray(V, np.float32)
-    C = np.asarray(C, np.float32)
+    CV = np.asarray(CV, np.float32)
+    C = CV[F].mean(1)
     m = Mesh(V, F, C, material, W=None if W is None else np.asarray(W, np.float32))
     m.NV = _kose_normalleri(V, F)
-    m.CV = _kose_renkleri(V, F, C)
+    m.CV = CV
     return m
 
 
-def _kose_renkleri(V, F, C):
-    """Yüz renklerinin köşelerde ortalaması (indeksli, yumuşak geçişli dışa aktarım için)."""
-    CV = np.zeros((len(V), 3))
-    n = np.zeros(len(V))
-    for k in range(3):
-        np.add.at(CV, F[:, k], C)
-        np.add.at(n, F[:, k], 1.0)
-    return (CV / np.maximum(n, 1)[:, None]).astype(np.float32)
-
-
-def _yon_duzelt(m: Mesh, yukari=True) -> Mesh:
-    """Izgaranın yüzleri istenen tarafa (yukarı ya da merkezden dışa) baksın."""
+def _yuz_yonu(m: Mesh, yon) -> Mesh:
+    """Yüzlerin çoğunluğu verilen yöne baksın (gerekirse çevir)."""
     tri = m.V[m.F]
     n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
-    if (n[:, 1].sum() < 0) == yukari:
+    if (n @ np.asarray(yon, np.float32)).sum() < 0:
         m = m.flipped()
         m.NV = -m.NV
     return m
@@ -172,32 +133,27 @@ def _yon_duzelt(m: Mesh, yukari=True) -> Mesh:
 # --------------------------------------------------------------------------
 
 def ova_y(x, z):
+    """Ova: kuzeye doğru çok hafif yükselir (ırmaklar güneye akar); uzakta alçak,
+    geniş tepeler ufku yumuşatır; arsa çevresi düzdür."""
     x = np.asarray(x, float)
     z = np.asarray(z, float)
-    rho, phi = kutup(x, z)
     d = np.hypot(x, z)
-    h = 12.0 * np.clip((2600.0 - rho) / 700.0, 0, 1) ** 1.5              # dereceye doğru hafif yükselen ova
+    h = 16.0 * _ss(0.0, 2200.0, -z)
     h += _noise2(x, z, 41) * 1.4 + _noise2(x * 3.0, z * 3.0, 42) * 0.4 + _noise2(x * 11, z * 11, 43) * 0.12
-    yan = _ss(380.0, 1500.0, np.abs(x)) * (1 - _ss(-900, -1500, z))
-    arka = _ss(450.0, 1100.0, z)
-    h += (38.0 + 22.0 * _noise2(x * 0.6, z * 0.6, 44)) * np.maximum(yan, arka)
-    h += 14.0 * _ss(duvar_r(0, phi) + 260.0, duvar_r(0, phi) + 90.0, rho)   # duvar eteğinde yamaç
-    duz = _ss(16.0, 48.0, d)                                               # arsa düzlüğü
-    return h * duz
+    h += (6.0 + 5.0 * _noise2(x * 0.5, z * 0.5, 44)) * _ss(300.0, 1400.0, d)
+    h += (22.0 + 20.0 * _noise2(x * 0.18, z * 0.18, 45)) * _ss(2500.0, 6000.0, d)
+    return h * _ss(16.0, 48.0, d)
 
 
 class Irmak:
     def __init__(self, tanim):
         self.ad = tanim["ad"]
-        phi = math.radians(tanim["phi"])
-        r0 = float(duvar_r(0, phi))
-        bas = kartezyen(r0 + 110.0, phi)
-        self.selale_phi = phi
-        self.P = _egri([bas] + tanim["noktalar"], 1.0)
+        self.gen = tanim["gen"]
+        self.P = _egri(tanim["noktalar"], 1.0)
         seg = np.linalg.norm(np.diff(self.P, axis=0), axis=1)
         self.s = np.concatenate([[0.0], np.cumsum(seg)])
         a = tanim["gen"] / 2
-        self.a = a * (1.0 + 1.3 * np.exp(-self.s / 45.0))                 # çağlayan dibinde gölcük
+        self.a = a * (1.0 + 3.0 * np.exp(-self.s / 90.0))                 # çağlayan dibinde gölcük
         self.N = _dik(self.P)
         self.wl = np.minimum.accumulate(ova_y(self.P[:, 0], self.P[:, 1]) - 0.8)
         self.agac = cKDTree(self.P)
@@ -263,17 +219,16 @@ def _ova_noktalari(irmaklar):
     x0, z0, x1, z1 = -95.0, -160.0, 95.0, 70.0
     s = 1.7
     gx, gz = np.meshgrid(np.arange(x0, x1, s), np.arange(z0, z1, s))
-    yakin = np.stack([gx.ravel(), gz.ravel()], 1) + rng.uniform(-0.35, 0.35, (gx.size, 2)) * s
-    pts.append(yakin)
-    # Uzaklaştıkça seyrelen halkalar
+    pts.append(np.stack([gx.ravel(), gz.ravel()], 1) + rng.uniform(-0.35, 0.35, (gx.size, 2)) * s)
+    # Uzaklaştıkça seyrelen halkalar (ufka kadar)
     r = 70.0
-    while r < 3700:
+    while r < OVA_R:
         n = int(2 * math.pi / 0.024)
         a = np.arange(n) * 2 * math.pi / n + rng.uniform(0, 1) * 0.02
         P = np.stack([r * np.sin(a), r * np.cos(a)], 1)
         ic = (P[:, 0] > x0 - 2) & (P[:, 0] < x1 + 2) & (P[:, 1] > z0 - 2) & (P[:, 1] < z1 + 2)
         pts.append(P[~ic])
-        r *= 1.024
+        r *= 1.03 if r > 2500 else 1.024
     # Irmak kıyı çizgileri
     for ir in irmaklar:
         d0 = np.hypot(ir.P[:, 0], ir.P[:, 1])
@@ -289,15 +244,7 @@ def _ova_noktalari(irmaklar):
         for o in (0.5, 1.0):
             for sgn in (-1, 1):
                 pts.append(ir.P[idx] + ir.N[idx] * (sgn * (a + o * B))[:, None])
-    # Duvar dibi
-    phi = np.radians(np.arange(-DUVAR_ACI - 5, DUVAR_ACI + 5, 0.25))
-    for dr in (0.0, 12.0, 35.0, 80.0):
-        x, z = kartezyen(duvar_r(0, phi) + dr, phi)
-        pts.append(np.stack([x, z], 1))
     P = np.vstack(pts)
-    rho, phi = kutup(P[:, 0], P[:, 1])
-    P = P[rho >= duvar_r(0, phi) - 0.5]
-    # Çok yakın noktaları ayıkla (ince üçgen olmasın)
     _, tek = np.unique(np.round(P / 0.4), axis=0, return_index=True)
     return P[np.sort(tek)]
 
@@ -305,36 +252,19 @@ def _ova_noktalari(irmaklar):
 def _ova(irmaklar) -> Mesh:
     P = _ova_noktalari(irmaklar)
     tri = Delaunay(P).simplices
-    c = P[tri].mean(axis=1)
-    rho, phi = kutup(c[:, 0], c[:, 1])
     uzun = np.max(np.linalg.norm(P[tri] - P[np.roll(tri, 1, axis=1)], axis=2), axis=1)
-    tri = tri[(rho > duvar_r(0, phi) - 1.0) & (uzun < 400)]
+    tri = tri[uzun < 900]
     h, W, kiyi, arsa = arazi_y(P[:, 0], P[:, 1], irmaklar, W_don=True)
     V = np.stack([P[:, 0], h, P[:, 1]], 1).astype(np.float32)
     F = tri[:, [0, 2, 1]].astype(np.int64)
     n = np.cross(V[F][:, 1] - V[F][:, 0], V[F][:, 2] - V[F][:, 0])
     F[n[:, 1] < 0] = F[n[:, 1] < 0][:, ::-1]
-    # Yüz renkleri: toprak, kıyı kumu/çakılı, dik yamaçta taş; çimen bölgesinde çimen
-    Wf = W[F].mean(1)
-    kf = kiyi[F].mean(1)
-    af = arsa[F].mean(1)
     n = np.cross(V[F][:, 1] - V[F][:, 0], V[F][:, 2] - V[F][:, 0])
     dik = 1 - np.abs(n[:, 1]) / (np.linalg.norm(n, axis=1) + 1e-12)
-    rng = np.random.default_rng(5)
-    t = rng.uniform(0, 1, len(F))
-    C = np.tile(np.array(renk("cimen"), np.float32), (len(F), 1))
-    kum = np.where(t[:, None] < 0.5, renk("kum"), renk("cakil"))
-    C = np.where((kf > 0.3)[:, None], kum, C)
-    C = np.where((kf > 0.85)[:, None], np.array(renk("toprak_koyu")) * 0.8, C)
-    C = np.where((dik > 0.45)[:, None], renk("kaya_krem"), C)
-    C = np.where((af > 0.3)[:, None], np.where(t[:, None] < 0.5, renk("toprak_arsa"), renk("toprak_arsa_acik")), C)
-    m = Mesh(V, F, C.astype(np.float32), "zemin", W=W.astype(np.float32))
-    # Dik yamaçlarda çimen olmasın
     dik_v = np.zeros(len(V))
     np.maximum.at(dik_v, F.ravel(), np.repeat(dik, 3))
-    m.W = np.minimum(m.W, 1 - _ss(0.4, 0.55, dik_v)).astype(np.float32)
-    m.NV = _kose_normalleri(V, F)
-    # Köşe renkleri: çimen dışı yerlerde (W küçük) görünen toprak, kum, çakıl, taş
+    W = np.minimum(W, 1 - _ss(0.4, 0.55, dik_v))
+    # Köşe renkleri: çimen dışı yerlerde (W küçük) görünen kum, çakıl, taş, arsa çimeni
     t = _noise2(P[:, 0] * 9, P[:, 1] * 9, 7) * 0.5 + 0.5
     cv = np.tile(np.array(renk("cimen")), (len(V), 1))
     kum = np.where((t > 0.5)[:, None], renk("kum"), renk("cakil"))
@@ -342,6 +272,8 @@ def _ova(irmaklar) -> Mesh:
     cv = cv + (np.array(renk("toprak_koyu")) * 0.8 - cv) * _ss(0.8, 0.95, kiyi)[:, None]
     cv = cv + (np.array(renk("kaya_krem")) - cv) * _ss(0.4, 0.55, dik_v)[:, None]
     cv = cv + (np.array(renk("arsa_cimen")) - cv) * _ss(0.2, 0.5, arsa)[:, None]
+    m = Mesh(V, F, cv[F].mean(1).astype(np.float32), "zemin", W=W.astype(np.float32))
+    m.NV = _kose_normalleri(V, F)
     m.CV = cv.astype(np.float32)
     return m
 
@@ -369,7 +301,7 @@ def _su_seritleri(irmaklar):
             F += [[a, a + 1, a + 3], [a, a + 3, a + 2]]
         m = Mesh(np.array(V, np.float32), np.array(F, np.int64),
                  np.tile(np.array(renk(ir.ad), np.float32), (len(F), 1)), ir.ad)
-        m = _yon_duzelt(m, True)
+        m = _yuz_yonu(m, (0, 1, 0))
         m.NV = np.tile(np.array([0, 1, 0], np.float32), (len(m.V), 1))
         out.append(m)
     return out
@@ -384,305 +316,243 @@ def dunya_cennet() -> Node:
 
 
 # --------------------------------------------------------------------------
-# ZB_dunya_dereceler: ufuktaki duvarlar, sekiler, çağlayanlar
+# ZB_dunya_selaleler: gökten, bulutların içinden inen dört çağlayan
 # --------------------------------------------------------------------------
 
-def _kaburga(phi, k):
-    """Duvar yüzündeki dikey payandalar (içe doğru girinti, metre)."""
-    s = 0.0
-    for f, a, p in ((41, 1.0, 0.3), (97, 0.6, 1.1), (211, 0.35, 2.3)):
-        s = s + a * np.abs(np.sin(f * phi + p + k))
-    return 7.0 * s
-
-
-def _duvar(k):
-    R, ust = DUVARLAR[k]
-    alt = (DUVARLAR[k - 1][1] if k > 0 else 0.0) - 6.0
-    dphi = 0.35 if k == 0 else 0.6
-    phis = np.radians(np.arange(-DUVAR_ACI, DUVAR_ACI + 1e-6, dphi))
-    nv = 16
-    vs = np.linspace(0, 1, nv + 1)
+def _gok_selalesi(x, z, y_alt, y_ust, gen, bakis, seed):
+    """Dikey, hafif dalgalı su perdesi: tepesi bulutun içinde, dibi gölcükte.
+    bakis: perdenin yüzünün döndüğü yatay yön (oyuncuya)."""
+    rng = np.random.default_rng(seed)
+    b = np.asarray(bakis, float)
+    b /= np.linalg.norm(b)
+    yan = np.array([-b[1], b[0]])
+    nv, nu = 40, 6
     V, W = [], []
-    ust_y = duvar_ust(k, phis)
-    for v in vs:
-        r = (duvar_r(k, phis) + duvar_etek(v) - _kaburga(phis, k) * _ss(0.2, 0.5, v) * (0.4 + 0.6 * v)
-             + 4.0 * _ss(0.88, 1.0, v))
-        taban = (ova_y(*kartezyen(duvar_r(0, phis) + 95, phis)) - 6) if k == 0 else duvar_ust(k - 1, phis) - 6
-        y = taban + (ust_y - taban) * v
-        x, z = kartezyen(r, phis)
-        V += list(np.stack([x, y, z], 1))
-    rng = np.random.default_rng(70 + k)
-    renkler = []
-    for j in range(nv):
-        v = (j + 0.5) / nv
-        serit = _noise2(np.full(len(phis) - 1, v * 900.0), phis[:-1] * 300.0, 80 + k)
-        tas = np.where(serit[:, None] > 0.4, renk("kaya_pembe"),
-                       np.where(serit[:, None] < -0.5, renk("kaya_altin"), renk("kaya_krem")))
-        sarkan = (_noise2(phis[:-1] * 2500.0, np.zeros(len(phis) - 1), 90 + k) * 0.5 + 0.5) > (1.2 - v * 0.8)
-        orman = v < 0.3 + 0.12 * _noise2(phis[:-1] * 900.0, np.zeros(len(phis) - 1), 95 + k)
-        yesil = np.where(rng.uniform(0, 1, len(phis) - 1)[:, None] < 0.5, renk("yaprak_zumrut"), renk("yaprak_koyu"))
-        row = np.where((sarkan | orman)[:, None] | (v > 0.9), yesil, tas)
-        renkler.append(list(row))
-    m = _izgara_mesh(V, len(phis) - 1, nv, renkler, "tas")
-    # Yüzler merkezden dışa (oyuncuya) baksın
-    tri = m.V[m.F]
-    n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
-    c = tri.mean(1)
-    dis = np.stack([c[:, 0] - MERKEZ[0], np.zeros(len(c)), c[:, 2] - MERKEZ[1]], 1)
-    if (n * dis).sum() < 0:
-        m = m.flipped()
-        m.NV = -m.NV
-    return m
-
-
-def _seki(k):
-    """k. duvarın üstündeki seki: bir sonraki duvarın dibine kadar uzanan çayır."""
-    R_ic = DUVARLAR[k + 1][0] if k + 1 < len(DUVARLAR) else DUVARLAR[k][0] - 420.0
-    y0 = DUVARLAR[k][1]
-    dphi = 0.7
-    phis = np.radians(np.arange(-DUVAR_ACI, DUVAR_ACI + 1e-6, dphi))
-    nr = 10
-    V = []
-    for i in range(nr + 1):
-        t = i / nr
-        r = duvar_r(k, phis) + 3.0 + (duvar_r(k + 1, phis) + 60.0 - duvar_r(k, phis) - 3.0) * t \
-            if k + 1 < len(DUVARLAR) else duvar_r(k, phis) + 3.0 - 420.0 * t
-        x, z = kartezyen(r, phis)
-        y = duvar_ust(k, phis) + _noise2(x * 2, z * 2, 60 + k) * 3.0
-        V += list(np.stack([x, y, z], 1))
-    renkler = [[renk("cimen")] * (len(phis) - 1) for _ in range(nr)]
-    m = _izgara_mesh(V, len(phis) - 1, nr, renkler, "zemin")
-    return _yon_duzelt(m, True)
-
-
-def _selale_seridi(k, phi, gen):
-    """k. duvardan dökülen çağlayan: duvar yüzünü izleyen, aşağıda açılan şerit."""
-    ust = float(duvar_ust(k, phi))
-    alt = (ova_y(*kartezyen(duvar_r(0, phi) + 95, phi)) - 2.0) if k == 0 else float(duvar_ust(k - 1, phi)) - 2.0
-    nv = 18
-    V = []
     for j in range(nv + 1):
-        v = 1 - j / nv
-        r = float(duvar_r(k, phi)) + duvar_etek(v) + 5.0 + 9.0 * (1 - v) ** 0.6
-        y = alt + (ust + 0.6 - alt) * v
-        g = gen * (0.65 + 0.55 * (1 - v))
-        da = g / 2 / r
-        for s in (-1, 1):
-            x, z = kartezyen(r, phi + s * da)
-            V.append([float(x), float(y), float(z)])
-    F = []
-    for j in range(nv):
-        a = 2 * j
-        F += [[a, a + 1, a + 3], [a, a + 3, a + 2]]
-    m = Mesh(np.array(V, np.float32), np.array(F, np.int64),
-             np.tile(np.array(renk("su"), np.float32), (len(F), 1)), "selale")
-    tri = m.V[m.F]
-    n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
-    c = tri.mean(1)
-    dis = np.stack([c[:, 0] - MERKEZ[0], np.zeros(len(c)), c[:, 2] - MERKEZ[1]], 1)
-    if (n * dis).sum() < 0:
-        m = m.flipped()
-    m.W = np.repeat(np.linspace(1, 0, nv + 1), 2).astype(np.float32)   # COLOR.a: 1 tepe, 0 dip
-    return m, (float(kartezyen(r, phi)[0]), float(alt), float(kartezyen(r, phi)[1]), gen)
+        v = j / nv                                              # 0 tepe, 1 dip
+        y = y_ust + (y_alt - y_ust) * v
+        g = gen * (0.8 + 0.7 * v ** 2)
+        kivrim = 3.0 * math.sin(v * 7.0 + seed) * v
+        for i in range(nu + 1):
+            u = i / nu * 2 - 1
+            ic = (1 - u * u) * gen * 0.12                       # perde ortası hafif öne kabarık
+            px = x + yan[0] * (u * g / 2 + kivrim) + b[0] * ic
+            pz = z + yan[1] * (u * g / 2 + kivrim) + b[1] * ic
+            V.append([px, y, pz])
+            W.append(1 - v)
+    CV = np.tile(np.array(renk("su")), (len(V), 1))
+    m = _izgara(V, nu, nv, CV, "selale", W=W)
+    return _yuz_yonu(m, (b[0], 0, b[1]))
 
 
-def selaleler():
-    """Bütün çağlayanlar ve dip noktaları (sis parçacıkları için)."""
-    seritler, dipler = [], []
-    for ir in IRMAKLAR:
-        phi = math.radians(ir["phi"])
-        for k in range(len(DUVARLAR) - 1):
-            gen = ir["gen"] * (1.6 if k == 0 else 2.4)
-            m, dip = _selale_seridi(k, phi + 0.012 * k, gen)
-            seritler.append(m)
-            if k == 0:
-                dipler.append(dip)
-    rng = np.random.default_rng(77)
-    for k, adet in ((0, 9), (1, 7), (2, 5)):
-        for _ in range(adet):
-            phi = math.radians(rng.uniform(-45, 45))
-            if min(abs(phi - math.radians(ir["phi"])) for ir in IRMAKLAR) < math.radians(3):
-                continue
-            m, dip = _selale_seridi(k, phi, rng.uniform(3.0, 7.0) * (1 + k))
-            seritler.append(m)
-            if k == 0:
-                dipler.append(dip)
-    return seritler, dipler
-
-
-@model("ZB_dunya_dereceler")
-def dunya_dereceler() -> Node:
-    root = Node("ZB_dunya_dereceler")
-    root.add(Node("duvarlar", [merge(*[_duvar(k) for k in range(len(DUVARLAR))])]))
-    root.add(Node("sekiler", [merge(*[_seki(k) for k in range(len(DUVARLAR))])]))
-    root.add(Node("selaleler", [merge(*selaleler()[0])]))
+@model("ZB_dunya_selaleler")
+def dunya_selaleler() -> Node:
+    irmaklar = _irmaklar()
+    parca = []
+    for k, ir in enumerate(irmaklar):
+        x, z = ir.P[0]
+        parca.append(_gok_selalesi(x, z, float(ir.wl[0]) - 1.5, SELALE_UST + 30 * k, ir.gen * 4.0,
+                                   (-x, -z), 11 + k))
+    root = Node("ZB_dunya_selaleler")
+    root.add(merge(*parca))
     return root
 
 
 # --------------------------------------------------------------------------
-# ZB_dunya_derece_koni: dışarıdan görünen katlı koni-dağ
+# ZB_dunya_kesit: 8 tabakanın dıştan görünümü (Dünya'nın katman resimleri gibi)
 # --------------------------------------------------------------------------
 
-KONI_R = [1000.0, 830.0, 675.0, 540.0, 420.0, 315.0, 225.0, 150.0, 92.0]
-KONI_Y = [0.0, 120.0, 235.0, 345.0, 450.0, 550.0, 645.0, 735.0, 815.0]
-KONI_TABAN = -320.0
-KONI_IRMAK_ACI = [25.0, 115.0, 205.0, 295.0]
-KONI_IRMAK = ["su", "sut", "bal", "serbet"]
+KAT = 8
+KAT_H = 300.0                # bir tabakanın toplam yüksekliği (zemin dilimi + gök)
+KAT_T = 60.0                 # zemin diliminin kalınlığı
+KESIT_X = 6000.0             # kesitin yarı genişliği (kadrajın dışına taşar: uzanıp gider)
+KESIT_Z = 1300.0             # tabakaların derinliği (arka gök perdesine kadar)
+KESIT_SELALE_X = [-1900.0, -650.0, 650.0, 1900.0]
+KESIT_IRMAK = ["su", "sut", "bal", "serbet"]
 
 
-def koni_r(i, phi):
-    phi = np.asarray(phi, float)
-    R = KONI_R[i]
-    return R * (1 + 0.07 * np.sin(3 * phi + i) + 0.04 * np.sin(7 * phi + 2 * i) + 0.015 * np.sin(19 * phi + i))
+def kesit_zemin_y(k, x, z):
+    x = np.asarray(x, float)
+    z = np.asarray(z, float)
+    return k * KAT_H + KAT_T + 9.0 * _noise2(x * 0.8 + k * 97, z * 0.8, 200 + k) + 3.0 * _noise2(x * 4, z * 4, 210 + k)
 
 
-def koni_y(i, phi):
-    """i. sekinin yüksekliği: halkalar düz değil, hafifçe dalgalanır."""
-    phi = np.asarray(phi, float)
-    if i >= len(KONI_Y) - 1:
-        return np.full_like(phi, KONI_Y[i])
-    return KONI_Y[i] + (10.0 + 1.5 * i) * np.sin(2 * phi + 0.7 * i) + 5.0 * np.sin(5 * phi + i)
+def kesit_selale(k, j):
+    """k. tabakanın göğünden inen j. çağlayanın ayağı (x, z)."""
+    x = KESIT_SELALE_X[j] + 260.0 * math.sin(k * 1.7 + j)
+    z = -380.0 - 260.0 * ((k + j) % 3)
+    return x, z
 
 
-def _koni_duvar(i, nphi=240):
-    """i. halkanın dış duvarı (i=0 dağın bulutlara inen eteği)."""
-    phis = np.linspace(-math.pi, math.pi, nphi + 1)
-    alt = KONI_TABAN if i == 0 else koni_y(i - 1, phis) - 4
-    ust = koni_y(i, phis)
-    nv = 14 if i == 0 else 8
-    V = []
-    for j in range(nv + 1):
-        v = j / nv
-        acil = (0.22 * (1 - v) ** 1.5) if i == 0 else 0.07 * (1 - v) ** 2.2
-        r = (koni_r(i, phis) * (1 + acil)
-             - 0.012 * KONI_R[i] * _kaburga(phis * 1.5, i) / 7.0 * _ss(0.2, 0.45, v) * (0.4 + 0.6 * v))
-        y = alt + (ust - alt) * v
-        V += list(np.stack([r * np.sin(phis), np.full_like(phis, y), r * np.cos(phis)], 1))
-    renkler = []
-    for j in range(nv):
-        v = (j + 0.5) / nv
-        serit = _noise2(np.full(nphi, v * 700.0 + i * 50), phis[:-1] * 200.0, 120 + i)
-        tas = np.where(serit[:, None] > 0.4, renk("kaya_pembe"),
-                       np.where(serit[:, None] < -0.5, renk("kaya_altin"), renk("kaya_krem")))
-        yesil = (_noise2(phis[:-1] * 1800.0, np.zeros(nphi), 130 + i) * 0.5 + 0.5) > (1.2 - v * 0.8)
-        if i > 0:
-            yesil |= v < 0.3 + 0.12 * _noise2(phis[:-1] * 900.0, np.zeros(nphi), 135 + i)
-        renkler.append(list(np.where(yesil[:, None] | (v > 0.88), renk("yaprak_zumrut"), tas)))
-    m = _izgara_mesh(V, nphi, nv, renkler, "tas")
-    tri = m.V[m.F]
-    n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
-    c = tri.mean(1)
-    if (n[:, [0, 2]] * c[:, [0, 2]]).sum() < 0:
-        m = m.flipped()
-        m.NV = -m.NV
-    return m
+def _kesit_zemin(k):
+    """Tabakanın zemini: çayır, üst tabakalarda çiçek tarlaları artar (Rahmân 46-61)."""
+    xs = np.linspace(-KESIT_X, KESIT_X, 181)
+    zs = np.linspace(-KESIT_Z, 0.0, 27)
+    X, Z = np.meshgrid(xs, zs)
+    Y = kesit_zemin_y(k, X, Z)
+    V = np.stack([X.ravel(), Y.ravel(), Z.ravel()], 1)
+    cicek = _ss(0.3, 0.65, _noise2(X.ravel() * 3, Z.ravel() * 3, 220 + k) * 0.5 + 0.5) * min(1.0, 0.15 + 0.12 * k)
+    tarla = np.array([renk(c) for c in ("gul", "lale_sari", "inci", "lale", "kaya_pembe")])
+    secim = (np.floor((X.ravel() + 5000) / 260) + np.floor((Z.ravel() + 5000) / 190) + k).astype(int) % len(tarla)
+    CV = tarla[secim]
+    m = _izgara(V, len(xs) - 1, len(zs) - 1, CV, "zemin", W=1 - cicek)
+    return _yuz_yonu(m, (0, 1, 0))
 
 
-def _koni_seki(i, nphi=240):
-    """i. halkanın üstü: çayır; üst halkalarda çiçek tarlaları daha çok (Rahmân 46-61)."""
-    phis = np.linspace(-math.pi, math.pi, nphi + 1)
-    nr = 8
-    V, W = [], []
-    rng = np.random.default_rng(140 + i)
-    for j in range(nr + 1):
-        t = j / nr
-        r = koni_r(i, phis) * (1 - t) + (koni_r(i + 1, phis) * 1.02) * t
-        y = koni_y(i, phis) + 6 * np.sin(phis * 5 + i) * t * (1 - t) + 10 * t ** 3
-        V += list(np.stack([r * np.sin(phis), y, r * np.cos(phis)], 1))
-        x, z = r * np.sin(phis), r * np.cos(phis)
-        cicek = _ss(0.25, 0.6, _noise2(x * 8, z * 8, 150 + i) * 0.5 + 0.5) * min(1.0, 0.25 + i * 0.12)
-        W += list(1 - cicek)
-    tarla = ["gul", "lale_sari", "inci", "lale", "kaya_pembe"]
-    renkler = []
-    for j in range(nr):
-        renkler.append([renk(tarla[(k // 7 + j + i) % len(tarla)]) for k in range(nphi)])
-    m = _izgara_mesh(V, nphi, nr, renkler, "zemin", W=W)
-    return _yon_duzelt(m, True)
+def _kesit_dilim(k):
+    """Zemin diliminin kesit yüzü (z=0) ve altı (alttaki tabakanın göğü gibi boyanır)."""
+    y0 = k * KAT_H
+    xs = np.linspace(-KESIT_X, KESIT_X, 241)
+    ust = kesit_zemin_y(k, xs, np.zeros_like(xs))
+    # Kesit yüzü: toprak katmanları (çimen, koyu toprak, altın damar, inci damar, taban)
+    seritler = [(1.0, "cimen"), (0.92, "katman_toprak"), (0.66, "katman_toprak"), (0.6, "katman_altin"),
+                (0.5, "katman_toprak"), (0.3, "katman_koyu"), (0.22, "katman_inci"), (0.12, "katman_koyu"),
+                (0.0, "katman_koyu")]
+    V, CV = [], []
+    for t, ad in seritler:
+        dalga = 1.5 * np.sin(xs * 0.01 + k * 3 + t * 9)
+        y = y0 + 4 + (ust - y0 - 4) * t + (dalga if 0 < t < 1 else 0)
+        V += list(np.stack([xs, y, np.zeros_like(xs)], 1))
+        CV += [renk(ad)] * len(xs)
+    yuz = _izgara(V, len(xs) - 1, len(seritler) - 1, CV, "tas")
+    yuz = _yuz_yonu(yuz, (0, 0, 1))
+    # Alt yüz: alttaki tabakanın gözünden gök (bulut tavanı); tavan malzemesi ışıklıdır
+    zs = np.linspace(-KESIT_Z, 0.0, 8)
+    X, Z = np.meshgrid(xs[::4], zs)
+    Vt = np.stack([X.ravel(), np.full(X.size, y0 + 4.0), Z.ravel()], 1)
+    n = _noise2(X.ravel() * 2, Z.ravel() * 2, 230 + k) * 0.5 + 0.5
+    CVt = np.array(renk("gok_tavan")) * (1 - 0.35 * n[:, None]) + np.array(renk("bulut_beyaz")) * 0.35 * n[:, None]
+    tavan = _izgara(Vt, X.shape[1] - 1, len(zs) - 1, CVt, "tavan")
+    tavan = _yuz_yonu(tavan, (0, -1, 0))
+    return yuz, tavan
 
 
-def _koni_irmaklari():
-    """Dört ırmak zirveden iner: her sekide çaprazlama akar, her duvardan çağlayanla dökülür."""
-    seritler, selale = {k: [] for k in KONI_IRMAK}, []
-    for j, (aci, ad) in enumerate(zip(KONI_IRMAK_ACI, KONI_IRMAK)):
-        for i in range(len(KONI_R) - 1):
-            p0 = math.radians(aci + 9 * (i + 1))
-            p1 = math.radians(aci + 9 * i)
-            gen = 26.0 - i * 2.0
-            # Seki üstünde akış: iç duvarın dibinden dış kenara
-            n = 14
-            V = []
-            for k in range(n + 1):
-                t = k / n
-                phi = p0 + (p1 - p0) * t
-                r = float(koni_r(i + 1, phi)) * 1.03 * (1 - t) + float(koni_r(i, phi)) * 0.995 * t
-                y = float(koni_y(i, phi)) + 1.2 + 6 * math.sin(phi * 5 + i) * t * (1 - t) + 10 * (1 - t) ** 3
-                da = gen / 2 / r
-                for s in (-1, 1):
-                    V.append([r * math.sin(phi + s * da), y, r * math.cos(phi + s * da)])
-            F = []
-            for k in range(n):
-                a = 2 * k
-                F += [[a, a + 1, a + 3], [a, a + 3, a + 2]]
-            m = Mesh(np.array(V, np.float32), np.array(F, np.int64),
-                     np.tile(np.array(renk(ad), np.float32), (len(F), 1)), ad)
-            seritler[ad].append(_yon_duzelt(m, True))
-            # Dış kenardan aşağı çağlayan (i=0: bulut denizine)
-            alt = KONI_TABAN + 150 if i == 0 else float(koni_y(i - 1, p1)) + 1
-            nv = 12
-            V = []
-            for k in range(nv + 1):
-                v = 1 - k / nv
-                acil = (0.22 * (1 - v) ** 1.5) if i == 0 else 0.07 * (1 - v) ** 2.2
-                r = float(koni_r(i, p1)) * (1 + acil) + 4 + 6 * (1 - v) ** 0.6
-                y = alt + (float(koni_y(i, p1)) + 1.2 - alt) * v
-                da = gen * (0.7 + 0.6 * (1 - v)) / 2 / r
-                for s in (-1, 1):
-                    V.append([r * math.sin(p1 + s * da), y, r * math.cos(p1 + s * da)])
-            F = []
-            for k in range(nv):
-                a = 2 * k
-                F += [[a, a + 1, a + 3], [a, a + 3, a + 2]]
-            m = Mesh(np.array(V, np.float32), np.array(F, np.int64),
-                     np.tile(np.array(renk("su"), np.float32), (len(F), 1)), "selale")
-            tri = m.V[m.F]
-            nn = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
-            c = tri.mean(1)
-            if (nn[:, [0, 2]] * c[:, [0, 2]]).sum() < 0:
-                m = m.flipped()
-            m.W = np.repeat(np.linspace(1, 0, nv + 1), 2).astype(np.float32)
-            selale.append(m)
-    return seritler, selale
+def _kesit_arka(k):
+    """Tabakanın arka gök perdesi: ufukta sıcak, yukarıda mavi (her tabakanın kendi göğü)."""
+    y0 = k * KAT_H + KAT_T - 30
+    y1 = (k + 1) * KAT_H + 4
+    xs = np.linspace(-KESIT_X - 200, KESIT_X + 200, 40)
+    V, CV = [], []
+    ufuk, orta, tepe = (np.array(renk(c)) for c in ("gok_ufuk", "gok_orta", "gok_tavan"))
+    for t in np.linspace(0, 1, 9):
+        c = ufuk + (orta - ufuk) * _ss(0.0, 0.45, t) + (tepe - orta) * _ss(0.45, 1.0, t)
+        V += list(np.stack([xs, np.full_like(xs, y0 + (y1 - y0) * t), np.full_like(xs, -KESIT_Z)], 1))
+        CV += [c] * len(xs)
+    m = _izgara(V, len(xs) - 1, 8, CV, "tavan")
+    return _yuz_yonu(m, (0, 0, 1))
 
 
-def _koni_koskleri():
-    """Sekilerde küçük inci kubbeler: uzaktan parıldayan köşkler."""
-    rng = np.random.default_rng(160)
+def _kesit_irmaklari(k):
+    """Her tabakada dört ırmak: gökten inen çağlayanın dibinden kesit yüzüne kıvrılarak akar.
+    En üstte (Firdevs) dört ırmak ortadaki kaynaktan dört yöne çıkar."""
+    out = {ad: [] for ad in KESIT_IRMAK}
+    for j, ad in enumerate(KESIT_IRMAK):
+        if k == KAT - 1:
+            x0, z0 = 0.0, -650.0
+            yon = [(-1, 0.25), (-0.3, 1), (0.3, 1), (1, 0.25)][j]
+            pts = [(x0 + yon[0] * t * 2200 + 90 * math.sin(t * 9 + j), z0 + yon[1] * t * 650) for t in
+                   np.linspace(0.02, 1, 30)]
+        else:
+            x0, z0 = kesit_selale(k, j)
+            pts = [(x0 + 140 * math.sin(t * 6.5 + j + k), z0 + (0 - z0) * t) for t in np.linspace(0, 1, 30)]
+        P = _egri(pts, 30.0)
+        N = _dik(P)
+        gen = 34.0
+        V = []
+        for p, nrm in zip(P, N):
+            y = float(kesit_zemin_y(k, p[0], p[1])) + 4.0
+            V += [[p[0] + nrm[0] * gen / 2, y, p[1] + nrm[1] * gen / 2], [p[0] - nrm[0] * gen / 2, y, p[1] - nrm[1] * gen / 2]]
+        F = []
+        for i in range(len(P) - 1):
+            a = 2 * i
+            F += [[a, a + 1, a + 3], [a, a + 3, a + 2]]
+        m = Mesh(np.array(V, np.float32), np.array(F, np.int64), np.tile(np.array(renk(ad), np.float32), (len(F), 1)), ad)
+        m = _yuz_yonu(m, (0, 1, 0))
+        m.NV = np.tile(np.array([0, 1, 0], np.float32), (len(m.V), 1))
+        out[ad].append(m)
+    return out
+
+
+def _kesit_selaleleri():
+    parca = []
+    for k in range(KAT - 1):
+        for j in range(4):
+            x, z = kesit_selale(k, j)
+            y_alt = float(kesit_zemin_y(k, x, z)) + 2.0
+            y_ust = (k + 1) * KAT_H + 2.0
+            parca.append(_gok_selalesi(x, z, y_alt, y_ust, 75.0, (0.25, 1.0), 40 + k * 4 + j))
+    return merge(*parca)
+
+
+def _kesit_merdivenleri():
+    """Kesitte her tabakadan bir üsttekine çıkan, uzaktan seçilebilecek genişlikte
+    çiçekli merdiven (içerideki ZB_yapi_kat_merdiveni'nin kesit ölçeğindeki karşılığı)."""
+    rng = np.random.default_rng(270)
+    tas, yesil, cicek = [], [], []
+    for k in range(KAT - 1):
+        x0 = [-2300.0, 1900.0, -900.0, 1300.0, -1900.0, 600.0, 2400.0][k]
+        z0 = -350.0
+        y0 = float(kesit_zemin_y(k, x0, z0)) - 2.0
+        y1 = (k + 1) * KAT_H + 6.0
+        n = 26
+        for i in range(n):
+            t = i / (n - 1)
+            x = x0 + 170.0 * math.sin(2 * math.pi * 0.85 * t + k)
+            z = z0 - 260.0 * t
+            y = y0 + (y1 - y0) * t
+            tas.append(box(46.0, 5.0, 22.0, "mermer" if i % 2 else "fildisi", y0=-5.0).translate(x, y, z))
+            for sgn in (-1, 1):
+                c = np.array([x + sgn * 25.0, y + 2.0, z])
+                yesil.append(icosphere(rng.uniform(7.0, 10.0), 1, ["yaprak_cennet", "yaprak", "yaprak_zumrut"][i % 3])
+                             .jitter(2.0, i + k * 50).translate(*c))
+                for _ in range(2):
+                    v = rng.normal(0, 1, 3)
+                    v[1] = abs(v[1])
+                    v /= np.linalg.norm(v)
+                    cicek.append(icosphere(rng.uniform(2.5, 3.8), 0,
+                                           ["gul", "lale", "lale_sari", "cicek_mor", "inci"][rng.integers(5)])
+                                 .translate(*(c + v * 8.0)))
+    return (merge(*tas).with_material("tas"), merge(*yesil).with_material("yaprak").paylasimli(),
+            merge(*cicek).with_material("cicek").paylasimli())
+
+
+def _kesit_koskleri():
+    """Tabakalarda uzaktan parıldayan inci kubbeler (köşkler)."""
+    rng = np.random.default_rng(260)
     out = []
-    for i in range(len(KONI_R) - 1):
-        for _ in range(10 + 2 * i):
-            phi = rng.uniform(-math.pi, math.pi)
-            t = rng.uniform(0.25, 0.75)
-            r = float(koni_r(i, phi)) * (1 - t) + float(koni_r(i + 1, phi)) * t
-            y = float(koni_y(i, phi)) + 6 * math.sin(phi * 5 + i) * t * (1 - t) + 10 * t ** 3
-            b = rng.uniform(5.0, 9.0)
+    for k in range(KAT):
+        for _ in range(14 + 2 * k):
+            x = rng.uniform(-KESIT_X * 0.9, KESIT_X * 0.9)
+            z = rng.uniform(-KESIT_Z * 0.9, -150)
+            y = float(kesit_zemin_y(k, x, z))
+            b = rng.uniform(9.0, 16.0)
             out.append(lathe([(b, 0), (b * 0.97, b * 0.4), (b * 0.75, b * 0.85), (b * 0.35, b * 1.15), (0, b * 1.25)],
-                             10, "inci").translate(r * math.sin(phi), y - 0.5, r * math.cos(phi)))
+                             10, "inci").translate(x, y - 0.5, z))
     return merge(*out).smooth(60)
 
 
-@model("ZB_dunya_derece_koni")
-def dunya_derece_koni() -> Node:
-    root = Node("ZB_dunya_derece_koni")
-    n = len(KONI_R) - 1
-    duvarlar = [_koni_duvar(i) for i in range(n + 1)]
-    sekiler = [_koni_seki(i) for i in range(n)]
-    seritler, selale = _koni_irmaklari()
-    zirve = lathe([(KONI_R[-1] * 1.05, KONI_Y[-1]), (KONI_R[-1] * 0.8, KONI_Y[-1] + 6), (0.0, KONI_Y[-1] + 9)],
-                  48, "nur_beyaz").with_material("nur")
-    root.add(Node("duvarlar", [merge(*duvarlar)]), Node("sekiler", [merge(*sekiler)]),
-             Node("irmaklar", [merge(*v) for v in seritler.values()]), Node("selaleler", [merge(*selale)]),
-             Node("koskler", [_koni_koskleri()]), Node("zirve", [zirve]))
-    root.add(Node("isik_zirve", translation=(0.0, KONI_Y[-1] + 40.0, 0.0)))
+@model("ZB_dunya_kesit")
+def dunya_kesit() -> Node:
+    root = Node("ZB_dunya_kesit")
+    zemin, yuz, tavan, arka = [], [], [], []
+    irmak = {ad: [] for ad in KESIT_IRMAK}
+    for k in range(KAT):
+        zemin.append(_kesit_zemin(k))
+        y, t = _kesit_dilim(k)
+        yuz.append(y)
+        if k > 0:
+            tavan.append(t)
+        arka.append(_kesit_arka(k))
+        for ad, ms in _kesit_irmaklari(k).items():
+            irmak[ad] += ms
+    # Firdevs'in ortasında dört ırmağın kaynağı
+    kaynak = lathe([(60, 0), (52, 6), (20, 10), (0, 12)], 24, "nur_beyaz").translate(0, float(kesit_zemin_y(KAT - 1, 0, -650)) + 2, -650)
+    root.add(Node("zeminler", [merge(*zemin)]), Node("kesit_yuzu", [merge(*yuz)]), Node("tavanlar", [merge(*tavan)]),
+             Node("gokler", [merge(*arka)]), Node("irmaklar", [merge(*v) for v in irmak.values()]),
+             Node("selaleler", [_kesit_selaleleri()]), Node("koskler", [_kesit_koskleri()]),
+             Node("merdivenler", list(_kesit_merdivenleri())),
+             Node("kaynak", [kaynak.with_material("nur")]))
+    root.add(Node("isik_firdevs", translation=(0.0, KAT * KAT_H + 80.0, -650.0)))
     return root
 
 
@@ -695,17 +565,27 @@ def _yerde(x, z, irmaklar):
 
 
 def _irmak_yonu(ir, z):
-    i = int(np.argmin(np.abs(ir.P[:, 1] - z) + 1e3 * (np.hypot(*(ir.P - ir.P[0]).T) < 50)))
+    i = int(np.argmin(np.abs(ir.P[:, 1] - z) + 1e3 * (ir.s < 400)))
     j = min(i + 3, len(ir.P) - 1)
     d = ir.P[j] - ir.P[max(i - 3, 0)]
     return ir.P[i], float(ir.wl[i]), math.degrees(math.atan2(d[0], d[1]))
+
+
+def merdiven_noktalari():
+    """Merdivenin ayağı ve ucu (dünya koordinatı)."""
+    x, z, rot, olcek = MERDIVEN
+    a = math.radians(rot)
+    ux, uy, uz = MERDIVEN_UST
+    wx = x + (ux * math.cos(a) + uz * math.sin(a)) * olcek
+    wz = z + (-ux * math.sin(a) + uz * math.cos(a)) * olcek
+    return (x, z), (wx, uy * olcek, wz)
 
 
 def yerlesim() -> dict:
     irmaklar = _irmaklar()
     su = irmaklar[0]
     rng = np.random.default_rng(2026)
-    d: dict = {"merkez": MERKEZ.tolist(), "arsa_r": ARSA_R, "duvarlar": DUVARLAR}
+    d: dict = {"arsa_r": ARSA_R}
 
     def yer(x, z, rot=None, olcek=1.0, dy=0.0):
         return [round(float(x), 2), round(_yerde(x, z, irmaklar) + dy, 2), round(float(z), 2),
@@ -729,19 +609,21 @@ def yerlesim() -> dict:
     kosk2_p, kosk2_y, kosk2_rot = _irmak_yonu(su, -300.0)
     sut_p, sut_y, sut_rot = _irmak_yonu(irmaklar[1], -205.0)
     bal_p, bal_y, bal_rot = _irmak_yonu(irmaklar[2], -330.0)
-    d["su_kosku"] = [[round(float(kosk_p[0]), 2), round(kosk_y, 2), round(float(kosk_p[1]), 2), round(kosk_rot, 1), 1.0],
-                     [round(float(kosk2_p[0]), 2), round(kosk2_y, 2), round(float(kosk2_p[1]), 2), round(kosk2_rot, 1), 0.9],
-                     [round(float(sut_p[0]), 2), round(sut_y, 2), round(float(sut_p[1]), 2), round(sut_rot, 1), 0.85],
-                     [round(float(bal_p[0]), 2), round(bal_y, 2), round(float(bal_p[1]), 2), round(bal_rot, 1), 1.0]]
+    d["su_kosku"] = [[round(float(p[0]), 2), round(y, 2), round(float(p[1]), 2), round(r, 1), o]
+                     for p, y, r, o in ((kosk_p, kosk_y, kosk_rot, 1.0), (kosk2_p, kosk2_y, kosk2_rot, 0.9),
+                                        (sut_p, sut_y, sut_rot, 0.85), (bal_p, bal_y, bal_rot, 1.0))]
     cadir = (40.0, -62.0)
     d["inci_cadir"] = [yer(*cadir, rot=math.degrees(math.atan2(-cadir[0], -cadir[1])), dy=-0.2)]
     sedir = (-15.0, -24.0)
     d["sedir_kosesi"] = [yer(*sedir, rot=25.0, dy=0.02)]
     d["selsebil"] = [yer(-10.5, -30.5, rot=-20.0, dy=-0.05)]
     d["pinar"] = [yer(-21.5, -17.5, dy=-0.1)]
+    (mx, mz), ust = merdiven_noktalari()
+    d["merdiven"] = [yer(mx, mz, rot=MERDIVEN[2], olcek=MERDIVEN[3], dy=-0.3)]
+    d["merdiven_ust"] = [round(v, 1) for v in ust]
     yapilar = [(kosk_p[0], kosk_p[1], 18), (kosk2_p[0], kosk2_p[1], 18), (sut_p[0], sut_p[1], 16),
                (bal_p[0], bal_p[1], 18), (cadir[0], cadir[1], 10), (sedir[0], sedir[1], 4), (-10.5, -30.5, 3),
-               (-21.5, -17.5, 3)]
+               (-21.5, -17.5, 3), (mx, mz, 14)]
 
     # --- Arsa: Tûbâ çekirdeği, tek fidan, ilk çiçekler, nur tohumları
     d["arsa"] = {
@@ -796,9 +678,16 @@ def yerlesim() -> dict:
         x, z = (ARSA_R + 2.4) * math.sin(a), (ARSA_R + 2.4) * math.cos(a)
         if abs(a - math.pi) > 0.5 and z < 4.0 and bos_mu(x, z, -2.4):
             gul.append(yer(x, z, olcek=rng.uniform(0.9, 1.2)))
+    # Merdivenin ayağında çiçekli çalılar
+    for k in range(10):
+        a = 2 * math.pi * k / 10
+        x, z = mx + 9.0 * math.cos(a), mz + 7.0 * math.sin(a)
+        if bos_mu(x, z, 0.0):
+            gul.append(yer(x, z, olcek=rng.uniform(1.2, 1.6)))
     d["gul"] = gul
     lale = []
-    for cx, cz, n in ((16.0, 18.0, 70), (-10.0, 22.0, 60), (20.0, -18.0, 50), (-6.0, -34.0, 45), (8.0, 30.0, 60)):
+    for cx, cz, n in ((16.0, 18.0, 70), (-10.0, 22.0, 60), (20.0, -18.0, 50), (-6.0, -34.0, 45), (8.0, 30.0, 60),
+                      (mx - 16, mz + 14, 60), (mx + 18, mz + 8, 50)):
         for _ in range(n):
             r = 3.2 * math.sqrt(rng.uniform(0, 1))
             a = rng.uniform(0, 2 * math.pi)
@@ -809,9 +698,9 @@ def yerlesim() -> dict:
 
     # --- Korular (koyu yeşil, Rahmân 64) ve uzak ağaçlar
     koru, uzak = [], []
-    kumeler = [(-110, -60, 40, 26), (-140, -150, 50, 32), (-95, -230, 45, 26), (120, -80, 45, 24), (150, -170, 55, 30),
-               (70, -260, 45, 22), (-20, -300, 60, 28), (40, -150, 30, 14), (-60, 40, 30, 10), (95, 60, 35, 14),
-               (-150, 20, 40, 18), (160, -20, 40, 18), (-190, -90, 45, 22), (200, -110, 45, 22), (10, -210, 35, 14)]
+    kumeler = [(-110, -60, 40, 26), (-140, -150, 50, 32), (-95, -230, 45, 26), (130, -70, 40, 22), (170, -190, 50, 26),
+               (60, -290, 45, 22), (-20, -300, 60, 28), (-60, 40, 30, 10), (95, 60, 35, 14), (-150, 20, 40, 18),
+               (160, -20, 40, 18), (-190, -90, 45, 22), (220, -110, 45, 22)]
     for cx, cz, r, n in kumeler:
         for _ in range(n * 3):
             if n <= 0:
@@ -823,58 +712,45 @@ def yerlesim() -> dict:
                 koru.append(yer(x, z, olcek=rng.uniform(1.3, 2.1), dy=-0.1))
                 n -= 1
     d["koru"] = koru
-    while len(uzak) < 2600:
+    while len(uzak) < 3400:
         a = rng.uniform(-math.pi, math.pi)
-        r = 260 * math.exp(rng.uniform(0, math.log(9.0)))
+        r = 260 * math.exp(rng.uniform(0, math.log(14.0)))
         x, z = r * math.sin(a), -r * math.cos(a)
-        rho, phi = kutup(x, z)
-        if rho < duvar_r(0, phi) + 25 or z > 600:
+        if z > 700:
             continue
-        # Koru kümeleri halinde: gürültü eşiği
         if _noise2(np.array([x * 6.0]), np.array([z * 6.0]), 170)[0] < 0.1:
             continue
         if bos_mu(x, z, 6.0, yapilar):
-            uzak.append(yer(x, z, olcek=rng.uniform(1.9, 3.0), dy=-0.3))
-    # Derece kenarlarında ağaç saçağı
-    for k in range(len(DUVARLAR)):
-        R, ust = DUVARLAR[k]
-        adim = 11.0 + 5 * k
-        for phi in np.arange(-math.radians(65.0), math.radians(65.0), adim / R):
-            for sira in range(2):
-                p = phi + rng.uniform(-0.3, 0.3) * adim / R
-                r = float(duvar_r(k, p)) - 10.0 - sira * 22.0 - rng.uniform(0, 12)
-                x, z = kartezyen(r, p)
-                y = float(duvar_ust(k, p)) + _noise2(np.array([x * 2]), np.array([z * 2]), 60 + k)[0] * 3.0
-                uzak.append([round(float(x), 1), round(float(y) - 0.5, 1), round(float(z), 1),
-                             round(float(rng.uniform(0, 360)), 0), round(float(rng.uniform(1.8, 3.0) * (1 + 0.3 * k)), 2)])
+            uzak.append(yer(x, z, olcek=rng.uniform(1.9, 3.2), dy=-0.3))
     d["uzak_agac"] = uzak
 
-    # --- Dev Tûbâ (üçüncü sekide, sağda)
-    tphi = math.radians(27.0)
-    tx, tz = kartezyen(1230.0, tphi)
-    d["tuba_dev"] = [round(float(tx), 1), round(float(duvar_ust(1, tphi)) - 4.0, 1), round(float(tz), 1), 20.0, 1.0]
+    # --- Gökten inen çağlayanlar: tepe bulutu ve dip sisi
+    d["gok_selale"] = [[round(float(ir.P[0][0]), 1), SELALE_UST + 30 * k, round(float(ir.P[0][1]), 1), ir.gen * 4.0]
+                       for k, ir in enumerate(irmaklar)]
+    d["selale_dip"] = [[round(float(ir.P[0][0]), 1), round(float(ir.wl[0]), 1), round(float(ir.P[0][1]), 1),
+                        ir.gen * 4.0] for ir in irmaklar]
 
-    # --- Çağlayan dipleri, fıskiyeler, ırmak ışıltısı
-    _, dipler = selaleler()
-    d["selale_dip"] = [[round(a, 1), round(b, 1), round(c, 1), round(g, 1)] for a, b, c, g in dipler]
-
-    # --- Koni-dağın sekilerindeki ağaçlar (dış görünüm); ırmak yollarından uzak
-    koni = []
-    for i in range(len(KONI_R) - 1):
-        adet = int(2000 * (KONI_R[i] ** 2 - KONI_R[i + 1] ** 2) / (KONI_R[0] ** 2 - KONI_R[1] ** 2))
-        adet = max(adet, 60)
+    # --- Kesit: tabakalardaki ağaçlar, merdivenler, çağlayan bulutları
+    kesit_agac, kesit_merdiven, kesit_bulut = [], [], []
+    for k in range(KAT):
+        adet = 520
         while adet > 0:
-            phi = rng.uniform(-math.pi, math.pi)
-            t = rng.uniform(0.08, 0.85)
-            yakin = min(abs((math.degrees(phi) - (aci + 9 * (i + 1 - t)) + 180) % 360 - 180) for aci in KONI_IRMAK_ACI)
-            if yakin < 3.0:
+            x = rng.uniform(-4500.0, 4500.0)
+            z = rng.uniform(-KESIT_Z * 0.97, -40)
+            if _noise2(np.array([x * 1.2 + k * 50]), np.array([z * 1.2]), 240 + k)[0] < -0.05:
                 continue
-            r = float(koni_r(i, phi)) * (1 - t) + float(koni_r(i + 1, phi)) * 1.02 * t
-            y = float(koni_y(i, phi)) + 6 * math.sin(phi * 5 + i) * t * (1 - t) + 10 * t ** 3
-            koni.append([round(r * math.sin(phi), 1), round(y - 0.5, 1), round(r * math.cos(phi), 1),
-                         round(float(rng.uniform(0, 360)), 0), round(float(rng.uniform(4.0, 6.0)), 2)])
+            y = float(kesit_zemin_y(k, x, z))
+            kesit_agac.append([round(x, 1), round(y - 1, 1), round(z, 1), round(float(rng.uniform(0, 360)), 0),
+                               round(float(rng.uniform(5.0, 8.0)), 2)])
             adet -= 1
-    d["koni_agac"] = koni
+        if k < KAT - 1:
+            x = [-2300.0, 1900.0, -900.0, 1300.0, -1900.0, 600.0, 2400.0][k]
+            xu = x + 170.0 * math.sin(2 * math.pi * 0.85 + k)
+            kesit_bulut.append([round(xu, 1), (k + 1) * KAT_H - 20.0, -610.0, 150.0])
+            for j in range(4):
+                sx, sz = kesit_selale(k, j)
+                kesit_bulut.append([round(sx, 1), (k + 1) * KAT_H - 30.0, round(sz, 1), 140.0])
+    d["kesit"] = {"kat": KAT, "kat_h": KAT_H, "agac": kesit_agac, "merdiven": kesit_merdiven, "bulut": kesit_bulut}
 
     # --- Çimen ızgarası (Godot çimen tutamlarını buna göre dağıtır)
     x0, z0, x1, z1 = YAKIN
@@ -889,9 +765,9 @@ def yerlesim() -> dict:
 
     # --- Kameralar: konum, hedef, dikey görüş açısı
     d["kameralar"] = {
-        "ufuk": {"konum": [12.0, _yerde(12, 38, irmaklar) + 17.0, 38.0], "hedef": [-30.0, 22.0, -700.0], "fov": 55.0},
-        "arsa": {"konum": [9.0, 5.8, 21.0], "hedef": [-12.0, 0.5, -40.0], "fov": 50.0},
-        "derece": {"konum": [1750.0, 170.0, 1950.0], "hedef": [0.0, 470.0, 0.0], "fov": 42.0},
+        "ufuk": {"konum": [12.0, _yerde(12, 38, irmaklar) + 17.0, 38.0], "hedef": [-10.0, 60.0, -700.0], "fov": 55.0},
+        "arsa": {"konum": [9.0, 5.8, 21.0], "hedef": [-2.0, 4.0, -40.0], "fov": 55.0},
+        "kesit": {"konum": [0.0, 2600.0, 16500.0], "hedef": [0.0, 1230.0, -700.0], "fov": 10.5},
     }
     return d
 

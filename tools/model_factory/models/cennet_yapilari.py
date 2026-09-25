@@ -425,3 +425,93 @@ def inci_cakil() -> Node:
         parca.append(icosphere(r, 1, renk_ad).scale(1.0, 0.7, 0.85).rotate("y", rng.uniform(0, 180))
                      .translate(rng.uniform(-0.16, 0.16), r * 0.45, rng.uniform(-0.1, 0.1)).smooth(70))
     return Node("ZB_obje_inci_cakil", [merge(*parca).with_material("inci")])
+
+
+# --------------------------------------------------------------------------
+# Katlar arası merdiven (K10; kullanıcının referans görseli): kıvrılarak göğe
+# yükselen taş basamaklar, iki yanında sarmaşık ve çiçek; ucu bulutun içindedir.
+# Yerel eksen: ayak (0, 0, 0), merdiven -z yönünde uzaklaşarak yükselir.
+# --------------------------------------------------------------------------
+
+MERDIVEN_H = 210.0
+
+
+def _merdiven_yolu(t):
+    t = np.asarray(t, float)
+    x = 55.0 * np.sin(2 * math.pi * 1.25 * t) * (0.55 + 0.45 * t)
+    z = -300.0 * t
+    y = MERDIVEN_H * t ** 1.08
+    return np.stack([x, y, z], -1)
+
+
+MERDIVEN_UST = tuple(float(v) for v in _merdiven_yolu(1.0))
+
+
+def _merdiven(ayrinti: bool) -> Node:
+    rng = np.random.default_rng(301 if ayrinti else 302)
+    T = np.linspace(0, 1, 4000)
+    P = _merdiven_yolu(T)
+    s = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(P, axis=0), axis=1))])
+    L = s[-1]
+    en = 5.6
+    adim = 1.35
+    tas, altin, yaprak, cicek = [], [], [], []
+
+    def nokta(uz):
+        i = int(np.clip(np.searchsorted(s, uz), 1, len(P) - 1))
+        p = P[i]
+        d = P[i] - P[i - 1]
+        yaw = math.degrees(math.atan2(d[0], d[2]))
+        return p, d / (np.linalg.norm(d) + 1e-9), yaw
+
+    # Basamaklar
+    n = int(L / adim)
+    for k in range(n):
+        p, d, yaw = nokta(k * adim)
+        yatay = math.hypot(d[0], d[2]) * adim
+        tas.append(box(en, 0.55, yatay + 0.25, "mermer" if k % 2 else "fildisi", y0=-0.55)
+                   .rotate("y", yaw).translate(*p))
+    # Basamakların altında taşıyıcı kuşak ve kenarlarında altın çizgi
+    ornek = np.arange(0, L, 3.0)
+    for a, b in zip(ornek[:-1], ornek[1:]):
+        pa, da, ya = nokta(a)
+        pb, db, yb = nokta(b)
+        seg = pb - pa
+        uz = np.linalg.norm(seg) + 0.3
+        orta = (pa + pb) / 2
+        egim = math.degrees(math.atan2(seg[1], math.hypot(seg[0], seg[2])))
+        tas.append(box(en + 0.4, 1.2, uz, "kaya_pembe", y0=-1.9).rotate("x", egim).rotate("y", ya).translate(*orta))
+        for sgn in (-1, 1):
+            altin.append(box(0.18, 0.2, uz, "altin", y0=-0.72).translate(sgn * (en / 2 + 0.15), 0, 0)
+                         .rotate("x", egim).rotate("y", ya).translate(*orta))
+    # Sarmaşık ve çiçekler
+    yesiller = ["yaprak_cennet", "yaprak", "yaprak_zumrut", "yaprak_acik"]
+    renkler = ["gul", "lale", "lale_sari", "cicek_mor", "cicek_lila", "inci", "hurma_meyve"]
+    aralik = 2.8 if ayrinti else 6.0
+    for sgn in (-1, 1):
+        for u in np.arange(rng.uniform(0, 1), L, aralik):
+            p, d, yaw = nokta(u)
+            yan = np.array([math.cos(math.radians(yaw)), 0.0, -math.sin(math.radians(yaw))])
+            r = rng.uniform(0.8, 1.35) * (1.0 if ayrinti else 1.5)
+            c = p + yan * sgn * (en / 2 + 0.2) + np.array([0, rng.uniform(-0.6, 0.5), 0])
+            yaprak.append(blob(r, yesiller[rng.integers(4)], seed=int(u * 10) + (sgn > 0), subdiv=1 if ayrinti else 0,
+                               squash=0.8, jitter=0.25).translate(*c))
+            if ayrinti and rng.uniform() < 0.3:                 # aşağı sarkan sarmaşık
+                yaprak.append(blob(r * 0.6, "yaprak_zumrut", seed=int(u * 7), subdiv=1, squash=1.8, jitter=0.3)
+                              .translate(*(c + np.array([0, -1.6 * r, 0]) + yan * sgn * 0.3)))
+            for _ in range(rng.integers(2, 5) if ayrinti else 1):
+                v = rng.normal(0, 1, 3)
+                v[1] = abs(v[1])
+                v /= np.linalg.norm(v)
+                cicek.append(icosphere(rng.uniform(0.16, 0.3) * (1.0 if ayrinti else 1.8), 0,
+                                       renkler[rng.integers(len(renkler))]).translate(*(c + v * r * 0.9)))
+    root = Node("ZB_yapi_kat_merdiveni")
+    root.add(merge(*tas).with_material("tas").shade_vary(0.03, 3), merge(*altin).with_material("metal"),
+             merge(*yaprak).with_material("yaprak").weight(lambda V: np.full(len(V), 0.15)).paylasimli(),
+             merge(*cicek).with_material("cicek").weight(lambda V: np.full(len(V), 0.1)).paylasimli())
+    return root
+
+
+@model("ZB_yapi_kat_merdiveni")
+def kat_merdiveni() -> Node:
+    return _merdiven(True)

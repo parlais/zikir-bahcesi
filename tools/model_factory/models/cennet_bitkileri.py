@@ -7,7 +7,6 @@
   Koru ağacı (Rahmân 64: koyu yeşil): korulukların yüksek, dolgun ağacı.
   Uzak ağaç: yüzlerce metre ötedeki korular için birkaç düzine üçgenlik taç.
   Tûbâ çekirdeği (Küllî Kaideler 1: iman kalpte bir Tûbâ çekirdeği taşır).
-  Dev Tûbâ: ufukta, üst derecelerin üstünde yükselen merkez simge.
 
 Aşamalar bitkiler.py ile aynı: a1 tohum, a2 filiz, a3 fidan, a4 olgun.
 """
@@ -405,62 +404,4 @@ def tuba_cekirdek() -> Node:
         kokler.append(tube(pts, list(np.linspace(0.012, 0.003, 6)), 4, "nur", cap=False))
     root.add(tumsek, merge(tohum, *kokler).with_material("nur"))
     root.add(Node("isik_cekirdek", translation=(0.0, 0.25, 0.0)))
-    return root
-
-
-@model("ZB_dunya_tuba_dev")
-def tuba_dev() -> Node:
-    """Ufuktaki dev Tûbâ (Buhârî, Bed'ü'l-halk 8: gölgesinde yüz yıl koşulan ağaç).
-    Dünya ölçeğinde: 420 m. Geniş, kat kat şemsiye taç; dallardan inen kök
-    sütunları; tacında ışıklı çiçekler (nur)."""
-    H = 420.0
-    rng = np.random.default_rng(401)
-    gov = [[0, 0, 0], [0.02 * H, 0.16 * H, 0], [-0.015 * H, 0.32 * H, 0.01 * H], [0.0, 0.46 * H, 0]]
-    dallar = [tube(gov, [0.1 * H, 0.075 * H, 0.06 * H, 0.045 * H], 14, "govde").smooth(60)]
-    for i in range(9):                                                    # kök ayakları
-        a = 2 * math.pi * i / 9 + rng.uniform(-0.2, 0.2)
-        d = np.array([math.cos(a), 0, math.sin(a)])
-        dallar.append(tube([d * 0.05 * H + [0, 0.1 * H, 0], d * 0.12 * H + [0, 0.025 * H, 0],
-                            d * 0.19 * H - [0, 0.01 * H, 0]], [0.04 * H, 0.02 * H, 0.005 * H], 7, "govde").smooth(60))
-    ust = np.array(gov[-1])
-    uclar = []
-    for i in range(10):
-        a = 2 * math.pi * i / 10 + rng.uniform(-0.15, 0.15)
-        d = np.array([math.cos(a), 0, math.sin(a)])
-        orta = ust + d * 0.2 * H + np.array([0, 0.1 * H, 0])
-        uc = d * rng.uniform(0.44, 0.52) * H + np.array([0, 0.6 * H + rng.uniform(-0.02, 0.02) * H, 0])
-        dallar.append(tube([ust - [0, 0.06 * H, 0], orta, uc], [0.03 * H, 0.018 * H, 0.008 * H], 7, "govde").smooth(60))
-        uclar.append(uc)
-        # Daldan yere inen kök sütunu (banyan gibi): ağacın yaşını ve genişliğini gösterir
-        if i % 2 == 0:
-            k = orta * 0.4 + uc * 0.6
-            dallar.append(tube([k, k * np.array([1.02, 0.5, 1.02]), k * np.array([1.04, 0.0, 1.04]) - [0, 0.01 * H, 0]],
-                               [0.008 * H, 0.009 * H, 0.012 * H], 6, "govde").smooth(60))
-    kumeler = []
-    for i, u in enumerate(uclar):                                         # alt kat: geniş halka
-        kumeler.append((u + np.array([0, 0.02 * H, 0]), 0.15 * H, 0.55))
-    for i in range(7):                                                    # orta kat
-        a = 2 * math.pi * i / 7 + 0.3
-        kumeler.append((np.array([0.3 * H * math.cos(a), 0.69 * H, 0.3 * H * math.sin(a)]), 0.16 * H, 0.6))
-    for i in range(4):                                                    # üst kat
-        a = 2 * math.pi * i / 4 + 0.8
-        kumeler.append((np.array([0.13 * H * math.cos(a), 0.78 * H, 0.13 * H * math.sin(a)]), 0.15 * H, 0.62))
-    kumeler.append((np.array([0, 0.84 * H, 0]), 0.13 * H, 0.65))
-    merkez = np.array([0, 0.66 * H, 0])
-    tac = []
-    for i, (c, r, sq) in enumerate(kumeler):
-        tac.append(blob(r, ["yaprak_cennet", "yaprak", "yaprak_acik"][i % 3], seed=410 + i, subdiv=2, squash=sq,
-                        jitter=0.16).translate(*c).kure_normal(merkez, (1.6, 0.6, 1.6)))
-    cicek = []
-    for i in range(140):
-        c, r, sq = kumeler[rng.integers(len(kumeler))]
-        v = rng.normal(0, 1, 3)
-        v[1] = abs(v[1]) * 0.7 - 0.15
-        v /= np.linalg.norm(v)
-        cicek.append(icosphere(rng.uniform(0.005, 0.009) * H, 0, "nur_beyaz")
-                     .translate(*(c + v * np.array([r, r * sq, r]) * 0.97)))
-    root = Node("ZB_dunya_tuba_dev")
-    root.add(merge(*dallar).with_material("govde"),
-             merge(*tac).with_material("yaprak").weight(lambda V: np.zeros(len(V))),
-             merge(*cicek).with_material("nur"))
     return root

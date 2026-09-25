@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://yex3np3u114t"
-path="res://.godot/imported/ZB_dunya_tuba_dev.glb-7d0e12901681c431e65445d5d5a1f317.scn"
+uid="uid://c1ao8emmytp1r"
+path="res://.godot/imported/ZB_dunya_selaleler.glb-15ba209f535fbf879cd7e6c528a5afc9.scn"
 
 [deps]
 
-source_file="res://assets/models/ZB_dunya_tuba_dev.glb"
-dest_files=["res://.godot/imported/ZB_dunya_tuba_dev.glb-7d0e12901681c431e65445d5d5a1f317.scn"]
+source_file="res://assets/models/ZB_dunya_selaleler.glb"
+dest_files=["res://.godot/imported/ZB_dunya_selaleler.glb-15ba209f535fbf879cd7e6c528a5afc9.scn"]
 
 [params]
 

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bhqr7ib54h3hj"
-path="res://.godot/imported/ZB_dunya_derece_koni.glb-7f19d7cb6c926e2e702b07ed91051a36.scn"
+uid="uid://cc30vp3182g6g"
+path="res://.godot/imported/ZB_dunya_kesit.glb-6d559682639fb41059dfe4ea23ae3a0c.scn"
 
 [deps]
 
-source_file="res://assets/models/ZB_dunya_derece_koni.glb"
-dest_files=["res://.godot/imported/ZB_dunya_derece_koni.glb-7f19d7cb6c926e2e702b07ed91051a36.scn"]
+source_file="res://assets/models/ZB_dunya_kesit.glb"
+dest_files=["res://.godot/imported/ZB_dunya_kesit.glb-6d559682639fb41059dfe4ea23ae3a0c.scn"]
 
 [params]
 

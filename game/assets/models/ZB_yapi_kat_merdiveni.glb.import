@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dm81fceq6cu2r"
-path="res://.godot/imported/ZB_dunya_dereceler.glb-3f64335f4686704401f2973cc92258de.scn"
+uid="uid://m5psvcw7wb7s"
+path="res://.godot/imported/ZB_yapi_kat_merdiveni.glb-39ce032488e2fb3017bca2faf177bea2.scn"
 
 [deps]
 
-source_file="res://assets/models/ZB_dunya_dereceler.glb"
-dest_files=["res://.godot/imported/ZB_dunya_dereceler.glb-3f64335f4686704401f2973cc92258de.scn"]
+source_file="res://assets/models/ZB_yapi_kat_merdiveni.glb"
+dest_files=["res://.godot/imported/ZB_yapi_kat_merdiveni.glb-39ce032488e2fb3017bca2faf177bea2.scn"]
 
 [params]
 

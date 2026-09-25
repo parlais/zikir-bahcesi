@@ -106,6 +106,17 @@ PALET = {
     "hali_krem": (238, 222, 184),
     "hali_altin": (214, 164, 72),
     "nur_beyaz": (255, 246, 222),
+    # K10: tabakalar, gök perdeleri, merdiven çiçekleri
+    "gok_tavan": (78, 146, 232),        # tabakanın göğü (yukarısı)
+    "gok_orta": (150, 202, 246),
+    "gok_ufuk": (255, 222, 158),        # tabakanın ufku (sıcak, ışıklı)
+    "bulut_beyaz": (255, 252, 246),
+    "cicek_mor": (130, 70, 196),
+    "cicek_lila": (186, 140, 226),
+    "katman_toprak": (122, 74, 42),     # kesit yüzünün katmanları (Dünya'nın katman resimleri gibi)
+    "katman_altin": (232, 180, 82),
+    "katman_inci": (246, 240, 228),
+    "katman_koyu": (84, 52, 34),
 }
 
 
