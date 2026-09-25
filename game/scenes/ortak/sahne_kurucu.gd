@@ -38,6 +38,7 @@ const MALZEME_TABLOSU := {
 	"selale": ["selale", {}, "selale"],
 	"tugla": ["tugla", {}, "tugla"],
 	"kumas": ["yuzey", {"puruz": 0.95, "detay": 0.05, "detay_olcek": 14.0, "spek": 0.08}, "kumas"],
+	"tavan": ["tavan", {}, "tavan"],
 }
 
 var kok: Node3D
@@ -54,8 +55,9 @@ func _init(k: Node3D, p: Dictionary) -> void:
 # Görüntü ve ortam
 # --------------------------------------------------------------------------
 
-func goruntu_kalitesi() -> void:
-	var vp := kok.get_viewport()
+func goruntu_kalitesi(vp: Viewport = null) -> void:
+	if vp == null:
+		vp = kok.get_viewport()
 	vp.msaa_3d = Viewport.MSAA_4X
 	vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
 	vp.positional_shadow_atlas_size = 4096
