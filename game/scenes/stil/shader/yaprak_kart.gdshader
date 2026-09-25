@@ -24,9 +24,8 @@ void vertex() {
 	float s = sin(t + w.x * 0.35 + w.z * 0.22) + 0.4 * sin(t * 2.3 + w.x * 1.7 + w.y);
 	VERTEX.x += s * ruzgar * COLOR.a;
 	VERTEX.z += cos(t * 0.8 + w.z * 0.3) * ruzgar * 0.6 * COLOR.a;
-	// Titreme: kartın ucu (UV'de hücrenin üstü) dibinden çok kıpırdar
-	float uc = 1.0 - fract(UV.y * 2.0);
-	VERTEX.y += sin(TIME * 5.0 + w.x * 3.1 + w.z * 2.3) * kipirti * uc * COLOR.a;
+	// Titreme: rüzgâr ağırlığı büyük (dıştaki) yapraklar daha çok kıpırdar
+	VERTEX.y += sin(TIME * 5.0 + w.x * 3.1 + w.z * 2.3) * kipirti * COLOR.a * COLOR.a;
 	cesit = INSTANCE_CUSTOM.r;
 	dunya = w;
 }

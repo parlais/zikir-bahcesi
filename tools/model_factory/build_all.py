@@ -27,13 +27,13 @@ EK_MODELLER = {"ZB_zemin_ada", "ZB_sahne_carbag", "ZB_sahne_daglar", "ZB_bitki_s
                "ZB_bitki_gul_cali", "ZB_bitki_simsir", "ZB_bitki_cimen", "ZB_bitki_lale_tarhi",
                # Cennet mekânı (Faz 2a)
                "ZB_dunya_cennet", "ZB_dunya_selaleler", "ZB_dunya_kesit",
-               "ZB_bitki_koru_agac", "ZB_bitki_uzak_agac", "ZB_yapi_su_kosku", "ZB_yapi_inci_cadir",
+               "ZB_bitki_koru_agac", "ZB_bitki_uzak_agac", "ZB_bitki_ufuk_agaci", "ZB_yapi_su_kosku", "ZB_yapi_inci_cadir",
                "ZB_obje_inci_cakil", "ZB_yapi_kat_merdiveni"}
 # Sahne ve dünya modelleri tek parça büyük arazidir; üçgen sınırı onlara uygulanmaz.
 SINIRSIZ = {"ZB_sahne_carbag", "ZB_sahne_daglar", "ZB_dunya_cennet", "ZB_dunya_selaleler", "ZB_dunya_kesit"}
 # Ana ağaçlar ve kahraman yapılar sahnede az sayıda bulunur; daha ayrıntılı olabilir.
 # Su köşkü kahraman modeldir; mobil için ileride LOD gerekir.
-OZEL_SINIR = {"ZB_bitki_nar": 11000, "ZB_bitki_koru_agac": 12000, "ZB_bitki_selvi": 7000, "ZB_agac_sidr_a4": 13000, "ZB_agac_uzum_a4": 11000,
+OZEL_SINIR = {"ZB_bitki_nar": 11000, "ZB_bitki_koru_agac": 12000, "ZB_bitki_selvi": 7000, "ZB_agac_talh_a4": 8000, "ZB_agac_sidr_a4": 13000, "ZB_agac_uzum_a4": 11000,
               "ZB_yapi_inci_cadir": 9000, "ZB_yapi_su_kosku": 40000, "ZB_yapi_kat_merdiveni": 70000}
 # Bir modelin üst sınırı: mobilde bahçede onlarca model aynı anda görünür.
 UCGEN_SINIRI = 6000

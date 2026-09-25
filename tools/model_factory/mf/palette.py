@@ -18,6 +18,7 @@ PALET = {
     "govde_acik": (158, 116, 76),
     "hurma_govde": (150, 110, 72),
     "hurma_meyve": (196, 110, 40),
+    "hurma_meyve_koyu": (150, 68, 30),
     "lale": (204, 56, 52),
     "lale_koyu": (160, 36, 44),
     "lale_sari": (238, 190, 70),

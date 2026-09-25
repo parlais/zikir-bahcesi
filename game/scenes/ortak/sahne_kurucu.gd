@@ -268,6 +268,11 @@ func _satir(ad: String) -> Array:
 		return MALZEME_TABLOSU[ad]
 	if ad.begins_with("yaprak_"):
 		return ["yaprak_kart", {"doku": DOKULAR + ad + ".png", "golge_alma": 0.5, "spek": 0.05}, "yaprak"]
+	if ad.begins_with("kabuk_"):
+		var satir: Array = MALZEME_TABLOSU["kabuk"].duplicate(true)
+		satir[1]["doku"] = DOKULAR + ad + ".png"
+		satir[1]["doku_n"] = DOKULAR + ad + "_n.png"
+		return satir
 	return []
 
 

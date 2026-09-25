@@ -57,6 +57,8 @@ def _malzeme_tanimi(name: str) -> dict:
         return MATERIALS[name]
     if name.startswith("yaprak_"):
         return dict(roughness=0.8, metallic=0.0, doku=f"{name}.png", maske=True)
+    if name.startswith("kabuk_"):
+        return dict(roughness=0.9, metallic=0.0, doku=f"{name}.png")
     raise KeyError(name)
 
 

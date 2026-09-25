@@ -15,6 +15,7 @@ from mf.mesh import blade, blob, cylinder, icosphere, lathe, merge, tube
 from mf.scene import Node
 
 from . import asamali
+from .agaclar import hurma_modeli
 from .ortak import toprak_tumsek
 
 
@@ -76,42 +77,10 @@ def hurma(asama: int) -> Node:
         root.add(toprak_tumsek(0.3, 0.07, seed=2), merge(*yapraklar).shade_vary(0.06, 2))
         return root
 
-    olgun = asama == 4
-    boy = 3.3 if olgun else 0.55
-    govde, tepe = _hurma_govde(boy, 0.2 if olgun else 0.13, 0.12 if olgun else 0.0,
-                               11 if olgun else 3, seed=asama)
-    yaprak_sayisi = 13 if olgun else 7
-    uzunluk = 1.9 if olgun else 0.8
-    yapraklar = []
-    rng = np.random.default_rng(10 + asama)
-    for i in range(yaprak_sayisi):
-        aci = 360.0 * i / yaprak_sayisi + rng.uniform(-10, 10)
-        katman = i % 3
-        yapraklar.append(_hurma_yapragi(
-            tepe + np.array([0, 0.05 * katman, 0]), aci, uzunluk * rng.uniform(0.85, 1.05),
-            kalkis=0.8 - 0.18 * katman, sarkma=1.0 + 0.12 * katman, en=0.2 if olgun else 0.11, seed=i))
-    # Tepedeki genç, dik yapraklar
-    for i in range(3):
-        aci = 120.0 * i + 40
-        yapraklar.append(_hurma_yapragi(tepe, aci, uzunluk * 0.55, kalkis=1.6, sarkma=0.9,
-                                        en=0.1 if olgun else 0.06, seed=50 + i))
-    root.add(govde, merge(*yapraklar))
-    if olgun:
-        salkimlar = []
-        for k, aci in enumerate((30, 150, 265)):
-            a = math.radians(aci)
-            baslangic = tepe + np.array([0.18 * math.cos(a), -0.08, 0.18 * math.sin(a)])
-            uc = baslangic + np.array([0.28 * math.cos(a), -0.35, 0.28 * math.sin(a)])
-            salkimlar.append(tube([baslangic, uc], [0.02, 0.012], 4, "saman_koyu"))
-            rng2 = np.random.default_rng(70 + k)
-            for j in range(14):
-                t = rng2.uniform(0.35, 1.0)
-                p = baslangic + (uc - baslangic) * t + rng2.normal(0, 0.05, 3) * np.array([1, 0.6, 1])
-                salkimlar.append(icosphere(0.035, 0, "hurma_meyve").scale(1, 1.35, 1).translate(*p))
-        root.add(merge(*salkimlar).shade_vary(0.08, 5))
-    else:
-        root.add(toprak_tumsek(0.35, 0.06, seed=3))
-    return root
+    if asama == 4:
+        return hurma_modeli(root.name)
+    # Fidan: kısa gövdeli, on bir yapraklı genç hurma; arsada yeni dikilmiş
+    return hurma_modeli(root.name, olcek=0.1, meyveli=False).add(toprak_tumsek(0.35, 0.06, seed=3))
 
 
 # --------------------------------------------------------------------------

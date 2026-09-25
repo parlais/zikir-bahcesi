@@ -393,27 +393,32 @@ def agac(tur: AgacTuru, olcek: float = 1.0, seviye_sayisi: int | None = None, ya
                  UV=np.vstack(UVs).astype(np.float32))
     yapraklar = []
     if kartlar is not None:
-        V, F, UV, FN = kartlar
-        ya = tur.yaprak
-        dis = (V - merkez) / yari ** 2
-        dis /= np.linalg.norm(dis, axis=1, keepdims=True) + 1e-9
-        # Kart yüzünün normalini dışa bakan tarafa çevir, sonra taç yüzeyine bük
-        yuz = FN * np.sign(np.sum(FN * dis, axis=1, keepdims=True) + 1e-6)
-        N = yuz * (1 - ya.dis_normal) + dis * ya.dis_normal
-        N /= np.linalg.norm(N, axis=1, keepdims=True)
-        c = _rgb(ya.renk)
-        kart_say = len(V) // 6
-        oyn = 1 + rng.uniform(-ya.renk_oynama, ya.renk_oynama, (kart_say, 1)) * np.array([[1.0, 0.8, 1.3]])
-        CV = np.repeat(c[None] * oyn, 6, 0) * golge(V, ya.golge, ya.alt_golge)[:, None]
-        yapraklar.append(Mesh(V.astype(np.float32), F, np.tile(c, (len(F), 1)), ya.malzeme,
-                              W=ruzgar(V).astype(np.float32), NV=N.astype(np.float32),
-                              CV=np.clip(CV, 0, 1).astype(np.float32), UV=UV.astype(np.float32)))
-        if ya.oz > 0:
-            oz = icosphere(1.0, 1, tuple(_rgb(ya.oz_renk))).scale(*(yari * ya.oz)).jitter(0.06 * float(yari.min()), tur.tohum)
-            oz = oz.translate(*merkez).kure_normal(merkez, tuple(yari)).with_material("yaprak")
-            oz.W = ruzgar(oz.V).astype(np.float32) * 0.7
-            yapraklar.append(oz)
+        yapraklar = yaprak_orgusu(kartlar, tur.yaprak, merkez, yari, ruzgar, golge, rng, tur.tohum)
     return kabuk, yapraklar, dallar, ruzgar
+
+
+def yaprak_orgusu(kartlar, ya: YaprakAyar, merkez, yari, ruzgar, golge, rng, tohum=0):
+    """Kartlardan yaprak Mesh'i (ve istenirse öz hacim): normaller taç zarfına (elips) bükülür,
+    köşe rengi taç içinde koyulaşır. golge(X, guc, alt) koyulaşmayı verir."""
+    V, F, UV, FN = kartlar
+    dis = (V - merkez) / yari ** 2
+    dis /= np.linalg.norm(dis, axis=1, keepdims=True) + 1e-9
+    # Kart yüzünün normalini dışa bakan tarafa çevir, sonra taç yüzeyine bük
+    yuz = FN * np.sign(np.sum(FN * dis, axis=1, keepdims=True) + 1e-6)
+    N = yuz * (1 - ya.dis_normal) + dis * ya.dis_normal
+    N /= np.linalg.norm(N, axis=1, keepdims=True)
+    c = _rgb(ya.renk)
+    kart_say = len(V) // 6
+    oyn = 1 + rng.uniform(-ya.renk_oynama, ya.renk_oynama, (kart_say, 1)) * np.array([[1.0, 0.8, 1.3]])
+    CV = np.repeat(c[None] * oyn, 6, 0) * golge(V, ya.golge, ya.alt_golge)[:, None]
+    out = [Mesh(V.astype(np.float32), F, np.tile(c, (len(F), 1)), ya.malzeme, W=ruzgar(V).astype(np.float32),
+                NV=N.astype(np.float32), CV=np.clip(CV, 0, 1).astype(np.float32), UV=UV.astype(np.float32))]
+    if ya.oz > 0:
+        oz = icosphere(1.0, 1, tuple(_rgb(ya.oz_renk))).scale(*(yari * ya.oz)).jitter(0.06 * float(yari.min()), tohum)
+        oz = oz.translate(*merkez).kure_normal(merkez, tuple(yari)).with_material("yaprak")
+        oz.W = ruzgar(oz.V).astype(np.float32) * 0.7
+        out.append(oz)
+    return out
 
 
 def meyve_yerleri(dallar, seviyeler, sayi, tohum, bas=0.45):

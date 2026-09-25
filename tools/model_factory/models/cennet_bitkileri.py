@@ -20,7 +20,10 @@ from mf.mesh import blade, blob, box, cylinder, icosphere, lathe, merge, tube
 from mf.scene import Node
 
 from . import asamali, model
-from .agaclar import KORU, UZAK, agac_modeli, sidr_modeli
+from mf.agac import meyve_yerleri
+
+from .agaclar import KORU, UZAK, agac_modeli, muz_modeli, sidr_modeli
+from .agaclar import asma as asma_kur
 from .ortak import toprak_tumsek
 from .sahne import _yaprak_bulutu
 
@@ -85,78 +88,6 @@ def sidr(asama: int) -> Node:
 # Talh (muz)
 # --------------------------------------------------------------------------
 
-def _muz_yapragi(tepe, aci_deg, uzunluk, kalkis, sarkma, en, renk, seed):
-    a = math.radians(aci_deg)
-    yon = np.array([math.cos(a), 0.0, math.sin(a)])
-    n = 8
-    yol, enler = [], []
-    for i in range(n):
-        t = i / (n - 1)
-        p = np.asarray(tepe, float) + yon * uzunluk * t
-        p[1] += uzunluk * (kalkis * t - sarkma * t * t)
-        yol.append(p)
-        if t < 0.14:
-            w = en * 0.08                                        # yaprak sapı
-        else:
-            w = en * (0.35 + 0.65 * math.sin(math.pi * min(1.0, (t - 0.1) / 0.92)))
-        if i == n - 1:
-            w = en * 0.1
-        enler.append(w * (1.0 if i % 2 else 0.86))           # rüzgârla yırtılmış kenar izi
-    return blade(yol, enler, renk, fold=0.14).shade_vary(0.06, seed)
-
-
-def _muz_salkimi(tepe, aci_deg, olcek, seed):
-    a = math.radians(aci_deg)
-    d = np.array([math.cos(a), 0.0, math.sin(a)])
-    t0 = np.asarray(tepe, float)
-    sap = [t0, t0 + d * 0.35 * olcek + np.array([0, 0.08, 0]) * olcek,
-           t0 + d * 0.6 * olcek + np.array([0, -0.35, 0]) * olcek,
-           t0 + d * 0.66 * olcek + np.array([0, -1.15, 0]) * olcek]
-    parca = [tube(sap, [0.045 * olcek, 0.04 * olcek, 0.035 * olcek, 0.03 * olcek], 5, "muz_govde")]
-    muz = []
-    P = np.asarray(sap)
-    for k in range(6):                                           # kat kat eller (mandûd)
-        t = 0.35 + 0.1 * k
-        seg = min(int(t * 3), 2)
-        u = t * 3 - seg
-        q = P[seg] + (P[seg + 1] - P[seg]) * u
-        n = 7 if k < 4 else 5
-        for j in range(n):
-            b = 2 * math.pi * j / n + k * 0.4
-            r = np.array([math.cos(b), 0.0, math.sin(b)])
-            s = olcek * (1.0 - 0.07 * k)
-            yol = [q + r * 0.05 * s, q + r * 0.13 * s + np.array([0, 0.03, 0]) * s,
-                   q + r * 0.17 * s + np.array([0, 0.12, 0]) * s]
-            muz.append(tube(yol, [0.022 * s, 0.026 * s, 0.012 * s], 5, "muz"))
-    uc = P[-1]
-    tomurcuk = lathe([(0.0, 0.0), (0.06, 0.05), (0.085, 0.14), (0.06, 0.24), (0.0, 0.3)], 7, "muz_cicek")
-    tomurcuk = tomurcuk.scale(olcek).rotate("x", 180).translate(uc[0], uc[1] + 0.04 * olcek, uc[2])
-    return merge(*parca).with_material("govde"), merge(*muz, tomurcuk).smooth(60).with_material("cicek")
-
-
-def _muz_bitkisi(taban, boy, egim_deg, yaprak_n, uzunluk, seed, salkim=False):
-    rng = np.random.default_rng(seed)
-    e = math.radians(egim_deg)
-    x0, z0 = taban
-    ust = np.array([x0 + math.sin(e) * boy * 0.25, boy, z0 + math.cos(e) * boy * 0.1])
-    govde = tube([[x0, 0, z0], [x0 + math.sin(e) * boy * 0.05, boy * 0.4, z0], ust],
-                 [0.17 * boy / 3.2 + 0.03, 0.14 * boy / 3.2 + 0.02, 0.1 * boy / 3.2 + 0.02], 8, "muz_govde").smooth(60)
-    yapraklar = []
-    for i in range(yaprak_n):
-        aci = 360.0 * i / yaprak_n + rng.uniform(-14, 14)
-        yas = i % 3                                              # yaşlı yapraklar daha sarkık
-        yapraklar.append(_muz_yapragi(ust + np.array([0, 0.04 * yas, 0]), aci, uzunluk * rng.uniform(0.85, 1.05),
-                                      kalkis=1.25 - 0.3 * yas, sarkma=1.25 + 0.25 * yas, en=0.34 * uzunluk / 2.2,
-                                      renk="muz_yaprak" if yas else "muz_yaprak_koyu", seed=seed + i))
-    # Tepedeki dik, kıvrık genç yaprak
-    yapraklar.append(_muz_yapragi(ust, rng.uniform(0, 360), uzunluk * 0.6, kalkis=2.4, sarkma=1.2,
-                                  en=0.16 * uzunluk / 2.2, renk="yaprak_acik", seed=seed + 40))
-    out = [govde.with_material("govde"), merge(*yapraklar).with_material("yaprak")]
-    if salkim:
-        out += list(_muz_salkimi(ust - np.array([0, 0.1, 0]), rng.uniform(0, 360), boy / 3.2, seed))
-    return out
-
-
 @asamali("ZB_agac_talh", 4)
 def talh(asama: int) -> Node:
     ad = f"ZB_agac_talh_a{asama}"
@@ -168,23 +99,8 @@ def talh(asama: int) -> Node:
                  _filiz([(40, 0.2, 0.16), (220, 0.26, 0.13)], 0.3, "muz_govde", "muz_yaprak", seed=22))
         return root
     if asama == 3:
-        parca = _muz_bitkisi((0.0, 0.0), 1.2, 10, 5, 0.9, 23)
-        root.add(toprak_tumsek(0.45, 0.06, seed=23), *parca)
-    else:
-        parca = (_muz_bitkisi((0.0, 0.0), 3.3, 8, 8, 2.3, 24, salkim=True)
-                 + _muz_bitkisi((0.6, 0.3), 2.6, 60, 7, 2.0, 25, salkim=True)
-                 + _muz_bitkisi((-0.4, 0.5), 1.8, -40, 6, 1.5, 26))
-        gruplar: dict[str, list] = {}
-        for m in parca:
-            gruplar.setdefault(m.material, []).append(m)
-        for mat, ms in gruplar.items():
-            m = merge(*ms)
-            if mat == "yaprak":
-                m = m.weight(lambda V: np.clip((V[:, 1] - 1.0) / 2.5, 0, 1))
-            elif mat == "cicek":
-                m = m.weight(lambda V: np.ones(len(V)) * 0.3)
-            root.add(m)
-    return root
+        return muz_modeli(ad, False).add(toprak_tumsek(0.45, 0.06, seed=23))
+    return muz_modeli(ad, True)
 
 
 # --------------------------------------------------------------------------
@@ -260,42 +176,37 @@ def uzum(asama: int) -> Node:
 
     yuk = 2.5
     cerceve = _cardak(1.0, 1.5, yuk)
-    asmalar = []
+    # İki kütük, köşe direklerine sarılarak çıkar; kirişler boyunca kollar, çatının üstüne sürgünler
+    govdeler, surgunler = [], []
+    kollar = []
     for sx, sz in ((1, 1), (-1, -1)):
         pts = []
-        for t in np.linspace(0, 1, 10):
+        for t in np.linspace(0, 1, 12):
             a = t * 7.0 + (0 if sx > 0 else 2)
-            pts.append([sx * 1.5 + 0.13 * math.cos(a), t * (yuk + 0.3), sz * 1.5 + 0.13 * math.sin(a)])
-        asmalar.append(tube(pts, list(np.linspace(0.075, 0.04, 10)), 6, "govde").smooth(60))
-        # Kirişler boyunca uzanan kollar
-        asmalar.append(tube([pts[-1], [sx * 0.6, yuk + 0.35, sz * 1.2], [-sx * 0.8, yuk + 0.38, sz * 0.9]],
-                            [0.04, 0.03, 0.018], 5, "govde").smooth(60))
-    kutle, yapraklar = [], []
-    merkez = np.array([0.0, yuk + 0.2, 0.0])
-    for i, x in enumerate((-1.1, 0.0, 1.1)):
-        for j, z in enumerate((-1.1, 0.0, 1.1)):
-            c = np.array([x + rng.uniform(-0.15, 0.15), yuk + 0.45, z + rng.uniform(-0.15, 0.15)])
-            kutle.append(blob(0.72, "yaprak", seed=300 + i * 3 + j, subdiv=2, squash=0.42, jitter=0.14)
-                         .translate(*c).kure_normal(merkez, (2.0, 0.6, 2.0)))
-            for k in range(20):
-                v = rng.normal(0, 1, 3)
-                v[1] = abs(v[1]) * 0.5 - 0.15
-                v /= np.linalg.norm(v)
-                p = c + v * np.array([0.72, 0.3, 0.72]) * rng.uniform(0.8, 1.05)
-                yon = v * 0.7 + np.array([0, -0.35, 0])
-                yon /= np.linalg.norm(yon)
-                yapraklar.append(_uzum_yapragi(p, yon, rng.uniform(0.18, 0.25),
-                                               ["yaprak", "yaprak_cennet", "yaprak_koyu"][k % 3])
-                                 .kure_normal(merkez, (2.0, 0.6, 2.0)))
+            pts.append([sx * 1.5 + 0.13 * math.cos(a), -0.05 + t * (yuk + 0.35), sz * 1.5 + 0.13 * math.sin(a)])
+        kol = [pts[-1], [sx * 0.6, yuk + 0.38, sz * 1.25], [-sx * 0.5, yuk + 0.42, sz * 0.8],
+               [-sx * 1.3, yuk + 0.4, sz * 0.2]]
+        govdeler.append((np.array(pts + kol[1:]), np.concatenate([np.linspace(0.085, 0.05, 12),
+                                                                    np.linspace(0.045, 0.025, 3)])))
+        kollar.append(np.array(kol))
+    for k in range(16):
+        kol = kollar[k % 2]
+        t = rng.uniform(0.15, 0.95)
+        i = min(int(t * (len(kol) - 1)), len(kol) - 2)
+        p0 = kol[i] + (kol[i + 1] - kol[i]) * (t * (len(kol) - 1) - i)
+        fi = rng.uniform(0, 2 * math.pi)
+        yon = np.array([math.cos(fi), 0.0, math.sin(fi)])
+        L = rng.uniform(1.0, 1.7)
+        yol = [p0 + yon * L * u + np.array([0, 0.18 * math.sin(math.pi * u) - (0.5 * max(0.0, np.abs(p0 + yon * L * u)[[0, 2]].max() - 1.6)), 0])
+               for u in np.linspace(0, 1, 6)]
+        surgunler.append((np.array(yol), np.linspace(0.022, 0.008, 6)))
+    kabuk, yapraklar, surgun, ruzgar = asma_kur(govdeler, surgunler, (0.0, yuk + 0.35, 0.0), (2.1, 0.55, 2.1))
     salkimlar = []
-    for i in range(8):
-        a = 2 * math.pi * i / 8 + 0.3
-        r = rng.uniform(0.5, 1.3)
-        p = np.array([r * math.cos(a), yuk + 0.12, r * math.sin(a)])
-        salkimlar += _salkim(p, 6, 1.1, "uzum" if i % 3 else "uzum_acik", 340 + i)
-    yaprak = merge(*kutle, *yapraklar).with_material("yaprak").weight(lambda V: np.clip((V[:, 1] - 2.0) / 1.0, 0, 1) * 0.5)
-    root.add(cerceve.with_material("govde"), merge(*asmalar).with_material("govde"), yaprak,
-             merge(*salkimlar).with_material("cicek").weight(lambda V: np.ones(len(V)) * 0.3))
+    for i, (p, tn, r) in enumerate(meyve_yerleri(surgun, (1,), 10, 341, bas=0.2)):
+        salkimlar += _salkim(p - np.array([0, 0.02, 0]), 6, 1.2, "uzum" if i % 3 else "uzum_acik", 340 + i)
+    meyve = merge(*salkimlar).with_material("meyve").paylasimli()
+    meyve.W = ruzgar(meyve.V).astype(np.float32)
+    root.add(cerceve.with_material("govde"), kabuk, *yapraklar, meyve)
     return root
 
 
@@ -313,6 +224,20 @@ def koru_agac() -> Node:
 def uzak_agac() -> Node:
     """Yüzlerce metre ötedeki korular: korunun birkaç yüz üçgenlik hafif hâli."""
     return agac_modeli("ZB_bitki_uzak_agac", UZAK)
+
+
+@model("ZB_bitki_ufuk_agaci")
+def ufuk_agaci() -> Node:
+    """Ufuktaki (700 m ötesi) ve kesitteki ağaçlar: dikey ekranda birkaç piksel boyundadır.
+    Birkaç düzine üçgenlik taç ve gövde; rengi korunun yaprak dokusunun ortalaması."""
+    govde = cylinder(0.3, 0.18, 4.0, 5, (150 / 255 * 0.7, 134 / 255 * 0.7, 116 / 255 * 0.7)).with_material("govde")
+    parca = []
+    for i, (c, r) in enumerate((((0, 6.2, 0), 2.6), ((1.2, 5.3, 0.6), 1.9), ((-1.1, 5.5, -0.5), 2.0),
+                                ((0.2, 7.8, -0.2), 1.8))):
+        parca.append(icosphere(r, 0, (48 / 255, 108 / 255, 60 / 255)).jitter(r * 0.12, 60 + i).shade_vary(0.08, 60 + i)
+                     .translate(*c))
+    tac = merge(*parca).kure_normal((0.0, 5.8, 0.0), (1.0, 0.8, 1.0)).with_material("yaprak")
+    return Node("ZB_bitki_ufuk_agaci", [govde, tac.weight(lambda V: np.zeros(len(V)))])
 
 
 # --------------------------------------------------------------------------

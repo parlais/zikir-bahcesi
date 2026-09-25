@@ -33,6 +33,8 @@ const BULUT_RENK := [Color("ffffff"), Color("c8d4f0")]
 ## Işık, t en az bu kadar değişince yeniden hesaplanır: %0,4'lük renk adımları
 ## gözle seçilmez, telefonda her karede bütün malzemeleri güncellemek gerekmez.
 const ISIK_ADIM := 0.004
+## Bu uzaklıktan (arsadan, metre) ötedeki korular hafif ufuk ağacıyla çizilir (K15, üçgen bütçesi).
+const UFUK_AGACI_MESAFE := 700.0
 
 var anim := "nur_ori"
 var kamera_modu := "ufuk"
@@ -263,7 +265,13 @@ func _bitkiler_kur() -> void:
 	k.coklu("ZB_bitki_gul_cali", yer["gul"])
 	k.coklu("ZB_bitki_lale_tarhi", yer["lale"], false)
 	k.coklu("ZB_bitki_koru_agac", yer["koru"], true, 60.0)
-	k.coklu("ZB_bitki_uzak_agac", yer["uzak_agac"], false, 250.0)
+	# Uzak korular: 700 m'ye kadar dallı hafif ağaç, ötesinde (dikey ekranda birkaç piksel) ufuk ağacı
+	var yakin_uzak := []
+	var ufuk := []
+	for t in yer["uzak_agac"]:
+		(yakin_uzak if Vector2(t[0], t[2]).length() < UFUK_AGACI_MESAFE else ufuk).append(t)
+	k.coklu("ZB_bitki_uzak_agac", yakin_uzak, false, 250.0)
+	k.coklu("ZB_bitki_ufuk_agaci", ufuk, false, 500.0)
 	k.coklu("ZB_bitki_cimen", _cimen_konumlari(), false)
 
 
@@ -376,7 +384,7 @@ func _kesit_kur() -> void:
 	for mi in kesit.find_children("*", "MeshInstance3D", true, false):
 		(mi as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var ks: Dictionary = yer["kesit"]
-	k.coklu("ZB_bitki_uzak_agac", ks["agac"], false)
+	k.coklu("ZB_bitki_ufuk_agaci", ks["agac"], false)
 	var i := 0
 	for b in ks["bulut"]:
 		_bulut_kumesi(Vector3(b[0], b[1], b[2]), b[3], 14, 300 + i, 1.8)
