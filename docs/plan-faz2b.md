@@ -92,6 +92,16 @@ Bu belge sıradaki işleri toplar.
   - **Düzeltme:** Hurma ve muz gövdeleri rüzgârda dipleriyle birlikte salınıyordu; yaprak dipleri ise sabitti.
     - Gövde artık dipte sabit, uca doğru salınıyor.
     - Yapraklar gövde ucunun ağırlığıyla başlıyor (`GOVDE_UCU_RUZGAR`).
+  - **Tûbâ'nın son ayarları:**
+    - `kabuk_tuba`: pürüzsüz, gümüş-fildişi, hafifçe kendi ışığıyla parlayan kabuk. Genel kabuk dokusuyla gövde gölgede koyu kahve görünüyordu.
+    - Olgun ve ulu aşamada nur, payanda kökler arasından sızar: yumuşak hale ve zerreler, ışık yok.
+      - Oradaki ışıkların menzili tacı ve gövdeyi keskin yatay çizgilerle bölüyordu.
+      - Yedi ışık telefonda da pahalıdır.
+    - Nur çiçeklerinin sayısı aşamayla artar: fidanda pamuk gibi fazlaydı.
+  - **Çekimler (`docs/goruntuler/cennet/`):**
+    - `buyume_agaclar.jpg`: yedi tür, tohumdan olguna
+    - `buyume_tuba_arsa.jpg`: arsada Tûbâ'nın beş aşaması
+    - `tuba_yakin.jpg`: fidan, olgun, ulu (Nur ve Ori)
 - **Kesit (dış görünüm):**
   - Şema gibi duruyor. Derinlik, ışık ve her katın farklı karakteri güçlenmeli (Rahmân 46-76: üst katlarda çeşitlilik artar).
   - Katlar arası merdivenler seçilir olmalı.

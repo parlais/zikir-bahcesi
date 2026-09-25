@@ -83,6 +83,7 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - `gecis_nur_ori.gif` ve `gecis_nur_ori_serit.jpg`: Nur'dan Ori'ye geçiş
   - `selale_once_sonra.jpg`, `selale_akis_nur.gif`, `selale_akis_ori.gif` ve `selale_telefon_ekrani.jpg` (dikey 720×1280): çağlayanlar
   - `agac_once_sonra.jpg`, `agac_hurma_talh_uzum.jpg`, `agac_sahne_once_sonra.jpg`, `agac_sahne_ori.jpg`: ağaçlar (dikey)
+  - `buyume_agaclar.jpg`, `buyume_tuba_arsa.jpg`, `tuba_yakin.jpg`: büyüme aşamaları ve Tûbâ (dikey)
   - Eski taslaklar: `karsilastirma_nur_ori.jpg`, `taslak_*.png`
   - Kavram eskizleri: `eskiz_*.png`
 
@@ -179,6 +180,7 @@ python3 tools/render/pano.py gif /tmp/gecis.gif --gidis-donus /tmp/dizi/ufuk_*.p
   - Yeni doku `mf/doku.py` içinde üretilir, `dokulari_yaz` ile yazılır. Bu fonksiyon Godot içe aktarım ayarını da mipmap'li yapar.
   - Kartlı modeller (yaprak kartları, hurma ve üzüm yaprakları) three.js önizlemesinde mipmap yüzünden seyrek ya da hiç görünmez. Godot'ta `--zb-kamera=model` ile değerlendirilmeli.
 - **Rüzgâr ağırlığı:** Üreteç (`agac()`) dışında kurulan gövdelere (`Mesh`) `W` elle verilmeli; varsayılan 1'dir ve gövde dibiyle birlikte salınır. Hurma ve muzda gövde ucu `GOVDE_UCU_RUZGAR`, yaprak dipleri de aynı ağırlıkla başlar. Toprak ve tohumlarda `W` sıfırdır.
+- **Nokta ışıkları:** Ağaç dibine konan OmniLight'ın menzili taca ya da gövdeye uzanırsa ışık kürelerinin sınırı keskin yatay bir çizgi olarak görünür. Süs ışıltısı için hale ve zerre yeter. Nur işaretinin ölçeği (`isik_*` düğümünün scale'i) ışıltının boyudur; 1'den küçükse ışık konmaz.
 - **Yaprak ışığı:** Yaprak kartları gölgenin yarısını alır (`golge_alma` 0,5); tam gölgede sık taç Nur'da siyaha döner. Kart normalleri taç zarfına bükülür; shader arka yüzde normali çevirmez.
 - **Çekimler ve kod:** `taslak_nur_kesit.png`, profilin son ayarından önce çekilmişti; kod 13 ton daha koyu çiziyordu. Taslak çekimi profil değişince yenilenmeli; karşılaştırma yaparken önce eski kodla (git worktree) doğrulanmalı.
 - **Uzak görünüşü değerlendirmek:** Oyun dikey ekranda (720×1280) çalışır. 800×450'lik deneme çekimi dikey ekranın üçte biri kadar ayrıntı gösterir. Uzaktaki ayrıntıyı (çağlayan, kesit) dikey çekimle değerlendir; hareketli öğeler için film çek.

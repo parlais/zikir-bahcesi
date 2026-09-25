@@ -273,14 +273,16 @@ func _nur_isaretleri(model: Node3D) -> void:
 	for isaret in model.find_children("isik_*", "", true, false):
 		# İşaretin ölçeği ışığın boyudur (fidanda küçük, ulu Tûbâ'nın kök aralarında orta)
 		var o: float = (isaret as Node3D).global_basis.get_scale().x
-		var l := OmniLight3D.new()
-		k.bagla(l, "light_color", nur_renk)
-		l.light_energy = 2.2 * o
-		l.omni_range = 5.0 * o
-		l.omni_attenuation = 1.6
-		l.shadow_enabled = false
-		isaret.add_child(l)
-		l.scale = Vector3.ONE / maxf(o, 0.01)
+		# Ölçekli işaretlerde (Tûbâ'nın kök araları) ışık yok: yalnız hale ve zerreler. Oradaki
+		# ışıklar tacı ve gövdeyi keskin yatay çizgilerle bölüyordu; telefonda da pahalıdır.
+		if o >= 1.0:
+			var l := OmniLight3D.new()
+			k.bagla(l, "light_color", nur_renk)
+			l.light_energy = 2.2
+			l.omni_range = 5.0
+			l.omni_attenuation = 1.6
+			l.shadow_enabled = false
+			isaret.add_child(l)
 		var pos := (isaret as Node3D).global_position
 		k.parcacik(int(40 * o), pos + Vector3(0, 0.25, 0) * o, Vector3(0.35, 0.3, 0.35) * o, 0.05, nur_renk, 3.0,
 			Vector3(0, 0.12, 0), 0.08, 4.0)
