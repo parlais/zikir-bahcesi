@@ -34,6 +34,14 @@ yaprak_turu(YaprakTuru("nar", [(78, 146, 58), (96, 160, 60), (112, 170, 64), (70
 yaprak_turu(YaprakTuru("uzum", [(96, 158, 64), (112, 170, 70), (84, 146, 58), (120, 172, 74)], boy=(0.32, 0.42),
                        sayi=10, yan_dal=2, yan_boy=(0.25, 0.35), aci=(40.0, 80.0), sap=0.18, parlak=0.12,
                        bicim="uzum", dal_renk=(110, 86, 56), tohum=5))
+# Çınar (Allahu Ekber; azamet): derin loplu, sivri uçlu, el biçimli iri yapraklar
+yaprak_turu(YaprakTuru("cinar", [(74, 132, 60), (86, 146, 66), (64, 120, 56), (94, 150, 70)], boy=(0.34, 0.44),
+                       sayi=9, yan_dal=2, yan_boy=(0.25, 0.35), aci=(40.0, 80.0), sap=0.2, parlak=0.12, bicim="el",
+                       lop_us=0.6, lop_derinlik=0.5, dis_gucu=0.03, dal_renk=(120, 104, 80), tohum=8))
+# Tûbâ (K17): taze yeşil yapraklar, kenarında ve ucunda ince altın-beyaz ışıltı (nurlu nitelik)
+yaprak_turu(YaprakTuru("tuba", [(96, 160, 82), (110, 172, 90), (84, 150, 76), (104, 166, 84)], boy=(0.16, 0.22),
+                       en=0.44, uc=1.15, dip=0.7, sayi=30, yan_dal=3, kenar_isik=(255, 236, 170),
+                       kenar_isik_gucu=0.85, parlak=0.18, dal_renk=(170, 160, 130), tohum=9))
 # Selvi: pul yapraklı, tüy gibi yassı sürgünler
 yaprak_turu(YaprakTuru("selvi", [(44, 92, 58), (52, 104, 62), (38, 82, 52)], boy=(0.065, 0.095), en=0.55, uc=0.8,
                        dip=0.5, sayi=300, yan_dal=8, yan_aci=(35.0, 75.0), yan_boy=(0.3, 0.46), aci=(20.0, 45.0),
@@ -121,24 +129,60 @@ UZAK = AgacTuru(
                       oz_renk=(44, 98, 56)),
 )
 
+# Çınar (Osman Gazi'nin rüyasındaki âlemi gölgeleyen ağaç; azamet): 16-18 m, kalın gövde,
+# yayvan ve dolgun taç, alacalı kabuk, sarkan tohum topları
+CINAR = AgacTuru(
+    boy=7.5, govde_r=0.55, govde_uc=0.2, govde_egim=3.0, govde_kivrim=0.12, kok=0.9, kok_lob=6, kok_boy=3.0,
+    kabuk_renk=(132, 130, 124), kabuk_renk_uc=(126, 120, 104), kabuk_doku=1.2, kabuk_malzeme="kabuk_cinar",
+    tohum=71,
+    seviyeler=[
+        Seviye(sayi=7, bas=0.42, son=0.98, aci=50, aci_sapma=12, uzunluk=0.85, sekil="kure", egim=0.35,
+               kivrim=0.4, yaricap=0.62, uc=0.2, segment=9, adim=0.7),
+        Seviye(sayi=8, bas=0.2, son=1.0, aci=48, aci_sapma=15, uzunluk=0.5, sekil="konik", egim=0.1,
+               kivrim=0.5, yaricap=0.58, uc=0.3, segment=5, adim=0.6),
+        Seviye(sayi=4, bas=0.3, son=1.0, aci=45, aci_sapma=15, uzunluk=0.45, sekil="konik", egim=-0.15,
+               kivrim=0.5, yaricap=0.55, uc=0.4, segment=3, adim=0.6),
+    ],
+    yaprak=YaprakAyar("yaprak_cinar", seviyeler=(2, 3), siklik=2.2, bas=0.3, boy=(1.1, 1.5), en=0.95,
+                      disa=0.7, yukari=0.3, golge=0.42, alt_golge=0.3),
+)
+
+# Tûbâ (K17): tanıdık, asil ve ulu bir ağaç; gümüş-fildişi kabuk, nurlu yapraklar. Ölçek 1 "ulu"
+# aşamadır (10000 tevhid): ~22 m boy, ~26 m taç; arsanın tamamını gölgeler (Küllî Kaideler 1).
+TUBA = AgacTuru(
+    boy=9.0, govde_r=1.05, govde_uc=0.22, govde_egim=2.0, govde_kivrim=0.1, govde_segment=16, kok=1.1,
+    kok_lob=7, kok_boy=3.5, kabuk_renk=(226, 220, 204), kabuk_renk_uc=(222, 214, 190), kabuk_doku=1.6,
+    tohum=91,
+    seviyeler=[
+        Seviye(sayi=8, bas=0.45, son=0.98, aci=62, aci_sapma=10, uzunluk=1.25, sekil="yarim_kure", egim=0.45,
+               kivrim=0.35, yaricap=0.6, uc=0.2, segment=10, adim=0.9),
+        Seviye(sayi=10, bas=0.15, son=1.0, aci=50, aci_sapma=15, uzunluk=0.5, sekil="konik", egim=0.15,
+               kivrim=0.45, yaricap=0.56, uc=0.3, segment=6, adim=0.8),
+        Seviye(sayi=6, bas=0.25, son=1.0, aci=45, aci_sapma=15, uzunluk=0.45, sekil="konik", egim=-0.1,
+               kivrim=0.5, yaricap=0.55, uc=0.4, segment=3, adim=0.8),
+    ],
+    yaprak=YaprakAyar("yaprak_tuba", seviyeler=(2, 3), siklik=1.8, bas=0.25, boy=(1.6, 2.2), en=0.95,
+                      disa=0.7, yukari=0.35, golge=0.35, alt_golge=0.2, oz=0.45, oz_renk=(70, 120, 70)),
+)
+
 
 def agac_modeli(ad: str, tur: AgacTuru, **kw) -> Node:
     kabuk, yapraklar, _, _ = agac(tur, **kw)
     return Node(ad).add(kabuk, *yapraklar)
 
 
-def selvi_modeli(ad: str) -> Node:
+def selvi_modeli(ad: str, olcek: float = 1.0) -> Node:
     """Selvi: kartların içinde koyu bir öz hacim; sütun sık ve koyu görünür, aralardan gök
     görünmez. Öz, kartların yükseklik dilimlerindeki yarıçapının %60'ıdır."""
-    kabuk, yapraklar, _, ruzgar = agac(SELVI)
+    kabuk, yapraklar, _, ruzgar = agac(SELVI, olcek=olcek)
     V = yapraklar[0].V
-    y0, y1 = 1.0, float(V[:, 1].max()) - 1.1
+    y0, y1 = 1.0 * olcek, float(V[:, 1].max()) - 1.1 * olcek
     prof = []
     for y in np.linspace(y0, y1, 16):
-        dilim = V[np.abs(V[:, 1] - y) < 0.4]
+        dilim = V[np.abs(V[:, 1] - y) < 0.4 * olcek]
         r = float(np.percentile(np.linalg.norm(dilim[:, [0, 2]], axis=1), 70)) if len(dilim) > 8 else 0.1
         prof.append((max(r * 0.62, 0.05), y))
-    prof = [(0.0, y0 - 0.2)] + prof + [(0.0, y1 + 0.2)]
+    prof = [(0.0, y0 - 0.2 * olcek)] + prof + [(0.0, y1 + 0.2 * olcek)]
     oz = lathe(prof, 10, "selvi").jitter(0.04, 61).smooth(70).eksen_normal(dikey=0.3).with_material("yaprak")
     oz.W = ruzgar(oz.V).astype(np.float32) * 0.5
     return Node(ad).add(kabuk, *yapraklar, oz)
@@ -238,9 +282,18 @@ def _serit_yaprak(taban, yon, uzunluk, en, kalkis, sarkma, katlanma, k, rng, dip
     return np.array(V), np.array(F), np.array(UV), np.array(T)
 
 
-def _serit_mesh(parcalar, merkez, malzeme, golge_dip=0.72, dis=0.45):
+GOVDE_UCU_RUZGAR = 0.25     # hurma ve muz gövdesinin ucundaki rüzgâr ağırlığı (yaprak dipleri de bununla başlar)
+
+
+def _govde_ruzgari(V, ust_y):
+    """Şerit yapraklı bitkilerin gövdesi: dipte sabit, uca doğru salınır."""
+    return (np.clip(V[:, 1] / max(ust_y, 1e-3), 0, 1) ** 2 * GOVDE_UCU_RUZGAR).astype(np.float32)
+
+
+def _serit_mesh(parcalar, merkez, malzeme, golge_dip=0.72, dis=0.45, dip_ruzgar=GOVDE_UCU_RUZGAR):
     """Şerit yapraklardan tek Mesh: normaller yukarı bakan yüz normali ile tacın
-    merkezinden dışa yönün karışımı; yaprak dipleri gölgede; rüzgâr uca doğru artar."""
+    merkezinden dışa yönün karışımı; yaprak dipleri gölgede; rüzgâr uca doğru artar ve
+    yaprağın dibinde gövde ucunun ağırlığıyla başlar (yapraklar gövdeden kopmaz)."""
     Vs, Fs, UVs, Ts, off = [], [], [], [], 0
     for v, f, uv, t in parcalar:
         Vs.append(v)
@@ -262,7 +315,7 @@ def _serit_mesh(parcalar, merkez, malzeme, golge_dip=0.72, dis=0.45):
     N /= np.linalg.norm(N, axis=1, keepdims=True)
     golge = golge_dip + (1 - golge_dip) * np.clip(T / 0.35, 0, 1)
     CV = np.ones((len(V), 3)) * golge[:, None]
-    W = np.clip(T, 0, 1) ** 1.4
+    W = dip_ruzgar + (0.85 - dip_ruzgar) * np.clip(T, 0, 1) ** 1.4
     return Mesh(V.astype(np.float32), F, np.ones((len(F), 3), np.float32), malzeme, W=W.astype(np.float32),
                 NV=N.astype(np.float32), CV=CV.astype(np.float32), UV=np.vstack(UVs).astype(np.float32))
 
@@ -283,7 +336,7 @@ def hurma_modeli(ad: str, olcek: float = 1.0, meyveli: bool = True) -> Node:
     dal = Dal(P, R, 0, 12, s)
     Vg, Fg, Ng, UVg = _boru(dal, HURMA_GOVDE, True)
     renk = np.array([222, 204, 178], np.float32) / 255
-    kabuk = Mesh(Vg.astype(np.float32), Fg, np.tile(renk, (len(Fg), 1)), "kabuk_hurma",
+    kabuk = Mesh(Vg.astype(np.float32), Fg, np.tile(renk, (len(Fg), 1)), "kabuk_hurma", W=_govde_ruzgari(Vg, P[-1][1]),
                  NV=Ng.astype(np.float32), CV=np.tile(renk, (len(Vg), 1)).astype(np.float32),
                  UV=UVg.astype(np.float32))
     tepe = P[-1] + np.array([0.0, 0.05 * olcek, 0.0])
@@ -330,7 +383,7 @@ def _hurma_salkimlari(tepe, rng):
                 parca.append(icosphere(0.028, 0, "hurma_meyve" if rng.random() < 0.7 else "hurma_meyve_koyu")
                              .scale(0.8, 1.3, 0.8).translate(*q).smooth(70))
     m = merge(*parca).with_material("meyve").paylasimli()
-    m.W = np.clip((tepe[1] - m.V[:, 1]) / 1.5, 0, 1).astype(np.float32) * 0.4
+    m.W = (GOVDE_UCU_RUZGAR + np.clip((tepe[1] - m.V[:, 1]) / 1.5, 0, 1) * 0.2).astype(np.float32)
     return m
 
 
@@ -354,7 +407,8 @@ def _muz_bitkisi(taban, boy, egim_deg, yaprak_n, uzunluk, rng, salkim=False):
     R = (0.17 * boy / 3.2 + 0.03) * (1 - 0.4 * s / s[-1])
     Vg, Fg, Ng, UVg = _boru(Dal(P, R, 0, 10, s), MUZ_GOVDE, True)
     beyaz = np.array([0.92, 0.95, 0.85], np.float32)
-    govde = Mesh(Vg.astype(np.float32), Fg, np.tile(beyaz, (len(Fg), 1)), "kabuk_muz", NV=Ng.astype(np.float32),
+    govde = Mesh(Vg.astype(np.float32), Fg, np.tile(beyaz, (len(Fg), 1)), "kabuk_muz", W=_govde_ruzgari(Vg, P[-1][1]),
+                 NV=Ng.astype(np.float32),
                  CV=np.tile(beyaz, (len(Vg), 1)).astype(np.float32), UV=UVg.astype(np.float32))
     ust = P[-1]
     parcalar = []
@@ -403,7 +457,7 @@ def _muz_salkimi(tepe, aci_deg, olcek, rng):
     tomurcuk = lathe([(0.0, 0.0), (0.06, 0.05), (0.085, 0.14), (0.06, 0.24), (0.0, 0.3)], 8, "muz_cicek")
     parca.append(tomurcuk.scale(olcek).rotate("x", 180).translate(uc[0], uc[1] + 0.04 * olcek, uc[2]).smooth(60))
     m = merge(*parca).with_material("meyve").paylasimli()
-    m.W = np.full(len(m.V), 0.25, np.float32)
+    m.W = np.full(len(m.V), GOVDE_UCU_RUZGAR, np.float32)
     return m
 
 

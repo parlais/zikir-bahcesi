@@ -29,5 +29,5 @@ def asamali(stem: str, count: int):
 
 def load_all():
     # Modüller içe aktarıldıkça kendilerini kaydeder.
-    from . import bitkiler, cennet, cennet_bitkileri, cennet_yapilari, objeler, sahne, yapilar, zemin  # noqa: F401
+    from . import agac_asamalari, bitkiler, cennet, cennet_bitkileri, cennet_yapilari, objeler, sahne, yapilar, zemin  # noqa: F401
     return REGISTRY

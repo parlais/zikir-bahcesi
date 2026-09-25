@@ -13,6 +13,9 @@ uniform float kipirti = 0.025;        // yaprakların titremesi (metre)
 uniform vec3 ton_a : source_color = vec3(1.0);
 uniform vec3 ton_b : source_color = vec3(1.0);
 uniform float alfa_esik = 0.45;
+// Işıma (Tûbâ): dokunun açık kısımları (altın-beyaz kenarlar) kendi ışığıyla parlar
+uniform float isima_guc = 0.0;
+uniform vec3 isima_renk : source_color = vec3(1.0);
 uniform float alfa_uzak = 0.22;       // mipmap seviyesi başına alfa artışı (uzakta taç seyrelmesin)
 
 varying float cesit;
@@ -47,4 +50,8 @@ void fragment() {
 		NORMAL = -NORMAL;
 	}
 	EMISSION = kenar * pow(1.0 - clamp(abs(dot(NORMAL, VIEW)), 0.0, 1.0), 4.0) * kenar_renk * ALBEDO * 0.6;
+	if (isima_guc > 0.0) {
+		float isik = dot(t.rgb, vec3(0.299, 0.587, 0.114));
+		EMISSION += t.rgb * isima_renk * isima_guc * smoothstep(0.5, 0.85, isik);
+	}
 }

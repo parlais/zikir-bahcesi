@@ -24,6 +24,7 @@ from mf.agac import meyve_yerleri
 
 from .agaclar import KORU, UZAK, agac_modeli, muz_modeli, sidr_modeli
 from .agaclar import asma as asma_kur
+from .agac_asamalari import dikim_yeri, filiz, muz_filizi, tohum_muz, tohum_sidr, tohum_uzum
 from .ortak import toprak_tumsek
 from .sahne import _yaprak_bulutu
 
@@ -72,16 +73,15 @@ def _filiz(yapraklar, sap_boy, sap_renk="govde_acik", yaprak_renk="yaprak_acik",
 def sidr(asama: int) -> Node:
     ad = f"ZB_agac_sidr_a{asama}"
     if asama == 1:
-        return _tohum_asamasi(ad, "kiraz_koyu", 11)
-    root = Node(ad)
+        return Node(ad).add(dikim_yeri(tohum=11), tohum_sidr(0.06))
     if asama == 2:
-        root.add(toprak_tumsek(0.3, 0.07, seed=12),
-                 _filiz([(20, 0.18, 0.09), (140, 0.24, 0.08), (260, 0.28, 0.07), (330, 0.3, 0.06)], 0.3, seed=12))
-        return root
+        sap, yap = filiz("sidr", 0.4, [(0.28, 20, 0.14, 22), (0.46, 150, 0.15, 25), (0.62, 280, 0.15, 28),
+                                       (0.79, 50, 0.13, 36), (0.95, 190, 0.11, 55)], sap_r=0.008, tohum=12)
+        return Node(ad).add(dikim_yeri(tohum=12), sap, yap)
     if asama == 4:
         return sidr_modeli(ad, True)
-    # Fidan: aynı türün küçük, iki dal seviyeli hâli; arsada yeni dikilmiş (toprak tümseği)
-    return sidr_modeli(ad, False).add(toprak_tumsek(0.4, 0.06, seed=14))
+    # Fidan: aynı türün küçük, iki dal seviyeli hâli; arsada yeni dikilmiş
+    return sidr_modeli(ad, False).add(dikim_yeri(0.45, tohum=14))
 
 
 # --------------------------------------------------------------------------
@@ -92,14 +92,11 @@ def sidr(asama: int) -> Node:
 def talh(asama: int) -> Node:
     ad = f"ZB_agac_talh_a{asama}"
     if asama == 1:
-        return _tohum_asamasi(ad, "muz_govde", 21, 0.06)
-    root = Node(ad)
+        return Node(ad).add(dikim_yeri(tohum=21), tohum_muz(0.06))
     if asama == 2:
-        root.add(toprak_tumsek(0.3, 0.07, seed=22),
-                 _filiz([(40, 0.2, 0.16), (220, 0.26, 0.13)], 0.3, "muz_govde", "muz_yaprak", seed=22))
-        return root
+        return Node(ad).add(dikim_yeri(tohum=22), *muz_filizi())
     if asama == 3:
-        return muz_modeli(ad, False).add(toprak_tumsek(0.45, 0.06, seed=23))
+        return muz_modeli(ad, False).add(dikim_yeri(0.5, tohum=23))
     return muz_modeli(ad, True)
 
 
@@ -151,27 +148,32 @@ def _cardak(olcek=1.0, yari=1.5, yuk=2.5):
 def uzum(asama: int) -> Node:
     ad = f"ZB_agac_uzum_a{asama}"
     if asama == 1:
-        return _tohum_asamasi(ad, "uzum", 31, 0.04)
+        return Node(ad).add(dikim_yeri(tohum=31), tohum_uzum(0.06))
     root = Node(ad)
     rng = np.random.default_rng(30 + asama)
     if asama == 2:
-        kazik = cylinder(0.015, 0.012, 0.7, 5, "ahsap").translate(0.08, 0, 0)
-        root.add(toprak_tumsek(0.3, 0.07, seed=32), kazik.with_material("govde"),
-                 _filiz([(60, 0.16, 0.1), (200, 0.24, 0.09), (300, 0.3, 0.07)], 0.32, seed=32))
+        kazik = cylinder(0.012, 0.01, 0.62, 6, "ahsap").translate(0.07, 0, 0).with_material("govde")
+        sap, yap = filiz("uzum", 0.34, [(0.45, 200, 0.15, 20), (0.72, 20, 0.16, 25), (0.95, 110, 0.13, 45)],
+                         sap_r=0.008, sap_renk=(0.5, 0.42, 0.28), tohum=32)
+        # Kazığa uzanan asma bıyığı
+        biyik = tube([[0.0, 0.3, 0.0], [0.03, 0.34, 0.01], [0.06, 0.36, 0.0], [0.07, 0.4, -0.01], [0.065, 0.43, 0.0]],
+                     [0.0025, 0.002, 0.0018, 0.0015, 0.0012], 3, (0.46, 0.56, 0.26), cap=False).with_material("govde")
+        root.add(dikim_yeri(tohum=32), kazik, sap, biyik, yap)
         return root
     if asama == 3:
+        # Kazığa sarılan genç asma: kütük kazık boyunca kıvrılarak çıkar, tepede birkaç sürgün
         kazik = merge(cylinder(0.03, 0.025, 1.6, 6, "ahsap"), cylinder(0.04, 0.04, 0.04, 6, "altin", y0=1.6))
-        yol = [[0.05 * math.cos(t * 5), t * 1.5, 0.05 * math.sin(t * 5)] for t in np.linspace(0, 1, 9)]
-        asma = tube(yol, list(np.linspace(0.025, 0.01, 9)), 5, "govde")
-        yap = []
-        for i in range(10):
-            t = 0.35 + 0.065 * i
-            a = i * 2.3
-            p = np.array([0.06 * math.cos(a), t * 1.5, 0.06 * math.sin(a)])
-            yon = np.array([math.cos(a), -0.3, math.sin(a)])
-            yap.append(_uzum_yapragi(p, yon / np.linalg.norm(yon), 0.16, "yaprak" if i % 2 else "yaprak_cennet"))
-        root.add(toprak_tumsek(0.35, 0.06, seed=33), merge(kazik, asma).with_material("govde"),
-                 merge(*yap).with_material("yaprak").weight(lambda V: np.clip(V[:, 1] / 1.6, 0, 1)))
+        yol = [[0.05 * math.cos(t * 5), -0.02 + t * 1.5, 0.05 * math.sin(t * 5)] for t in np.linspace(0, 1, 10)]
+        surgunler = []
+        for k in range(4):
+            fi = k * 1.7 + 0.4
+            yon = np.array([math.cos(fi), 0.0, math.sin(fi)])
+            b = np.array(yol[6 + k % 4 if 6 + k % 4 < 10 else 9])
+            surgunler.append((np.array([b + yon * 0.45 * u + np.array([0, 0.12 * math.sin(math.pi * u) - 0.25 * u * u, 0])
+                                        for u in np.linspace(0, 1, 5)]), np.linspace(0.012, 0.005, 5)))
+        kabuk, yapraklar, _, _ = asma_kur([(np.array(yol), np.linspace(0.03, 0.012, 10))], surgunler,
+                                          (0.0, 1.3, 0.0), (0.6, 0.6, 0.6), olcek=0.45, tohum=34)
+        root.add(dikim_yeri(0.45, tohum=33), kazik.with_material("govde"), kabuk, *yapraklar)
         return root
 
     yuk = 2.5
@@ -238,31 +240,3 @@ def ufuk_agaci() -> Node:
                      .translate(*c))
     tac = merge(*parca).kure_normal((0.0, 5.8, 0.0), (1.0, 0.8, 1.0)).with_material("yaprak")
     return Node("ZB_bitki_ufuk_agaci", [govde, tac.weight(lambda V: np.zeros(len(V)))])
-
-
-# --------------------------------------------------------------------------
-# Tûbâ
-# --------------------------------------------------------------------------
-
-@model("ZB_agac_tuba_a1")
-def tuba_cekirdek() -> Node:
-    """Oyuncunun arsasının ortasındaki ışıklı Tûbâ çekirdeği. Toprağa ince nur
-    kökleri salmış; Godot "isik_cekirdek" noktasına ışık ve parıltı koyar."""
-    root = Node("ZB_agac_tuba_a1")
-    tumsek = toprak_tumsek(0.6, 0.12, seed=91).recolor("toprak_arsa_acik").shade_vary(0.08, 91)
-    tohum = icosphere(0.085, 2, "nur_beyaz").scale(0.85, 1.15, 0.85).translate(0, 0.14, 0).smooth(80)
-    kokler = []
-    rng = np.random.default_rng(92)
-    for i in range(7):
-        a = 2 * math.pi * i / 7 + rng.uniform(-0.3, 0.3)
-        L = rng.uniform(0.35, 0.6)
-        pts = []
-        for t in np.linspace(0, 1, 6):
-            r = 0.08 + L * t
-            b = a + 0.35 * math.sin(t * 3 + i)
-            y = 0.125 * (1 - (r / 0.6) ** 2) + 0.012 if r < 0.6 else 0.012
-            pts.append([r * math.cos(b), y, r * math.sin(b)])
-        kokler.append(tube(pts, list(np.linspace(0.012, 0.003, 6)), 4, "nur", cap=False))
-    root.add(tumsek, merge(tohum, *kokler).with_material("nur"))
-    root.add(Node("isik_cekirdek", translation=(0.0, 0.25, 0.0)))
-    return root

@@ -10,11 +10,12 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 - Kullanıcı görsel olarak çok titiz; "ultra kaliteli", etkileyici bir sonuç istiyor. Dini hassasiyetler önemli: dayanak, temsil dili ve danışma kurulu teyidi.
 
 ## Okunacak belgeler (sırayla)
-1. `docs/kararlar.md`: bütün kararlar (K1-K16). Özellikle şunlar:
+1. `docs/kararlar.md`: bütün kararlar (K1-K17). Özellikle şunlar:
    - K10 (mekân), K11 (stil), K12 (ışık)
    - K13 (ışık geçişinin tetikleyicisi, sıra, canlılar)
    - K14 (son geri bildirim: "her şey daha detaylı ve gerçekçi")
    - K15 (gerçekçilik ölçütü, CC0 dokular), K16 (her şey zikirle oluşur; ağaç asset'lerinin durumu)
+   - K17 (önce MVP ağaçları; Tûbâ tanıdık ama nurlu, ulu hâli arsayı gölgeler)
 2. `docs/plan-faz2b.md`: **sıradaki işlerin planı** (K13'te onaylandı). Işık geçişi ve çağlayanlar yapıldı; sırada öteki kalite işleri var.
 3. `docs/mekan-kurgusu.md`: cennet mekânının dayanakları (ayet, hadis, Risale-i Nur, Ali Ünal), 28. Söz'deki koni misalinin metni, danışma kurulu soruları.
 4. `docs/plan-faz2a.md`: geçmiş kaydı. En üstteki "Revizyon 2" bölümü, Faz 2a'nın son hâlini anlatır.
@@ -73,6 +74,10 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
     - Yenilenenler: koru, sidr, nar, selvi, hurma, talh, üzüm, uzak ağaç ve ufuk ağacı.
     - Godot: `yaprak_kart` ve `kabuk` shader'ları, `golge_alma`, parçalı `coklu()`, inceleme kamerası `--zb-kamera=model`.
     - Ayrıntılar, üçgen bütçesi ve öğrenilenler `plan-faz2b.md` içinde.
+  - **Büyüme aşamaları ve MVP ağaçları (K16, K17):** `models/agac_asamalari.py`.
+    - Ortak parçalar: dikim yeri, türe özgü tohumlar, gerçek yapraklı filizler.
+    - Yeni asset'ler: nar, servi ve çınar (a1-a4), Tûbâ (a1-a5; nurlu, ulu hâli arsayı gölgeler).
+    - Hurma, sidr, talh ve üzümün tohum ve filiz aşamaları yenilendi.
 - **Son çekimler (`docs/goruntuler/cennet/`):**
   - `gecis_nur_ori_pano.jpg`: ufuk, arsa ve kesit; t = 0, 0,5, 1
   - `gecis_nur_ori.gif` ve `gecis_nur_ori_serit.jpg`: Nur'dan Ori'ye geçiş
@@ -85,7 +90,9 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 1. ~~Nur ↔ Ori ışık geçişi~~ (yapıldı, onaylandı).
 2. Kalite, K14'e göre "daha detaylı ve gerçekçi":
    - ~~gökten inen çağlayanlar~~ (yapıldı, kabul edildi)
-   - ~~ağaçlar~~ (yapıldı; kullanıcı çok beğendi). Kalan ağaç asset'leri K16'da: Tûbâ aşamaları, çınar, servi, nar (aşamalı), zeytin, incir, Toros sediri, defne; bütün türlerin tohum ve filiz aşamaları.
+   - ~~ağaçlar~~ (yapıldı; kullanıcı çok beğendi).
+   - ~~MVP ağaçları ve büyüme aşamaları~~ (K17; Tûbâ, çınar, servi, nar; bütün tohum ve filiz aşamaları).
+   - Kesitten sonra: zeytin, incir, Toros sediri, defne (v2).
    - kesitin derinliği (sıradaki)
    - köşk ve çadır: yakın plan ayrıntı eksik
    - kuşlar ve kelebekler (model fabrikasında, K13)
@@ -135,6 +142,7 @@ godot --headless --path game -s res://tests/run_tests.gd   # testler
 # Stil sahnesi: res://scenes/stil/stil_sahnesi.tscn -- --zb-stil=nur|ghibli|mucevher|gercekci --zb-kamera=portre|sinematik
 # Cennet sahnesi: res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur_ori|nur|sky|pixar|yagli_boya --zb-kamera=ufuk|arsa|kesit|model
 #   model: tek modeli arsada inceleme, ör. --zb-model=ZB_agac_hurma_a4 --zb-model-aci=0 (cek.sh ek argümanıyla)
+#   --zb-tuba=1..5: arsadaki Tûbâ'nın aşaması (tohum, filiz, fidan, olgun, ulu)
 #   nur_ori (varsayılan): Nur ↔ Ori geçişi. --zb-isik=0..1 ışığı sabitler; --zb-ayar="ortam/parlama/0=0.2;gok/bulut=0.5"
 #   profil değerlerini dosyaya dokunmadan dener; N tuşu geçişi başlatır.
 tools/render/cek.sh nur ufuk 800x450 16 /tmp/nur_ufuk.png   # cennet sahnesi çekimi (lavapipe; ~5 dk, üçü paralel olur)
@@ -170,6 +178,7 @@ python3 tools/render/pano.py gif /tmp/gecis.gif --gidis-donus /tmp/dizi/ufuk_*.p
 - **Dokulu modeller:** UV `Mesh.UV` ile verilir. `yaprak_<tür>` ve `kabuk_<tür>` malzemeleri dokusunu adından bulur (`game/assets/dokular/`, `SahneKurucu._satir`).
   - Yeni doku `mf/doku.py` içinde üretilir, `dokulari_yaz` ile yazılır. Bu fonksiyon Godot içe aktarım ayarını da mipmap'li yapar.
   - Kartlı modeller (yaprak kartları, hurma ve üzüm yaprakları) three.js önizlemesinde mipmap yüzünden seyrek ya da hiç görünmez. Godot'ta `--zb-kamera=model` ile değerlendirilmeli.
+- **Rüzgâr ağırlığı:** Üreteç (`agac()`) dışında kurulan gövdelere (`Mesh`) `W` elle verilmeli; varsayılan 1'dir ve gövde dibiyle birlikte salınır. Hurma ve muzda gövde ucu `GOVDE_UCU_RUZGAR`, yaprak dipleri de aynı ağırlıkla başlar. Toprak ve tohumlarda `W` sıfırdır.
 - **Yaprak ışığı:** Yaprak kartları gölgenin yarısını alır (`golge_alma` 0,5); tam gölgede sık taç Nur'da siyaha döner. Kart normalleri taç zarfına bükülür; shader arka yüzde normali çevirmez.
 - **Çekimler ve kod:** `taslak_nur_kesit.png`, profilin son ayarından önce çekilmişti; kod 13 ton daha koyu çiziyordu. Taslak çekimi profil değişince yenilenmeli; karşılaştırma yaparken önce eski kodla (git worktree) doğrulanmalı.
 - **Uzak görünüşü değerlendirmek:** Oyun dikey ekranda (720×1280) çalışır. 800×450'lik deneme çekimi dikey ekranın üçte biri kadar ayrıntı gösterir. Uzaktaki ayrıntıyı (çağlayan, kesit) dikey çekimle değerlendir; hareketli öğeler için film çek.

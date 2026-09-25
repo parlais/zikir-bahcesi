@@ -15,6 +15,7 @@ from mf.mesh import blade, blob, cylinder, icosphere, lathe, merge, tube
 from mf.scene import Node
 
 from . import asamali
+from .agac_asamalari import dikim_yeri, serit_filiz, tohum_hurma
 from .agaclar import hurma_modeli
 from .ortak import toprak_tumsek
 
@@ -64,23 +65,15 @@ def _hurma_govde(boy, taban_r, egim, halka_sayisi, seed):
 def hurma(asama: int) -> Node:
     root = Node(f"ZB_agac_hurma_a{asama}")
     if asama == 1:
-        tohum = icosphere(0.05, 1, "hurma_meyve").scale(0.7, 0.6, 1.25).rotate("y", 30).translate(0.02, 0.095, 0)
-        root.add(toprak_tumsek(0.3, 0.08, seed=1), tohum)
-        return root
+        return root.add(dikim_yeri(tohum=1), tohum_hurma(0.06))
     if asama == 2:
-        yapraklar = []
-        for i, (aci, boy) in enumerate(((0, 0.28), (125, 0.22), (240, 0.2))):
-            a = math.radians(aci)
-            yol = [[0, 0.06, 0], [0.02 * math.cos(a), 0.06 + boy * 0.5, 0.02 * math.sin(a)],
-                   [0.07 * math.cos(a), 0.06 + boy, 0.07 * math.sin(a)]]
-            yapraklar.append(blade(yol, [0.012, 0.028, 0.003], "hurma_yaprak", fold=0.6))
-        root.add(toprak_tumsek(0.3, 0.07, seed=2), merge(*yapraklar).shade_vary(0.06, 2))
-        return root
-
+        # Hurma fidesi: topraktan çıkan, ot gibi dar şerit yapraklar
+        return root.add(dikim_yeri(tohum=2), serit_filiz("hurma", [(0, 0.46, 70), (125, 0.42, 62), (240, 0.4, 66),
+                                                                     (60, 0.3, 80), (300, 0.34, 74)]))
     if asama == 4:
         return hurma_modeli(root.name)
     # Fidan: kısa gövdeli, on bir yapraklı genç hurma; arsada yeni dikilmiş
-    return hurma_modeli(root.name, olcek=0.1, meyveli=False).add(toprak_tumsek(0.35, 0.06, seed=3))
+    return hurma_modeli(root.name, olcek=0.1, meyveli=False).add(dikim_yeri(0.45, tohum=3))
 
 
 # --------------------------------------------------------------------------

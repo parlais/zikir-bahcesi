@@ -187,3 +187,25 @@ K14'teki iki açık soru ve iş sırası kullanıcıya soruldu.
   - Yalnız çekirdeği var: Tûbâ (5 aşama, MVP).
   - Hiç yok: çınar (MVP), zeytin, incir, Toros sediri, defne (v2).
 - Açık: oyunun başlangıç görüntüsü (hangi öğeler hazır bulunur) mekanikler adımında netleşecek.
+
+## K17 — Önce MVP ağaçları ve büyüme aşamaları; Tûbâ tanıdık ama nurlu bir ağaç, ulu hâli arsayı gölgeler (2026-09-25)
+- **Sıra:** Kullanıcı önce MVP ağaçlarını, sonra kesiti seçti.
+  - MVP ağaçları: Tûbâ'nın 5 aşaması, çınar, servi.
+  - Bütün ağaçların tohum ve filiz aşamaları da yenilenir.
+  - Zeytin, incir, Toros sediri, defne kesitten sonra; nar da bu turda aşamalı asset olarak yapıldı.
+- **Tûbâ'nın görünüşü:** Tanıdık bir ağaç, nurlu nitelikte (K6: biçim tanıdık, ışık dünya dışı).
+  - Asil, ulu ve yayvan bir ağaç; kadim çınar gibi.
+  - Kabuk açık gümüş-fildişi. Yapraklar taze yeşil; kenarlarında ve uçlarında ince, kendi ışığıyla parlayan altın-beyaz ışıltı var.
+  - Tacın içinde nur zerreleri süzülür, dış yüzünde seyrek nur çiçekleri parlar.
+  - Çekirdeğin nuru her aşamada dipte kalır: ışık, hale ve toprağa yayılan nur kökleri.
+- **Ulu aşamanın boyu:** Arsayı gölgeleyecek kadar, yaklaşık 20-22 m boy ve 26 m taç.
+  - Dayanaklar: Küllî Kaideler 1 ("cennetini gölgelendirecek bir tûbâ ağacı"), Ra'd 35 ("gölgeleri bitevîdir").
+- **Aşamalar:**
+
+  | Aşama | Tevhid | Görünüş |
+  | --- | --- | --- |
+  | Tohum | 1 | Nur çekirdeği |
+  | Filiz | 33 | Altın-fildişi saplı ilk yapraklar |
+  | Fidan | 100 | Yaklaşık 4 m |
+  | Olgun | 1000 | Yaklaşık 11 m |
+  | Ulu | 10000 | Yaklaşık 22 m |

@@ -8,6 +8,7 @@ extends Node3D
 ##   model: tek bir modeli arsanın ortasında inceleme (K15). --zb-model=ZB_bitki_koru_agac
 ##     --zb-model-aci=30 (bakış yönü, derece) --zb-model-yukseklik=6 (kamera yükseltisi, derece)
 ##     --zb-model-doluluk=0.85 (modelin kadrajı doldurma oranı)
+##   --zb-tuba=1..5: arsadaki Tûbâ'nın aşaması (tohum, filiz, fidan, olgun, ulu; K17)
 ##   (ekran görüntüsü için ayrıca --zb-ekran=/yol.png --zb-kare=30; Game autoload yakalar)
 ##
 ## nur_ori kipinde ışık zemin olarak Nur'dur; zikir tamamlanınca ya da bir olayda
@@ -221,6 +222,7 @@ func _kat_kur() -> void:
 		k.ornek("ZB_yapi_kat_merdiveni", t)
 	if kamera_modu == "model":
 		_inceleme_modeli = k.ornek(_arg.get("model", "ZB_bitki_koru_agac"), [0, 0, 0, 0, 1])
+		_nur_isaretleri(_inceleme_modeli)
 	else:
 		_arsa_kur()
 	_bitkiler_kur()
@@ -232,19 +234,7 @@ func _kat_kur() -> void:
 func _arsa_kur() -> void:
 	var a: Dictionary = yer["arsa"]
 	var nur_renk := k.yol("parcacik/nur_renk")
-	var tuba := k.ornek("ZB_agac_tuba_a1", a["tuba"])
-	for isaret in tuba.find_children("isik_*", "", true, false):
-		var l := OmniLight3D.new()
-		k.bagla(l, "light_color", nur_renk)
-		l.light_energy = 2.2
-		l.omni_range = 5.0
-		l.omni_attenuation = 1.6
-		l.shadow_enabled = false
-		isaret.add_child(l)
-		var pos := (isaret as Node3D).global_position
-		k.parcacik(40, pos + Vector3(0, 0.25, 0), Vector3(0.35, 0.3, 0.35), 0.05, nur_renk, 3.0,
-			Vector3(0, 0.12, 0), 0.08, 4.0)
-		_hale(pos, 1.6, nur_renk, 1.2)
+	_nur_isaretleri(k.ornek("ZB_agac_tuba_a%d" % clampi(int(_arg.get("tuba", "1")), 1, 5), a["tuba"]))
 	k.coklu("ZB_obje_inci_cakil", yer["inci_cakil"], false)
 	for f in a["fidan"]:
 		k.ornek(f[5], f.slice(0, 5))
@@ -273,6 +263,31 @@ func _bitkiler_kur() -> void:
 	k.coklu("ZB_bitki_uzak_agac", yakin_uzak, false, 250.0)
 	k.coklu("ZB_bitki_ufuk_agaci", ufuk, false, 500.0)
 	k.coklu("ZB_bitki_cimen", _cimen_konumlari(), false)
+
+
+## Modeldeki nur işaretleri (Tûbâ, K17):
+##   isik_*  : çekirdeğin nuru; sıcak ışık, yükselen zerreler ve yerde bir hale (her aşamada dipte)
+##   nur_tac : tacın içinde süzülen nur zerreleri; konum tacın merkezi, ölçek tacın yarı boyutları
+func _nur_isaretleri(model: Node3D) -> void:
+	var nur_renk := k.yol("parcacik/nur_renk")
+	for isaret in model.find_children("isik_*", "", true, false):
+		var l := OmniLight3D.new()
+		k.bagla(l, "light_color", nur_renk)
+		l.light_energy = 2.2
+		l.omni_range = 5.0
+		l.omni_attenuation = 1.6
+		l.shadow_enabled = false
+		isaret.add_child(l)
+		var pos := (isaret as Node3D).global_position
+		k.parcacik(40, pos + Vector3(0, 0.25, 0), Vector3(0.35, 0.3, 0.35), 0.05, nur_renk, 3.0,
+			Vector3(0, 0.12, 0), 0.08, 4.0)
+		_hale(pos, 1.6, nur_renk, 1.2)
+	for isaret in model.find_children("nur_tac*", "", true, false):
+		var n3 := isaret as Node3D
+		var yari := n3.global_basis.get_scale()
+		var hacim := yari.x * yari.y * yari.z
+		k.parcacik(clampi(int(hacim * 6.0), 30, 600), n3.global_position, yari * 0.85, 0.06 + yari.y * 0.004,
+			nur_renk, 3.0, Vector3(0, -0.03, 0), 0.12, 7.0)
 
 
 ## Gökteki bulut kümeleri: çağlayanların indiği bulutlar, merdivenin ucunu saran

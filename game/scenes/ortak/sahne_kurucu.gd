@@ -49,6 +49,9 @@ const MALZEME_TABLOSU := {
 	# Dallanan ağaçlar (K15): kabuk dokusu; "yaprak_*" adları _satir() ile yaprak_kart'a gider.
 	"kabuk": ["kabuk", {"doku": DOKULAR + "kabuk.png", "doku_n": DOKULAR + "kabuk_n.png", "golge_alma": 0.75,
 		"spek": 0.1}, ""],
+	# Tûbâ'nın yaprakları (K17): kenarlarındaki altın-beyaz ışıltı kendi ışığıyla parlar
+	"yaprak_tuba": ["yaprak_kart", {"doku": DOKULAR + "yaprak_tuba.png", "golge_alma": 0.5, "spek": 0.05,
+		"isima_guc": 0.9, "isima_renk": Color(1.0, 0.88, 0.6)}, "yaprak"],
 }
 
 var kok: Node3D
@@ -268,7 +271,8 @@ func _satir(ad: String) -> Array:
 		return MALZEME_TABLOSU[ad]
 	if ad.begins_with("yaprak_"):
 		return ["yaprak_kart", {"doku": DOKULAR + ad + ".png", "golge_alma": 0.5, "spek": 0.05}, "yaprak"]
-	if ad.begins_with("kabuk_"):
+	if ad.begins_with("kabuk_") or ad.begins_with("yuzey_"):
+		# Dokulu yüzeyler (kabuk, dikim yerinin toprağı): kabuk shader'ı, dokusu adından
 		var satir: Array = MALZEME_TABLOSU["kabuk"].duplicate(true)
 		satir[1]["doku"] = DOKULAR + ad + ".png"
 		satir[1]["doku_n"] = DOKULAR + ad + "_n.png"

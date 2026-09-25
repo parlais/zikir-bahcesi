@@ -90,6 +90,7 @@ class AgacTuru:
     kabuk_renk: tuple = (118, 98, 80)
     kabuk_renk_uc: tuple = (112, 104, 70)   # ince dalların rengi (yeşile çalan)
     kabuk_doku: float = 0.7         # kabuk dokusunun bir tekrarının boyu (metre)
+    kabuk_malzeme: str = "kabuk"    # kabuk_<tür>: türe özgü kabuk dokusu (çınar)
     tohum: int = 0
 
 
@@ -388,7 +389,7 @@ def agac(tur: AgacTuru, olcek: float = 1.0, seviye_sayisi: int | None = None, ya
     V = np.vstack(Vs).astype(np.float32)
     CV = np.vstack(Cs) * golge(V, 0.3, 0.12)[:, None]
     F = np.vstack(Fs)
-    kabuk = Mesh(V, F, np.tile(k_dip, (len(F), 1)), "kabuk", W=ruzgar(V).astype(np.float32),
+    kabuk = Mesh(V, F, np.tile(k_dip, (len(F), 1)), tur.kabuk_malzeme, W=ruzgar(V).astype(np.float32),
                  NV=np.vstack(Ns).astype(np.float32), CV=np.clip(CV, 0, 1).astype(np.float32),
                  UV=np.vstack(UVs).astype(np.float32))
     yapraklar = []

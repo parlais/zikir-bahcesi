@@ -69,6 +69,29 @@ Bu belge sıradaki işleri toplar.
       - Uzak görünüş oyunun dikey ekranında (720×1280) değerlendirilmeli. 800×450'lik deneme çekimi, dikey ekranın üçte biri kadar ayrıntı gösterir.
     - İnceleme için `selale` kamerası (360 m) ve akış filmi (`tools/render/film.sh`).
 - **Sıra (K15):** önce ağaçlar, sonra kesit, köşk ve çadır, en son kuşlar ve kelebekler.
+- **MVP ağaçları ve büyüme aşamaları (K16, K17), durum (2026-09-25): yapıldı.**
+  - Her şey zikirle oluştuğu için oyuncu her ağacın büyümesini izler; bütün aşamalar aynı dilde.
+  - **Ortak parçalar (`models/agac_asamalari.py`):**
+    - `dikim_yeri`: yeni işlenmiş, dokulu toprak tümseği (`yuzey_toprak`, rüzgârda salınmaz).
+    - Türe özgü tohumlar (1,6 kat iri):
+      - hurma çekirdeği, sidr meyvesi, üzüm çekirdeği, yakut gibi nar taneleri
+      - servi kozalağı, çınar tohum topu
+      - muzun kökten çıkan sürgünü
+    - `filiz`: kıvrık sap ve türün gerçek yaprakları. Tek yaprak atlası `yaprak_tek.png`: sidr, nar, üzüm, çınar, Tûbâ, hurma.
+    - `serit_filiz` (hurma fidesi), `servi_filizi` (pul yapraklı sürgünler), `muz_filizi`.
+  - **Yeni asset'ler:**
+    - nar (a1-a4), servi (a1-a4)
+    - çınar (a1-a4): alacalı kabuk dokusu `kabuk_cinar`, derin loplu yaprak atlası, sarkan tohum topları
+    - Tûbâ (a1-a5)
+  - **Yenilenen aşamalar:** hurma, sidr, talh ve üzüm a1-a2; üzümün a3'ü (kazığa sarılan asma).
+  - **Tûbâ (K17):**
+    - `yaprak_tuba`: ince altın-beyaz kenar, `yaprak_kart` ışıması.
+    - Gümüş-fildişi kabuk; tacın dış yüzünde nur çiçekleri.
+    - Dipte nur kökleri ve `isik_cekirdek`; tacın içinde `nur_tac` işareti (Godot nur zerreleri).
+    - Arsadaki aşama `--zb-tuba=1..5` ile seçilir.
+  - **Düzeltme:** Hurma ve muz gövdeleri rüzgârda dipleriyle birlikte salınıyordu; yaprak dipleri ise sabitti.
+    - Gövde artık dipte sabit, uca doğru salınıyor.
+    - Yapraklar gövde ucunun ağırlığıyla başlıyor (`GOVDE_UCU_RUZGAR`).
 - **Kesit (dış görünüm):**
   - Şema gibi duruyor. Derinlik, ışık ve her katın farklı karakteri güçlenmeli (Rahmân 46-76: üst katlarda çeşitlilik artar).
   - Katlar arası merdivenler seçilir olmalı.
