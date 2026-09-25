@@ -150,7 +150,7 @@ const PROFILLER := {
 			"serbet": {"isima_guc": 0.2, "isima": Color("ff6070"), "akis": Vector2(0.0, 0.4)},
 			# Çağlayan suyu soğuk beyaz-turkuazdır; altın ışık onu yalnız arkadan geçerken ısıtır
 			# (sıcak renkli su, altın gökte bir ışık sütunu gibi okunuyordu).
-			"selale": {"su_renk": Color("e6f6f2"), "derin_renk": Color("5b95a0"), "isima_guc": 0.4,
+			"selale": {"su_renk": Color("dff4f6"), "derin_renk": Color("5aa9c4"), "isima_guc": 0.4,
 				"gecirgenlik": 0.35, "gecirgen_renk": Color("ffdca0")},
 			"tugla": {"tugla_a": Color("f0c878"), "tugla_b": Color("ece8e2"), "isima_guc": 0.0},
 			"cini": {"isima_guc": 0.05},
@@ -167,8 +167,11 @@ const PROFILLER := {
 			"gok": {"kozmik": 1.0, "tepe": Color("5a5aa8"), "ufuk": Color("ffe0a8"), "nur_yon": Vector3(0.0, 0.93, -0.36),
 				"nur_guc": 1.3, "nur_cekirdek": 1.8, "bulutsu_a": Color("f0b890"), "bulutsu_b": Color("7a6ab8"),
 				"parilti": 1.2},
+			# Kontrast, parlaklık, doygunluk: kullanıcının beğendiği taslak (taslak_nur_kesit.png)
+			# profilin son ayarından önce çekilmişti; bu değerler o açık, pastel görüntüyü verir.
 			"ortam": {"sis": [0.000002, Color("ffe8d0"), 0.2, 0.0], "hava_perspektif": 0.0, "sdfgi": false,
-				"ssr": false, "ssao": 0.0, "ambient": 0.55, "hacim_sis": [0.0, Color.WHITE, 0.0, 0.0]},
+				"ssr": false, "ssao": 0.0, "ambient": 0.55, "hacim_sis": [0.0, Color.WHITE, 0.0, 0.0],
+				"kontrast": 0.8, "parlaklik": 1.18, "doygunluk": 1.05},
 		},
 	},
 	# ------------------------------------------------------------------
