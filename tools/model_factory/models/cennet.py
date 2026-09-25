@@ -364,7 +364,7 @@ def _gok_selalesi(x, z, y_alt, y_ust, gen, bakis, seed):
         m = _izgara(V, nu, nv, CV, malzeme, W=W)
         return _yuz_yonu(m, (b[0], 0, b[1]))
 
-    ana = perde(lambda v: gen * (0.55 + 1.25 * v ** 1.7), 0.0, "selale")
+    ana = perde(lambda v: gen * (0.75 + 1.1 * v ** 1.7), 0.0, "selale")
     pus = perde(lambda v: gen * (0.9 + 2.3 * v ** 1.5), gen * 0.18, "selale_pus")
     return ana, pus
 

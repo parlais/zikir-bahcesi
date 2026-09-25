@@ -4,10 +4,11 @@ shader_type spatial;
 // COLOR.b çağlayana özgü rastgele sayı, COLOR.a tepeden dibe 1 -> 0.
 //
 // Perde: uzaktan da seçilen iri akış çizgileri, yaklaştıkça orta ve ince çizgiler; her
-// biri kendi hızıyla aşağı iner. Tepede cam gibi su, aşağı indikçe köpük ve aşağı düşen
-// beyaz öbekler. Kenarlar aşağı doğru saçılır; tepe buluttan çıkar, dip serpintiye dağılır.
-// pus = 1: perdenin arkasındaki geniş, yumuşak serpinti zarfı.
-// Arkadan gelen ışık ince sudan geçer (ortak light(): gecirgenlik, gecirgen_renk).
+// biri kendi hızıyla aşağı iner. Gövde koyu turkuaz (ışık arkadan gelir; parlak gökte
+// suyun biçimi böyle okunur), ince beyaz köpük çizgileri ve aşağı düşen beyaz öbekler.
+// İnce kenarlar ve köpük ışıyarak parlar. Kenarlar aşağı doğru saçılır; tepe buluttan
+// çıkar, dip serpintiye dağılır.
+// pus = 1: perdenin arkasındaki geniş, yumuşak, parlayan serpinti zarfı.
 render_mode blend_mix, depth_draw_opaque, cull_disabled;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
 
@@ -17,7 +18,7 @@ uniform vec3 kopuk : source_color = vec3(1.0);
 uniform float hiz = 1.0;              // akış hızı çarpanı
 uniform float cizgi_olcek = 1.0;      // akış çizgilerinin genişlik çarpanı
 uniform float isima_guc = 0.25;
-uniform float saydamlik = 0.85;
+uniform float saydamlik = 1.0;
 uniform float pus = 0.0;
 
 varying vec3 dunya;
@@ -52,11 +53,11 @@ void fragment() {
 		// Serpinti zarfı: iri, yumuşak, yavaş inen pus; aşağıda yoğun
 		float n = zb_fbm(vec3(x / 26.0, (y + t * 7.0) / 60.0, tohum + 5.0));
 		float yay = 1.0 - smoothstep(0.2, 1.0, yan + (n - 0.5) * 0.6);
-		a = smoothstep(0.08, 0.6, dus) * yay * (0.3 + 0.7 * n) * 0.5;
-		c = mix(su_renk, kopuk, 0.8);
+		a = smoothstep(0.08, 0.6, dus) * yay * (0.25 + 0.75 * n) * 0.4 * saydamlik;
+		c = mix(su_renk, kopuk, 0.85);
 		ROUGHNESS = 1.0;
 		SPECULAR = 0.0;
-		EMISSION = c * isima_guc * 0.5;
+		EMISSION = c * isima_guc * 0.9;
 	} else {
 		float o = cizgi_olcek;
 		float g1 = 11.0 * o;
@@ -69,11 +70,11 @@ void fragment() {
 				+ (n3 - 0.5) * 0.4 * secilir(x / g3);
 		// Aşağı düşen beyaz öbekler
 		float kume = smoothstep(0.55, 0.85, zb_gurultu(vec3(x / 16.0, (y + t * 20.0) / 40.0, tohum + 31.0)));
-		// Havalanma: tepede cam gibi su, aşağıda köpük; dipte her yer beyaz
-		float hava = smoothstep(0.0, 0.8, dus);
-		float kop = smoothstep(0.66 - hava * 0.36, 0.86 - hava * 0.2, akis) + kume * 0.55 * (0.3 + 0.7 * hava);
-		kop = clamp(kop + smoothstep(0.8, 1.0, dus) * 0.6, 0.0, 1.0);
-		vec3 govde = mix(derin_renk, su_renk, clamp(akis * 1.3 - 0.15, 0.0, 1.0));
+		// Havalanma: tepede cam gibi su, aşağı indikçe köpük artar; dipte her yer beyaz
+		float hava = smoothstep(0.0, 0.85, dus);
+		float kop = smoothstep(0.7 - hava * 0.25, 0.86 - hava * 0.16, akis) + kume * 0.45 * (0.2 + 0.8 * hava);
+		kop = clamp(kop + smoothstep(0.82, 1.0, dus) * 0.5, 0.0, 1.0);
+		vec3 govde = mix(derin_renk, su_renk, clamp((akis - 0.3) * 1.2, 0.0, 1.0) * 0.6);
 		c = mix(govde, kopuk, kop);
 		// Kenarlar aşağı doğru saçılır, dağınıklaşır
 		float dag = zb_gurultu(vec3(x / 7.0, (y + t * 18.0) / 26.0, tohum + 47.0));
@@ -82,10 +83,12 @@ void fragment() {
 		// Tepe buluttan çıkar; dip serpintiye dağılır
 		float tepe = smoothstep(0.0, 0.1, dus);
 		float dagilma = 1.0 - smoothstep(0.78, 1.0, dus) * (0.4 + 0.6 * (1.0 - n1));
-		a = saydamlik * mix(0.6, 1.0, kop) * yay * tepe * dagilma;
+		// İnce kenarlar ışığı geçirir: daha saydam ve ışıyan
+		float ince = smoothstep(0.35, 0.95, yan);
+		a = saydamlik * mix(0.92, 0.55, ince) * mix(0.85, 1.0, kop) * yay * tepe * dagilma;
 		ROUGHNESS = 0.3;
 		SPECULAR = 0.5;
-		EMISSION = c * isima_guc * (0.6 + 0.8 * kop);
+		EMISSION = (kopuk * kop * 0.8 + mix(su_renk, kopuk, 0.5) * ince * 0.7) * isima_guc;
 	}
 	ALBEDO = zb_renk(c);
 	ALPHA = clamp(a, 0.0, 1.0);

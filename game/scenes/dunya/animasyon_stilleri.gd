@@ -151,7 +151,7 @@ const PROFILLER := {
 			# Çağlayan suyu soğuk beyaz-turkuazdır; altın ışık onu yalnız arkadan geçerken ısıtır
 			# (sıcak renkli su, altın gökte bir ışık sütunu gibi okunuyordu).
 			"selale": {"su_renk": Color("e6f6f2"), "derin_renk": Color("5b95a0"), "isima_guc": 0.4,
-				"gecirgenlik": 0.8, "gecirgen_renk": Color("ffdca0")},
+				"gecirgenlik": 0.35, "gecirgen_renk": Color("ffdca0")},
 			"tugla": {"tugla_a": Color("f0c878"), "tugla_b": Color("ece8e2"), "isima_guc": 0.0},
 			"cini": {"isima_guc": 0.05},
 			"cicek": {"isima_guc": 0.08},
@@ -160,7 +160,8 @@ const PROFILLER := {
 			"tavan": {"guc": 1.0, "bulut": 0.35},
 		},
 		"bulut_renk": [Color(1.3, 1.16, 0.98), Color(0.98, 0.84, 0.8)],
-		"parcacik": {"nur": 700, "nur_renk": Color(1.0, 0.9, 0.6), "sis_renk": Color(1.0, 0.95, 0.85, 0.45)},
+		"parcacik": {"nur": 700, "nur_renk": Color(1.0, 0.9, 0.6), "sis_renk": Color(1.0, 0.95, 0.85, 0.45),
+			"selale_sis": Color(1.3, 1.24, 1.12, 0.32)},
 		"kesit": {
 			"gunes": {"yukseklik": 30.0, "yon": 340.0, "enerji": 1.6, "golge_mesafe": 6000.0},
 			"gok": {"kozmik": 1.0, "tepe": Color("5a5aa8"), "ufuk": Color("ffe0a8"), "nur_yon": Vector3(0.0, 0.93, -0.36),
@@ -204,7 +205,7 @@ const PROFILLER := {
 			"bal": {"isima_guc": 0.5, "isima": Color("ffc050"), "akis": Vector2(0.0, 0.25), "puruz": 0.06},
 			"serbet": {"isima_guc": 0.45, "isima": Color("ff6090"), "akis": Vector2(0.0, 0.4)},
 			"selale": {"su_renk": Color("e0ffff"), "derin_renk": Color("3fa6cf"), "isima_guc": 0.9,
-				"gecirgenlik": 0.8, "gecirgen_renk": Color("d8fff8")},
+				"gecirgenlik": 0.35, "gecirgen_renk": Color("d8fff8")},
 			"tugla": {"tugla_a": Color("f4d890"), "tugla_b": Color("eaf6ff"), "isima_guc": 0.05},
 			"cini": {"isima_guc": 0.25},
 			"cicek": {"isima_guc": 0.6},
@@ -213,7 +214,8 @@ const PROFILLER := {
 			"tavan": {"guc": 1.05, "bulut": 0.3},
 		},
 		"bulut_renk": [Color(1.35, 1.42, 1.5), Color(0.7, 0.86, 1.25)],
-		"parcacik": {"nur": 1200, "nur_renk": Color(0.85, 1.0, 0.95), "sis_renk": Color(0.85, 0.97, 1.0, 0.4)},
+		"parcacik": {"nur": 1200, "nur_renk": Color(0.85, 1.0, 0.95), "sis_renk": Color(0.85, 0.97, 1.0, 0.4),
+			"selale_sis": Color(1.15, 1.32, 1.42, 0.32)},
 		"kesit": {
 			"gunes": {"yukseklik": 35.0, "yon": 340.0, "enerji": 1.3, "golge_mesafe": 6000.0},
 			"gok": {"kozmik": 1.0, "tepe": Color("071a4a"), "ufuk": Color("c8fff0"), "nur_yon": Vector3(0.0, 0.93, -0.36),

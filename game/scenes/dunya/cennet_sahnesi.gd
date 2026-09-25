@@ -321,16 +321,14 @@ func _parcaciklar_kur() -> void:
 		var z := k.parcacik(en_cok, Vector3(-8, 3.5, -40), Vector3(36, 3.0, 36), 0.05, k.yol("parcacik/nur_renk"), 2.5,
 			Vector3(0, 0.03, 0), 0.08, 14.0)
 		k.bagla(z, "amount_ratio", func(p: Dictionary) -> float: return float(p["parcacik"]["nur"]) / en_cok)
-	# Gökten inen çağlayanlar: dipte ağaçların üstüne taşan kabarık su sisi, perdenin alt
-	# yarısından yanlara saçılan serpinti (bulut dokusuyla, kabarık)
-	var sis_renk := k.yol("parcacik/sis_renk")
+	# Gökten inen çağlayanların dibi: ağaçların üstüne taşan, ışıkta parlayan kabarık su
+	# sisi (bulut dokulu). Perdenin çevresindeki serpintiyi selale_pus zarfı verir.
+	var sis_renk := func(p: Dictionary) -> Color:
+		return p["parcacik"].get("selale_sis", p["parcacik"]["sis_renk"])
 	for s in yer["selale_dip"]:
 		var g: float = s[3]
-		var dip := Vector3(s[0], s[1], s[2])
-		k.parcacik(60, dip + Vector3(0, g * 0.8, 0), Vector3(g * 1.5, g * 0.6, g * 0.9), g * 2.0, sis_renk, 0.0,
-			Vector3(0, 0.7, 0), 1.2, 16.0, BaseMaterial3D.BILLBOARD_ENABLED, _bulut_doku())
-		k.parcacik(140, dip + Vector3(0, g * 2.4, 0), Vector3(g * 1.1, g * 2.0, g * 0.5), g * 0.35, sis_renk, 0.15,
-			Vector3(0, -2.0, 0), 4.0, 7.0, BaseMaterial3D.BILLBOARD_ENABLED, _bulut_doku())
+		k.parcacik(40, Vector3(s[0], s[1] + g * 0.7, s[2]), Vector3(g * 1.2, g * 0.5, g * 0.8), g * 1.5, sis_renk,
+			0.0, Vector3(0, 0.7, 0), 1.2, 16.0, BaseMaterial3D.BILLBOARD_ENABLED, _bulut_doku())
 	# Selsebil levhasının dibinde ince serpinti
 	for t in yer["selsebil"]:
 		var y := Vector3(t[0], t[1] + 0.6, t[2])
