@@ -26,6 +26,9 @@ const GOK := "res://scenes/stil/shader/gok_cennet.gdshader"
 const FILTRE := "res://scenes/stil/shader/resim_filtresi.gdshader"
 
 const BULUT_RENK := [Color("ffffff"), Color("c8d4f0")]
+## Işık, t en az bu kadar değişince yeniden hesaplanır: %0,4'lük renk adımları
+## gözle seçilmez, telefonda her karede bütün malzemeleri güncellemek gerekmez.
+const ISIK_ADIM := 0.004
 
 var anim := "nur_ori"
 var kamera_modu := "ufuk"
@@ -91,7 +94,7 @@ func _process(dt: float) -> void:
 	if gecis == null:
 		return
 	gecis.ilerle(dt)
-	if absf(gecis.t - _son_t) > 0.001 or (gecis.t != _son_t and (gecis.t == 0.0 or gecis.t == 1.0)):
+	if absf(gecis.t - _son_t) >= ISIK_ADIM or (gecis.t != _son_t and (gecis.t == 0.0 or gecis.t == 1.0)):
 		_isik_uygula(gecis.t)
 
 

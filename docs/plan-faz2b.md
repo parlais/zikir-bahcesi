@@ -25,6 +25,20 @@ Bu belge sıradaki işleri toplar.
 - Geçişte güneşin yönü ve gökteki nurun yeri sabit kalır; gölgeler dönmez, gün dönümü gibi okunmaz.
 - Doğrulama: `t` = 0, 0.5 ve 1'de üç çekim; ayrıca kısa bir geçiş dizisi (kare dizisi).
 
+**Durum (2026-09-25): yapıldı.**
+- `game/scenes/dunya/isik_karistirici.gd` (IsikKaristirici): iki profili karıştırır. `SABIT` listesindekiler Nur'dan alınır:
+  - güneşin yönü ve gökteki nurun yeri
+  - bulut deseninin ölçeği
+  - gölge mesafesi ve sis hacminin uzunluğu
+- `game/scenes/dunya/isik_gecisi.gd` (IsikGecisi): zamanlayıcı.
+  - Nur'dan Ori'ye 6 sn'de çıkar, Ori'den Nur'a 40 sn'de döner.
+  - Ori'de kalış olaya göre değişir: tamamlanan zikir 40 sn, esma 60 sn, Tûbâ aşaması 90 sn; kat geçişi ve ziyaret 30 sn, açılış 20 sn.
+  - `Game.olay` sinyaline bağlıdır; sahne olayları için `tetikle()` kullanılır.
+- `SahneKurucu.guncelle()` ve `bagla()`: ortam, gök, ana ışık, malzemeler ve profilden renk alan her şey çalışma anında güncellenir.
+- Cennet sahnesinin varsayılan kipi `nur_ori`. Geliştirici argümanları: `--zb-isik`, `--zb-dizi`, `--zb-ayar`. N tuşu geçişi başlatır.
+- Parıltı kipi kesikli olduğu için iki uçta aynı olmalı. Nur, "softlight 0.45"ten aynı görüntüyü veren "screen 0.15"e geçirildi.
+- Testler: `game/tests/test_isik.gd` (13 test).
+
 ## 2. Kalite (taslaklarda zayıf kalanlar)
 - **Gökten inen çağlayanlar:**
   - Uzaktan ışık sütunu gibi görünüyor, su gibi görünmeli.
