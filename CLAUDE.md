@@ -20,8 +20,9 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 5. `docs/asset-listesi.md`: içeriğin tek kaynağı (157 asset, 99+2 esma, tarifler). `docs/rapor.md`: fizibilite raporu. `docs/stil-karsilastirmasi.md`: ilk (çarbağ) stil karşılaştırması.
 
 ## Dallar
-- **En güncel iş `claude/confident-volta-gmupfz` dalında** (Faz 2b: ışık geçişi, çağlayanlar). Son commit'i "Oturum devri: Faz 2b ışık geçişi ve çağlayanlar".
-- Varsayılan dal `claude/busy-allen-p76wgo` ise Faz 2a'da kaldı; Faz 2b'yi içermez. Varsayılan dal yalnızca kullanıcı onaylarsa ilerletilir.
+- **En güncel iş Faz 2b'dir** (ışık geçişi, çağlayanlar). Bu iş `claude/confident-volta-gmupfz` dalında yapıldı.
+- Varsayılan dal `claude/busy-allen-p76wgo`, 2026-09-25'te kullanıcının onayıyla aynı noktaya ileri sarıldı. İki dal da Faz 2b'nin son hâlini içerir.
+- Varsayılan dal yalnızca kullanıcı onaylarsa ilerletilir.
 - Yeni oturum kendi dalında çalışır ve commit'lerini oraya gönderir.
 - Başlarken `git log --oneline -3` çalıştır. Son commit "Oturum devri: Faz 2b ışık geçişi ve çağlayanlar" ya da daha yeni değilse şunu yap: `git fetch origin claude/confident-volta-gmupfz && git merge FETCH_HEAD`.
 
