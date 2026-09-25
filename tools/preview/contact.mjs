@@ -1,4 +1,4 @@
-// Kontakt sayfası: node tools/preview/contact.mjs [filtre] [çıktı.png]
+// Kontakt sayfası: node tools/preview/contact.mjs [filtre] [çıktı.png] [hücre boyu, varsayılan 320]
 // game/assets/models altındaki .glb dosyalarını tek bir PNG'de gösterir.
 import { createServer } from 'node:http';
 import { readFile, readdir, mkdir } from 'node:fs/promises';
@@ -27,10 +27,11 @@ const server = createServer(async (req, res) => {
 const port = server.address().port;
 
 const cols = Math.min(4, models.length);
+const cell = Number(process.argv[4] || 320);
 const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
-const page = await browser.newPage({ viewport: { width: cols * 320, height: Math.ceil(models.length / cols) * 320 } });
+const page = await browser.newPage({ viewport: { width: cols * cell, height: Math.ceil(models.length / cols) * cell } });
 page.on('console', m => { if (m.type() === 'error') console.error('sayfa:', m.text()); });
-await page.goto(`http://localhost:${port}/tools/preview/preview.html?cols=${cols}&files=${models.join(',')}`);
+await page.goto(`http://localhost:${port}/tools/preview/preview.html?cols=${cols}&cell=${cell}&files=${models.join(',')}`);
 await page.waitForFunction(() => window.__done === true, null, { timeout: 120000 });
 await mkdir(path.dirname(out), { recursive: true });
 await page.screenshot({ path: out, fullPage: true });

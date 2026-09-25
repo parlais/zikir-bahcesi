@@ -1,0 +1,416 @@
+"""Prosedürel dokular: yaprak kümesi atlasları ve kabuk dokusu (K15).
+
+Yaprak atlası 2×2 hücredir. Her hücrede bir ince dal ve üstünde yapraklar
+vardır; dalın dibi hücrenin alt ortasındadır. Ağaç üreteci (mf/agac.py) kartın
+dibini dal üstündeki bağlantı noktasına koyar.
+
+Kabuk dokusu yatayda ve dikeyde döşenebilir. Renk kabaca griye yakındır; türün
+rengi köşe renginden gelir (shader ikisini çarpar). Yanında normal haritası da
+yazılır.
+
+Bütün dokular deterministiktir: aynı kod aynı PNG'yi üretir.
+"""
+from __future__ import annotations
+
+import colorsys
+import math
+from dataclasses import dataclass, field
+from pathlib import Path
+
+import numpy as np
+from PIL import Image
+
+from .palette import renk
+
+HUCRE = 512          # atlas hücresi (piksel)
+SS = 3               # süper örnekleme: çizim HUCRE*SS'de yapılır, sonra küçültülür
+
+
+# --------------------------------------------------------------------------
+# Yaprak kümesi
+# --------------------------------------------------------------------------
+
+@dataclass
+class YaprakTuru:
+    ad: str
+    renkler: list                  # yaprak renkleri (palet adı ya da sRGB 0-255)
+    boy: tuple = (0.15, 0.22)      # yaprak boyu, hücre yüksekliğine oranla
+    en: float = 0.42               # en / boy
+    uc: float = 1.1                # uca doğru sivrilme (büyük: sivri uç)
+    dip: float = 0.7               # dibe doğru daralma (büyük: ince dip)
+    testere: float = 0.0           # kenar dişi genliği (en'e oranla)
+    dis_sayi: int = 18             # kenar dişi sayısı
+    sayi: int = 26                 # hücre başına yaprak
+    yan_dal: int = 2               # ana dala çıkan yan dal sayısı
+    yan_aci: tuple = (40.0, 65.0)  # yan dalın ana dala göre açısı
+    yan_boy: tuple = (0.36, 0.5)   # yan dal boyu, hücreye oranla
+    aci: tuple = (35.0, 70.0)      # yaprağın dala göre açısı
+    sap: float = 0.08              # yaprak sapı, boya oranla
+    dal_renk: tuple = (96, 78, 52)
+    parlak: float = 0.10           # orta damar ve damarların aydınlığı
+    kivrim: float = 0.12           # orta damarın eğriliği
+    renk_oynama: float = 0.06      # yapraktan yaprağa ton ve parlaklık farkı
+    sarimsi_uc: float = 0.05       # uç tarafın sarıya kayması
+    tohum: int = 0
+
+
+def _rgb01(c):
+    if isinstance(c, str):
+        c = renk(c)
+    c = np.asarray(c, np.float32)
+    return c / 255.0 if c.max() > 1.0 else c
+
+
+def _oynat(c, rng, miktar):
+    h, l, s = colorsys.rgb_to_hls(*c)
+    h = (h + rng.uniform(-miktar, miktar) * 0.25) % 1.0
+    l = float(np.clip(l * (1 + rng.uniform(-miktar, miktar) * 2.0), 0, 1))
+    s = float(np.clip(s * (1 + rng.uniform(-miktar, miktar)), 0, 1))
+    return np.array(colorsys.hls_to_rgb(h, l, s), np.float32)
+
+
+def _ustune(tuval, x0, y0, rgb, a):
+    """rgb (h,w,3), a (h,w) katmanını tuvalin (x0, y0) köşesine düz alfa ile bindirir."""
+    h, w = a.shape
+    H, W = tuval.shape[:2]
+    x1, y1 = min(W, x0 + w), min(H, y0 + h)
+    xs, ys = max(0, x0), max(0, y0)
+    if x1 <= xs or y1 <= ys:
+        return
+    a = a[ys - y0:y1 - y0, xs - x0:x1 - x0, None]
+    rgb = rgb[ys - y0:y1 - y0, xs - x0:x1 - x0]
+    t = tuval[ys:y1, xs:x1]
+    t[..., :3] = rgb * a + t[..., :3] * (1 - a)
+    t[..., 3:] = a + t[..., 3:] * (1 - a)
+
+
+def _dal_ciz(tuval, noktalar, yaricaplar, renk_):
+    """Kalınlığı değişen dal: noktalar arası parçalar, silindir gibi ortası aydınlık."""
+    renk_ = _rgb01(renk_)
+    P = np.asarray(noktalar, np.float64)
+    R = np.asarray(yaricaplar, np.float64)
+    for i in range(len(P) - 1):
+        a, b = P[i], P[i + 1]
+        r = max(R[i], R[i + 1])
+        x0, y0 = np.floor(np.minimum(a, b) - r - 2).astype(int)
+        x1, y1 = np.ceil(np.maximum(a, b) + r + 2).astype(int)
+        yy, xx = np.mgrid[y0:y1, x0:x1]
+        p = np.stack([xx, yy], -1).astype(np.float64)
+        ab = b - a
+        t = np.clip(((p - a) @ ab) / max(ab @ ab, 1e-9), 0, 1)
+        d = np.linalg.norm(p - (a + t[..., None] * ab), axis=-1)
+        rr = R[i] + (R[i + 1] - R[i]) * t
+        q = np.clip(d / np.maximum(rr, 1e-6), 0, 1)
+        alfa = np.clip((rr - d) + 0.5, 0, 1)
+        golge = 1.0 - 0.45 * q ** 2
+        _ustune(tuval, x0, y0, renk_ * golge[..., None], alfa)
+
+
+def _yaprak_ciz(tuval, taban, yon, boy, tur: YaprakTuru, rng):
+    """Tek yaprak: orta damar boyunca eni değişen, hafif eğri, katlanmış görünüşlü."""
+    a = np.asarray(yon, np.float64)
+    a /= np.linalg.norm(a)
+    p = np.array([-a[1], a[0]])
+    taban = np.asarray(taban, np.float64)
+    en = boy * tur.en * rng.uniform(0.85, 1.12)
+    bukum = tur.kivrim * rng.uniform(-1, 1)
+    # Sınır kutusu
+    s = np.linspace(0, 1, 24)
+    merkez = taban[None] + np.outer(s * boy, a) + np.outer(bukum * boy * s ** 2, p)
+    k0 = np.floor(merkez.min(0) - en - 3).astype(int)
+    k1 = np.ceil(merkez.max(0) + en + 3).astype(int)
+    yy, xx = np.mgrid[k0[1]:k1[1], k0[0]:k1[0]]
+    d = np.stack([xx, yy], -1).astype(np.float64) - taban
+    s = (d @ a) / boy
+    sc = np.clip(s, 0, 1)
+    yan = d @ p - bukum * boy * sc ** 2
+    # Yarı en: dipte ve uçta daralır, en geniş yer ortanın biraz altında
+    g = np.clip(sc, 1e-4, 1 - 1e-4)
+    w = g ** tur.dip * (1 - g) ** tur.uc
+    w /= (tur.dip / (tur.dip + tur.uc)) ** tur.dip * (tur.uc / (tur.dip + tur.uc)) ** tur.uc
+    w = w * en * 0.5
+    if tur.testere > 0:
+        w = w * (1 + tur.testere * (np.abs(np.sin(sc * tur.dis_sayi * math.pi)) - 0.5))
+    q = yan / np.maximum(w, 1e-6)
+    ic = (np.abs(yan) - w)
+    alfa = np.clip(0.5 - ic, 0, 1) * ((s >= 0) & (s <= 1))
+    if not alfa.any():
+        return
+    # Renk
+    c = _oynat(_rgb01(tur.renkler[rng.integers(len(tur.renkler))]), rng, tur.renk_oynama)
+    sari = np.array([0.86, 0.84, 0.32], np.float32)
+    uc_ton = np.clip((sc - 0.55) / 0.45, 0, 1)[..., None] * tur.sarimsi_uc
+    rgb = c * (1 - uc_ton) + sari * uc_ton
+    isik = 0.84 + 0.2 * np.sin(np.clip(sc, 0, 1) * math.pi) ** 0.6            # dipte koyu
+    kat = np.where(q > 0, 1.05, 0.9) - 0.06 * np.abs(q)                         # orta damardan katlanma
+    kenar = 1.0 - 0.22 * np.clip((np.abs(q) - 0.7) / 0.3, 0, 1)
+    damar_orta = np.clip(1 - np.abs(yan) / (0.9 + boy * 0.012), 0, 1) * (sc < 0.97)
+    faz = sc * 7.0 - np.abs(q) * 0.9
+    damar_yan = np.clip(1 - np.abs(faz - np.round(faz)) / 0.07, 0, 1) * (np.abs(q) < 0.85) * (sc > 0.08)
+    parlak = 1 + tur.parlak * (1.6 * damar_orta + 0.6 * damar_yan)
+    rgb = np.clip(rgb * (isik * kat * kenar * parlak)[..., None], 0, 1)
+    _ustune(tuval, k0[0], k0[1], rgb, alfa)
+
+
+def _dal_yolu(bas, yon, uzunluk, bukum, n, rng):
+    """Hafif kıvrılan dal yolu (piksel)."""
+    P = [np.asarray(bas, np.float64)]
+    d = np.asarray(yon, np.float64) / np.linalg.norm(yon)
+    for i in range(n):
+        aci = bukum / n + rng.normal(0, 0.05)
+        c, s_ = math.cos(aci), math.sin(aci)
+        d = np.array([c * d[0] - s_ * d[1], s_ * d[0] + c * d[1]])
+        P.append(P[-1] + d * uzunluk / n)
+    return np.array(P)
+
+
+def _hucre(tur: YaprakTuru, tohum: int):
+    """Bir yaprak kümesi (RGBA, 0-1, süper örneklenmiş) ve dalın dibinin pikseli.
+    Tuval hücreden geniştir; atlas kümeyi hücreye sığacak kadar küçültür."""
+    rng = np.random.default_rng(tohum)
+    N = HUCRE * SS
+    H, W = int(N * 1.3), int(N * 1.7)
+    tuval = np.zeros((H, W, 4), np.float32)
+    dip = np.array([W * 0.5, H - 2.0])
+    # Ana dal: alttan yukarı (görüntüde y aşağı)
+    ana = _dal_yolu(dip, (rng.uniform(-0.15, 0.15), -1.0),
+                    N * rng.uniform(0.62, 0.72), rng.uniform(-0.5, 0.5), 10, rng)
+    dallar = [(ana, N * 0.012, N * 0.004)]
+    for j in range(tur.yan_dal):
+        i = int(len(ana) * rng.uniform(0.2, 0.62))
+        t = ana[min(i + 1, len(ana) - 1)] - ana[i]
+        taraf = 1 if j % 2 == 0 else -1
+        aci = math.radians(rng.uniform(*tur.yan_aci)) * taraf
+        yon = np.array([t[0] * math.cos(aci) - t[1] * math.sin(aci), t[0] * math.sin(aci) + t[1] * math.cos(aci)])
+        yol = _dal_yolu(ana[i], yon, N * rng.uniform(*tur.yan_boy), -taraf * rng.uniform(0.1, 0.5), 7, rng)
+        dallar.append((yol, N * 0.007, N * 0.003))
+    for yol, r0, r1 in dallar:
+        _dal_ciz(tuval, yol, np.linspace(r0, r1, len(yol)), tur.dal_renk)
+    # Yapraklar dal boyunca, dala yakın olanlar önce çizilir ki uçtakiler üste gelsin
+    yapraklar = []
+    agirlik = np.array([1.0] + [0.45] * tur.yan_dal)
+    for k in range(tur.sayi):
+        di = rng.choice(len(dallar), p=agirlik / agirlik.sum())
+        yol = dallar[di][0]
+        t = rng.uniform(0.18, 1.0) ** 0.8
+        i = min(int(t * (len(yol) - 1)), len(yol) - 2)
+        f = t * (len(yol) - 1) - i
+        nokta = yol[i] * (1 - f) + yol[i + 1] * f
+        tan = yol[i + 1] - yol[i]
+        tan /= np.linalg.norm(tan)
+        taraf = 1 if k % 2 == 0 else -1
+        aci = math.radians(rng.uniform(*tur.aci)) * taraf
+        yon = np.array([tan[0] * math.cos(aci) - tan[1] * math.sin(aci), tan[0] * math.sin(aci) + tan[1] * math.cos(aci)])
+        boy = N * rng.uniform(*tur.boy) * (1.0 - 0.3 * t)
+        yapraklar.append((t, nokta, yon, boy))
+    # Uç yaprakları
+    for yol, _, _ in dallar:
+        tan = yol[-1] - yol[-2]
+        yapraklar.append((1.1, yol[-1], tan / np.linalg.norm(tan), N * tur.boy[1] * 0.8))
+    yapraklar.sort(key=lambda y: y[0] + rng.uniform(0, 0.3))
+    for t, nokta, yon, boy in yapraklar:
+        sap = yon * boy * tur.sap
+        _dal_ciz(tuval, [nokta, nokta + sap], [N * 0.0025, N * 0.002], tur.dal_renk)
+        _yaprak_ciz(tuval, nokta + sap, yon, boy, tur, rng)
+    return tuval, dip
+
+
+def _kucult(t: np.ndarray, k: int) -> np.ndarray:
+    """Süper örneklenmiş tuvali k kat küçültür (alfa ağırlıklı ortalama)."""
+    H, W = t.shape[:2]
+    t = t.reshape(H // k, k, W // k, k, 4)
+    a = t[..., 3].mean(axis=(1, 3))
+    rgb = (t[..., :3] * t[..., 3:]).sum(axis=(1, 3)) / np.maximum(t[..., 3].sum(axis=(1, 3)), 1e-6)[..., None]
+    return np.concatenate([rgb, a[..., None]], -1)
+
+
+def _renk_tasir(t: np.ndarray, adim: int = 8) -> np.ndarray:
+    """Saydam piksellere komşu yaprakların rengini yayar: mipmap'te kenarlar
+    siyaha ya da beyaza kaçmaz (alfa değişmez)."""
+    rgb, a = t[..., :3].copy(), t[..., 3]
+    dolu = (a > 0.5).astype(np.float32)
+    toplam, agirlik = rgb * dolu[..., None], dolu.copy()
+    for i in range(adim):
+        r = 2 ** i
+        for dx, dy in ((r, 0), (-r, 0), (0, r), (0, -r)):
+            toplam = toplam + np.roll(toplam, (dy, dx), (0, 1)) * 0.5
+            agirlik = agirlik + np.roll(agirlik, (dy, dx), (0, 1)) * 0.5
+    ort = toplam / np.maximum(agirlik, 1e-6)[..., None]
+    rgb = np.where((a > 0.5)[..., None], rgb, ort)
+    return np.concatenate([rgb, a[..., None]], -1)
+
+
+def _sigdir(tuval, dip, pay=0.035):
+    """Kümeyi hücreye sığdırır: dalın dibi hücrenin alt ortasına gelir, yapraklar
+    kenarlarda kesilmez. Önceden çarpılmış alfa ile küçültülür."""
+    a = tuval[..., 3]
+    ys, xs = np.nonzero(a > 0.01)
+    yari = max(dip[0] - xs.min(), xs.max() - dip[0]) + 2
+    boy = dip[1] - ys.min() + 2
+    s = min(HUCRE * (0.5 - pay) / yari, HUCRE * (1 - pay) / boy)
+    H, W = a.shape
+    yeni = (max(1, round(W * s)), max(1, round(H * s)))
+    kanallar = []
+    for k in range(4):
+        v = tuval[..., k] * (a if k < 3 else 1.0)
+        kanallar.append(np.asarray(Image.fromarray(v.astype(np.float32), "F").resize(yeni, Image.BOX)))
+    rgb = np.stack(kanallar[:3], -1) / np.maximum(kanallar[3], 1e-6)[..., None]
+    kucuk = np.concatenate([rgb, kanallar[3][..., None]], -1)
+    hucre = np.zeros((HUCRE, HUCRE, 4), np.float32)
+    x0 = int(round(HUCRE * 0.5 - dip[0] * s))
+    y0 = int(round(HUCRE - 1 - dip[1] * s))
+    hy, hx = kucuk.shape[:2]
+    xa, ya = max(0, x0), max(0, y0)
+    xb, yb = min(HUCRE, x0 + hx), min(HUCRE, y0 + hy)
+    hucre[ya:yb, xa:xb] = kucuk[ya - y0:yb - y0, xa - x0:xb - x0]
+    return np.clip(hucre, 0, 1)
+
+
+def yaprak_atlasi(tur: YaprakTuru) -> Image.Image:
+    """2×2 hücreli yaprak kümesi atlası (RGBA, 2*HUCRE kare)."""
+    atlas = np.zeros((2 * HUCRE, 2 * HUCRE, 4), np.float32)
+    for j in range(2):
+        for i in range(2):
+            h = _sigdir(*_hucre(tur, tur.tohum * 10 + j * 2 + i))
+            atlas[j * HUCRE:(j + 1) * HUCRE, i * HUCRE:(i + 1) * HUCRE] = h
+    atlas = _renk_tasir(atlas)
+    return Image.fromarray(np.round(np.clip(atlas, 0, 1) * 255).astype(np.uint8), "RGBA")
+
+
+def atlas_uv(hucre: int) -> tuple[float, float, float, float]:
+    """Hücrenin UV dikdörtgeni (u0, v0, u1, v1); v0 hücrenin üstü, v1 altı (dalın dibi)."""
+    i, j = hucre % 2, hucre // 2
+    kenar = 1.0 / (2 * HUCRE)
+    return i * 0.5 + kenar, j * 0.5 + kenar, (i + 1) * 0.5 - kenar, (j + 1) * 0.5 - kenar
+
+
+# --------------------------------------------------------------------------
+# Kabuk
+# --------------------------------------------------------------------------
+
+def _periyodik_gurultu(n, fx, fy, rng):
+    """[0,1) üzerinde fx×fy ızgaralı, iki yönde döşenebilir değer gürültüsü (n×n)."""
+    G = rng.random((fy, fx))
+    y = np.arange(n) / n * fy
+    x = np.arange(n) / n * fx
+    y0 = np.floor(y).astype(int)
+    x0 = np.floor(x).astype(int)
+    ty = y - y0
+    tx = x - x0
+    ty = ty * ty * (3 - 2 * ty)
+    tx = tx * tx * (3 - 2 * tx)
+    a = G[y0 % fy][:, x0 % fx]
+    b = G[y0 % fy][:, (x0 + 1) % fx]
+    c = G[(y0 + 1) % fy][:, x0 % fx]
+    d = G[(y0 + 1) % fy][:, (x0 + 1) % fx]
+    ust = a + (b - a) * tx[None]
+    alt = c + (d - c) * tx[None]
+    return ust + (alt - ust) * ty[:, None]
+
+
+def _fbm(n, fx, fy, rng, oktav=5):
+    s, a, t = np.zeros((n, n)), 0.5, 0.0
+    for o in range(oktav):
+        s += a * _periyodik_gurultu(n, fx * 2 ** o, fy * 2 ** o, rng)
+        t += a
+        a *= 0.5
+    return s / t
+
+
+def _hucresel(n, sayi_x, sayi_y, rng, bukum=None):
+    """Worley F2-F1 (döşenebilir): levhalar ve aralarındaki yarıklar. bukum (n×n×2)
+    verilirse örnekleme noktası kaydırılır: yarıklar dalgalanır."""
+    px = (np.arange(sayi_x)[None] + rng.random((sayi_y, sayi_x))) / sayi_x
+    py = (np.arange(sayi_y)[:, None] + rng.random((sayi_y, sayi_x))) / sayi_y
+    pts = np.stack([px.ravel(), py.ravel()], 1)
+    y, x = np.mgrid[0:n, 0:n] / n
+    if bukum is not None:
+        x = x + bukum[..., 0]
+        y = y + bukum[..., 1]
+    f1 = np.full((n, n), 9.0)
+    f2 = np.full((n, n), 9.0)
+    for ox in (-1, 0, 1):
+        for oy in (-1, 0, 1):
+            for p in pts + np.array([ox, oy]):
+                dx = (x - p[0]) * sayi_x
+                dy = (y - p[1]) * sayi_y
+                d = np.sqrt(dx * dx + dy * dy)
+                f2 = np.where(d < f1, f1, np.minimum(f2, d))
+                f1 = np.minimum(f1, d)
+    return f2 - f1
+
+
+def kabuk_dokusu(n=512, tohum=8, yarik_sayi=5):
+    """Döşenebilir kabuk: dikeyde uzanan, birbirine karışan yarıklar ve aralarında
+    lifli sırtlar. Yarıklar yatayda periyodik bir alanın eş yükselti çizgileridir.
+    Albedo (RGB, griye yakın) ve normal haritası (OpenGL, +Y yukarı)."""
+    rng = np.random.default_rng(tohum)
+    x = np.arange(n) / n
+    f = _fbm(n, 5, 1, rng, 5)
+    w = (_fbm(n, 2, 6, rng, 4) - 0.5) * 0.8
+    faz = x[None] * yarik_sayi + f * 1.8 + w
+    yar = 1 - np.abs((faz % 1.0) - 0.5) * 2            # 0 yarıkta, 1 sırt ortasında
+    kirik = np.clip(_hucresel(n, 9, 3, rng) / 0.1, 0, 1)
+    lif = _fbm(n, 48, 3, rng, 4)
+    orta = _fbm(n, 12, 2, rng, 4)
+    iri = _fbm(n, 3, 1, rng, 3)
+    sirt = np.clip(yar / 0.6, 0, 1) ** 0.5 * (0.88 + 0.12 * kirik)
+    h = sirt * 0.8 + (lif - 0.5) * 0.3 + (orta - 0.5) * 0.3
+    l = (0.52 + 0.16 * (lif - 0.5) + 0.12 * (orta - 0.5) + 0.08 * (iri - 0.5)) * (0.28 + 0.72 * sirt)
+    l = np.clip(l, 0.04, 1)
+    sicak = 0.05 * (iri - 0.5) + 0.03 * (orta - 0.5)
+    rgb = np.stack([l * (1.03 + sicak), l, l * (0.95 - sicak)], -1)
+    guc = 6.0
+    dx = (np.roll(h, -1, 1) - np.roll(h, 1, 1)) * guc
+    dy = (np.roll(h, -1, 0) - np.roll(h, 1, 0)) * guc
+    nrm = np.stack([-dx, dy, np.ones_like(h)], -1)
+    nrm /= np.linalg.norm(nrm, axis=-1, keepdims=True)
+    albedo = Image.fromarray(np.round(np.clip(rgb, 0, 1) * 255).astype(np.uint8), "RGB")
+    normal = Image.fromarray(np.round((nrm * 0.5 + 0.5) * 255).astype(np.uint8), "RGB")
+    return albedo, normal
+
+
+# --------------------------------------------------------------------------
+# Kayıt
+# --------------------------------------------------------------------------
+
+YAPRAK_TURLERI: dict[str, YaprakTuru] = {}
+
+
+def yaprak_turu(t: YaprakTuru) -> YaprakTuru:
+    YAPRAK_TURLERI[t.ad] = t
+    return t
+
+
+def _import_ayari(png: Path, normal: bool = False):
+    """Godot içe aktarım ayarı: 3B'de kullanılan dokular mipmap'li olmalı (yoksa uzakta
+    yapraklar kırpışır). Dosya yoksa en kısa hâli yazılır, Godot gerisini doldurur."""
+    imp = png.with_name(png.name + ".import")
+    istek = {"mipmaps/generate": "true", "compress/normal_map": "1" if normal else "0",
+             "detect_3d/compress_to": "0"}
+    if not imp.exists():
+        imp.write_text('[remap]\n\nimporter="texture"\ntype="CompressedTexture2D"\n\n[params]\n\n'
+                       + "".join(f"{k}={v}\n" for k, v in istek.items()))
+        return
+    satirlar = imp.read_text().splitlines()
+    for i, satir in enumerate(satirlar):
+        k = satir.split("=", 1)[0]
+        if k in istek:
+            satirlar[i] = f"{k}={istek[k]}"
+    imp.write_text("\n".join(satirlar) + "\n")
+
+
+def dokulari_yaz(klasor: Path) -> list[Path]:
+    klasor.mkdir(parents=True, exist_ok=True)
+    yazilan = []
+    for ad, t in sorted(YAPRAK_TURLERI.items()):
+        p = klasor / f"yaprak_{ad}.png"
+        yaprak_atlasi(t).save(p, optimize=True)
+        yazilan.append(p)
+    albedo, normal = kabuk_dokusu()
+    for img, ad in ((albedo, "kabuk.png"), (normal, "kabuk_n.png")):
+        img.save(klasor / ad, optimize=True)
+        yazilan.append(klasor / ad)
+    for p in yazilan:
+        _import_ayari(p, normal=p.stem.endswith("_n"))
+    return yazilan

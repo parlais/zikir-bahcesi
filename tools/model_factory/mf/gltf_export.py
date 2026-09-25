@@ -44,7 +44,20 @@ MATERIALS = {
     "kumas": dict(roughness=0.95, metallic=0.0),
     "bulut": dict(roughness=1.0, metallic=0.0),
     "tavan": dict(roughness=1.0, metallic=0.0, emissive=(0.55, 0.75, 0.95)),
+    # Dokulu malzemeler (K15): doku game/assets/dokular/ altındadır, glTF'e dış dosya olarak
+    # bağlanır (önizleme için). "yaprak_*" adları yaprak kümesi atlasıdır (alfa kesmeli).
+    "kabuk": dict(roughness=0.9, metallic=0.0, doku="kabuk.png"),
+    "meyve": dict(roughness=0.5, metallic=0.0),
 }
+DOKU_KLASORU = "../dokular/"
+
+
+def _malzeme_tanimi(name: str) -> dict:
+    if name in MATERIALS:
+        return MATERIALS[name]
+    if name.startswith("yaprak_"):
+        return dict(roughness=0.8, metallic=0.0, doku=f"{name}.png", maske=True)
+    raise KeyError(name)
 
 
 def srgb_to_linear(c: np.ndarray) -> np.ndarray:
@@ -99,6 +112,9 @@ class _Writer:
                                               type=g.SCALAR))
         ii = len(self.gltf.accessors) - 1
         attrs = g.Attributes(POSITION=self._accessor(P, g.VEC3, True), NORMAL=self._accessor(N, g.VEC3), COLOR_0=ci)
+        if any(m.UV is not None for m in ms):
+            UV = np.vstack([m.UV if m.UV is not None else np.zeros((len(m.V), 2)) for m in ms])
+            attrs.TEXCOORD_0 = self._accessor(UV, g.VEC2)
         return g.Primitive(attributes=attrs, indices=ii, material=self.material(mat))
 
     def _accessor(self, arr: np.ndarray, typ: str, with_bounds=False) -> int:
@@ -114,7 +130,7 @@ class _Writer:
     def material(self, name: str) -> int:
         if name in self.mat_index:
             return self.mat_index[name]
-        p = MATERIALS[name]
+        p = _malzeme_tanimi(name)
         m = g.Material(
             name=name,
             pbrMetallicRoughness=g.PbrMetallicRoughness(
@@ -122,6 +138,16 @@ class _Writer:
                 metallicFactor=p["metallic"], roughnessFactor=p["roughness"]),
             doubleSided=False,
         )
+        if "doku" in p:
+            if not self.gltf.samplers:
+                self.gltf.samplers.append(g.Sampler(magFilter=g.LINEAR, minFilter=g.LINEAR_MIPMAP_LINEAR))
+            self.gltf.images.append(g.Image(uri=DOKU_KLASORU + p["doku"]))
+            self.gltf.textures.append(g.Texture(sampler=0, source=len(self.gltf.images) - 1))
+            m.pbrMetallicRoughness.baseColorTexture = g.TextureInfo(index=len(self.gltf.textures) - 1)
+        if p.get("maske"):
+            m.alphaMode = g.MASK
+            m.alphaCutoff = 0.5
+            m.doubleSided = True
         if "emissive" in p:
             m.emissiveFactor = list(p["emissive"])
         if "alpha" in p:
@@ -142,7 +168,8 @@ class _Writer:
                 prims.append(self._indeksli(ms, mat))
                 continue
             P, N, C = [], [], []
-            A = []
+            A, T = [], []
+            doku = any(m.UV is not None for m in ms)
             for m in ms:
                 tri = m.V[m.F]                                  # (t, 3, 3)
                 n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
@@ -158,11 +185,15 @@ class _Writer:
                 N.append(cn.reshape(-1, 3))
                 C.append(np.repeat(srgb_to_linear(col), 3, axis=0))
                 A.append(m.W[F].reshape(-1, 1))
+                if doku:
+                    T.append(m.UV[F].reshape(-1, 2) if m.UV is not None else np.zeros((F.size, 2)))
             P, N, C = np.vstack(P), np.vstack(N), np.vstack(C)
             C4 = np.hstack([C, np.vstack(A)]).astype(np.float32)
             attrs = g.Attributes(POSITION=self._accessor(P, g.VEC3, True),
                                  NORMAL=self._accessor(N, g.VEC3),
                                  COLOR_0=self._accessor(C4, g.VEC4))
+            if doku:
+                attrs.TEXCOORD_0 = self._accessor(np.vstack(T), g.VEC2)
             prims.append(g.Primitive(attributes=attrs, material=self.material(mat)))
         self.gltf.meshes.append(g.Mesh(name=node.name, primitives=prims))
         return len(self.gltf.meshes) - 1

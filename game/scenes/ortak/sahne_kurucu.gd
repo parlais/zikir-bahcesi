@@ -17,6 +17,7 @@ extends RefCounted
 
 const MODELLER := "res://assets/models/"
 const SHADER := "res://scenes/stil/shader/"
+const DOKULAR := "res://assets/dokular/"
 
 ## glTF malzeme adı -> [shader, sabit parametreler, profil malzeme anahtarı]
 const MALZEME_TABLOSU := {
@@ -32,6 +33,7 @@ const MALZEME_TABLOSU := {
 	"yaprak": ["yaprak", {"spek": 0.03}, "yaprak"],
 	"cimen_ot": ["cimen", {"spek": 0.03}, "cimen"],
 	"cicek": ["cicek", {}, "cicek"],
+	"meyve": ["cicek", {"ruzgar": 0.08}, "cicek"],
 	"cini": ["cini", {}, "cini"],
 	"su": ["su", {}, "su"],
 	"nur": ["yuzey", {"puruz": 0.4, "detay": 0.0, "isima": Color(1.0, 0.8, 0.45)}, "nur"],
@@ -44,6 +46,9 @@ const MALZEME_TABLOSU := {
 	"tugla": ["tugla", {}, "tugla"],
 	"kumas": ["yuzey", {"puruz": 0.95, "detay": 0.05, "detay_olcek": 14.0, "spek": 0.08}, "kumas"],
 	"tavan": ["tavan", {}, "tavan"],
+	# Dallanan ağaçlar (K15): kabuk dokusu; "yaprak_*" adları _satir() ile yaprak_kart'a gider.
+	"kabuk": ["kabuk", {"doku": DOKULAR + "kabuk.png", "doku_n": DOKULAR + "kabuk_n.png", "golge_alma": 0.75,
+		"spek": 0.1}, ""],
 }
 
 var kok: Node3D
@@ -256,13 +261,23 @@ func _isik_ayarla(l: DirectionalLight3D, gp: Dictionary) -> void:
 # --------------------------------------------------------------------------
 
 ## glTF malzeme adına göre stil shader'ı (önbellekli).
+## Tablo satırı. "yaprak_<tür>" malzemeleri o türün yaprak atlasıyla yaprak kartı
+## shader'ına gider; profilden "yaprak" ayarlarını (ton, geçirgenlik) alır.
+func _satir(ad: String) -> Array:
+	if MALZEME_TABLOSU.has(ad):
+		return MALZEME_TABLOSU[ad]
+	if ad.begins_with("yaprak_"):
+		return ["yaprak_kart", {"doku": DOKULAR + ad + ".png", "golge_alma": 0.5, "spek": 0.05}, "yaprak"]
+	return []
+
+
 func malzeme(ad: String) -> Material:
 	if _malzemeler.has(ad):
 		return _malzemeler[ad]
-	if not MALZEME_TABLOSU.has(ad):
+	var satir: Array = _satir(ad)
+	if satir.is_empty():
 		_malzemeler[ad] = null
 		return null
-	var satir: Array = MALZEME_TABLOSU[ad]
 	var m := ShaderMaterial.new()
 	m.shader = load(SHADER + satir[0] + ".gdshader")
 	_malzeme_ayarla(ad, m)
@@ -272,12 +287,15 @@ func malzeme(ad: String) -> Material:
 
 ## Sıra önemli: ortak, sonra tablodaki sabitler, en son profilin malzemeye özel değerleri.
 func _malzeme_ayarla(ad: String, m: ShaderMaterial) -> void:
-	var satir: Array = MALZEME_TABLOSU[ad]
+	var satir: Array = _satir(ad)
 	var ortak: Dictionary = profil["ortak"]
 	for k in ortak:
 		m.set_shader_parameter(k, ortak[k])
 	for k in satir[1]:
-		m.set_shader_parameter(k, satir[1][k])
+		var deger: Variant = satir[1][k]
+		if deger is String and (deger as String).begins_with("res://"):
+			deger = load(deger)
+		m.set_shader_parameter(k, deger)
 	var ozel: Dictionary = profil["malzeme"].get(satir[2], {})
 	for k in ozel:
 		m.set_shader_parameter(k, ozel[k])
@@ -328,26 +346,47 @@ func bitki_mesh(model: String) -> Mesh:
 
 
 ## konumlar: [[x, y, z, dönüş, ölçek], ...]
-func coklu(model: String, konumlar: Array, golge := true) -> MultiMeshInstance3D:
+## parca > 0 ise örnekler parca metrelik ızgara hücrelerine bölünür: her hücre kendi
+## MultiMesh'idir ve ayrıntı düzeyi (LOD) hücrenin kameraya uzaklığına göre seçilir.
+## Tek MultiMesh bütün örneklere en yakın örneğin ayrıntısını verirdi (K15 ağaçları).
+func coklu(model: String, konumlar: Array, golge := true, parca := 0.0) -> MultiMeshInstance3D:
 	if konumlar.is_empty():
 		return null
-	var mm := MultiMesh.new()
-	mm.transform_format = MultiMesh.TRANSFORM_3D
-	mm.use_custom_data = true
-	mm.mesh = bitki_mesh(model)
-	mm.instance_count = konumlar.size()
-	var rng := RandomNumberGenerator.new()
-	rng.seed = hash(model)
+	var mesh := bitki_mesh(model)
+	var gruplar := {}
 	for i in konumlar.size():
 		var t: Array = konumlar[i]
-		var b := Basis(Vector3.UP, deg_to_rad(t[3])).scaled(Vector3.ONE * float(t[4]))
-		mm.set_instance_transform(i, Transform3D(b, Vector3(t[0], t[1], t[2])))
-		mm.set_instance_custom_data(i, Color(rng.randf(), rng.randf(), 0, 0))
-	var mmi := MultiMeshInstance3D.new()
-	mmi.multimesh = mm
-	mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if golge else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	kok.add_child(mmi)
-	return mmi
+		var anahtar := Vector2i.ZERO
+		if parca > 0.0:
+			anahtar = Vector2i(floori(float(t[0]) / parca), floori(float(t[2]) / parca))
+		if not gruplar.has(anahtar):
+			gruplar[anahtar] = []
+		gruplar[anahtar].append(i)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(model)
+	var ozel := PackedColorArray()
+	for i in konumlar.size():
+		ozel.append(Color(rng.randf(), rng.randf(), 0, 0))
+	var ilk: MultiMeshInstance3D
+	for anahtar in gruplar:
+		var sira: Array = gruplar[anahtar]
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.use_custom_data = true
+		mm.mesh = mesh
+		mm.instance_count = sira.size()
+		for j in sira.size():
+			var t: Array = konumlar[sira[j]]
+			var b := Basis(Vector3.UP, deg_to_rad(t[3])).scaled(Vector3.ONE * float(t[4]))
+			mm.set_instance_transform(j, Transform3D(b, Vector3(t[0], t[1], t[2])))
+			mm.set_instance_custom_data(j, ozel[sira[j]])
+		var mmi := MultiMeshInstance3D.new()
+		mmi.multimesh = mm
+		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if golge else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		kok.add_child(mmi)
+		if ilk == null:
+			ilk = mmi
+	return ilk
 
 
 # --------------------------------------------------------------------------

@@ -15,6 +15,9 @@ uniform float kenar = 0.0;                              // kenar (rim) parlamas�
 uniform vec3 kenar_renk : source_color = vec3(1.0, 0.92, 0.75);
 uniform float spek = 0.25;
 uniform float spek_sertlik = 24.0;
+// Gölgenin ne kadarının alınacağı (1 tam). Yaprak kartları yarı alır: sık taçta kartlar
+// birbirini gölgeleyince taç kapkara bir siluete dönüyordu (K15).
+uniform float golge_alma : hint_range(0.0, 1.0) = 1.0;
 
 vec3 zb_renk(vec3 c) {
 	float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
@@ -51,7 +54,8 @@ float zb_fbm(vec3 p) {
 void light() {
 	float ndl = dot(NORMAL, LIGHT);
 	float w = clamp((ndl + sarma) / (1.0 + sarma), 0.0, 1.0);
-	float yumusak = w * ATTENUATION;
+	float zb_golge = mix(1.0, ATTENUATION, golge_alma);
+	float yumusak = w * zb_golge;
 	float kademe = smoothstep(toon_esik - toon_yumusak, toon_esik + toon_yumusak, yumusak);
 	float d = mix(yumusak, kademe, toon);
 	vec3 ton = mix(vec3(1.0), mix(golge_renk, vec3(1.0), d), toon);
@@ -60,7 +64,7 @@ void light() {
 	DIFFUSE_LIGHT += LIGHT_COLOR * golge_renk * (1.0 - d) * toon * 0.18 / PI;
 	if (gecirgenlik > 0.0) {
 		float arka = pow(clamp(dot(VIEW, -LIGHT), 0.0, 1.0), 3.0);
-		DIFFUSE_LIGHT += LIGHT_COLOR * gecirgen_renk * arka * gecirgenlik * ATTENUATION / PI;
+		DIFFUSE_LIGHT += LIGHT_COLOR * gecirgen_renk * arka * gecirgenlik * mix(1.0, zb_golge, 0.6) / PI;
 	}
 	vec3 h = normalize(LIGHT + VIEW);
 	float s = pow(clamp(dot(NORMAL, h), 0.0, 1.0), spek_sertlik) * spek;

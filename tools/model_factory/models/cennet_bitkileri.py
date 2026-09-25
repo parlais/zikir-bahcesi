@@ -20,6 +20,7 @@ from mf.mesh import blade, blob, box, cylinder, icosphere, lathe, merge, tube
 from mf.scene import Node
 
 from . import asamali, model
+from .agaclar import KORU, UZAK, agac_modeli, sidr_modeli
 from .ortak import toprak_tumsek
 from .sahne import _yaprak_bulutu
 
@@ -74,51 +75,10 @@ def sidr(asama: int) -> Node:
         root.add(toprak_tumsek(0.3, 0.07, seed=12),
                  _filiz([(20, 0.18, 0.09), (140, 0.24, 0.08), (260, 0.28, 0.07), (330, 0.3, 0.06)], 0.3, seed=12))
         return root
-    olgun = asama == 4
-    k = 1.0 if olgun else 0.36
-    rng = np.random.default_rng(13 + asama)
-    gov_ust = np.array([0.1, 1.85, 0.05]) * k
-    dallar = [tube([[0, 0, 0], [0.12 * k, 0.9 * k, 0.0], gov_ust], [0.22 * k, 0.18 * k, 0.15 * k], 8, "govde").smooth(60)]
-    kumeler = [(np.array([0.0, 3.85, 0.0]) * k, 1.1 * k)]
-    uclar = []
-    n_dal = 6 if olgun else 3
-    for i in range(n_dal):
-        a = math.radians(i * 360 / n_dal + 15 + rng.uniform(-12, 12))
-        yon = np.array([math.cos(a), 0.0, math.sin(a)])
-        uz = rng.uniform(0.9, 1.1)
-        mid = gov_ust + (yon * 0.9 * uz + np.array([0, 1.0, 0])) * k
-        uc = gov_ust + (yon * 2.1 * uz + np.array([0, 1.55, 0])) * k
-        sark = gov_ust + (yon * 2.6 * uz + np.array([0, 1.2, 0])) * k
-        dallar.append(tube([gov_ust, mid, uc, sark], [0.1 * k, 0.07 * k, 0.045 * k, 0.03 * k], 6, "govde").smooth(60))
-        uclar.append(uc)
-        kumeler.append((uc + np.array([0, 0.05, 0]) * k, 0.9 * k))
-    if olgun:
-        for a in (0.6, 2.7, 4.7):
-            kumeler.append((np.array([1.05 * math.cos(a), 4.15, 1.05 * math.sin(a)]), 0.85))
-    tac_merkez = np.array([0.0, 3.5, 0.0]) * k
-    renkler = ["yaprak_cennet", "yaprak", "yaprak_acik", "yaprak_cennet"]
-    tac = _tac(kumeler, tac_merkez, renkler, 22 if olgun else 16, 0.26 * max(k, 0.6), 130 + asama,
-               kutle_renk="yaprak", squash=0.75)
-    yaprak = merge(*tac).with_material("yaprak").weight(lambda V: np.clip((V[:, 1] - 2.0 * k) / (2.2 * k), 0, 1))
-    root.add(merge(*dallar).with_material("govde"), yaprak)
-    if olgun:
-        # Kirazlar: dal uçlarındaki kümelerin altından çift çift sarkar
-        meyve = []
-        for c, r in kumeler[1:n_dal + 1]:
-            for j in range(6):
-                v = rng.normal(0, 1, 3)
-                v[1] = -abs(v[1]) - 0.9
-                v /= np.linalg.norm(v)
-                p = c + v * r * 0.8
-                q = p + np.array([0, -0.16, 0])
-                meyve.append(tube([p, q], [0.008, 0.006], 3, "govde_acik", cap=False))
-                for s in (-1, 1):
-                    meyve.append(icosphere(0.058, 0, "kiraz" if j % 3 else "kiraz_koyu")
-                                 .translate(q[0] + s * 0.035, q[1] - 0.04, q[2]).smooth(70))
-        root.add(merge(*meyve).with_material("cicek").weight(lambda V: np.ones(len(V)) * 0.8))
-    else:
-        root.add(toprak_tumsek(0.4, 0.06, seed=14))
-    return root
+    if asama == 4:
+        return sidr_modeli(ad, True)
+    # Fidan: aynı türün küçük, iki dal seviyeli hâli; arsada yeni dikilmiş (toprak tümseği)
+    return sidr_modeli(ad, False).add(toprak_tumsek(0.4, 0.06, seed=14))
 
 
 # --------------------------------------------------------------------------
@@ -345,38 +305,14 @@ def uzum(asama: int) -> Node:
 
 @model("ZB_bitki_koru_agac")
 def koru_agac() -> Node:
-    """Rahmân 64 (müdhâmmetân, koyu yeşil): korulukların 11 m'lik dolgun ağacı."""
-    rng = np.random.default_rng(51)
-    gov_ust = np.array([0.15, 4.6, 0.0])
-    dallar = [tube([[0, 0, 0], [0.1, 2.4, 0.05], gov_ust], [0.38, 0.3, 0.24], 8, "govde").smooth(60)]
-    kumeler = [(np.array([0.0, 8.4, 0.0]), 2.3)]
-    for i in range(4):
-        a = i * math.pi / 2 + 0.5 + rng.uniform(-0.2, 0.2)
-        uc = np.array([2.0 * math.cos(a), 7.5, 2.0 * math.sin(a)])
-        dallar.append(tube([gov_ust, gov_ust + np.array([0.9 * math.cos(a), 1.6, 0.9 * math.sin(a)]), uc],
-                           [0.2, 0.13, 0.08], 6, "govde").smooth(60))
-        kumeler.append((uc + np.array([0, 0.2, 0]), 1.85))
-    for i, a in enumerate((0.1, 2.2, 4.3)):
-        kumeler.append((np.array([1.0 * math.cos(a), 9.9, 1.0 * math.sin(a)]), 1.55))
-    for a in (1.3, 3.9):
-        kumeler.append((np.array([1.7 * math.cos(a), 6.3, 1.7 * math.sin(a)]), 1.4))
-    renkler = ["yaprak_zumrut", "yaprak_koyu", "selvi", "yaprak"]
-    tac = _tac(kumeler, (0.0, 8.0, 0.0), renkler, 14, 0.42, 520, kutle_renk="yaprak_zumrut", squash=0.9)
-    yaprak = merge(*tac).with_material("yaprak").weight(lambda V: np.clip((V[:, 1] - 5.0) / 5.0, 0, 1) * 0.6)
-    return Node("ZB_bitki_koru_agac", [merge(*dallar).with_material("govde"), yaprak])
+    """Rahmân 64 (müdhâmmetân, koyu yeşil): korulukların 12 m'lik dolgun, dallanan ağacı."""
+    return agac_modeli("ZB_bitki_koru_agac", KORU)
 
 
 @model("ZB_bitki_uzak_agac")
 def uzak_agac() -> Node:
-    """Yüzlerce metre ötedeki korular: 9 m, birkaç düzine üçgen."""
-    govde = cylinder(0.3, 0.18, 4.0, 5, "govde").with_material("govde")
-    parca = []
-    for i, (c, r) in enumerate((((0, 6.2, 0), 2.6), ((1.2, 5.3, 0.6), 1.9), ((-1.1, 5.5, -0.5), 2.0),
-                                ((0.2, 7.8, -0.2), 1.8))):
-        parca.append(icosphere(r, 0, "yaprak_zumrut").jitter(r * 0.12, 60 + i).shade_vary(0.08, 60 + i)
-                     .translate(*c))
-    tac = merge(*parca).kure_normal((0.0, 5.8, 0.0), (1.0, 0.8, 1.0)).with_material("yaprak")
-    return Node("ZB_bitki_uzak_agac", [govde, tac.weight(lambda V: np.zeros(len(V)))])
+    """Yüzlerce metre ötedeki korular: korunun birkaç yüz üçgenlik hafif hâli."""
+    return agac_modeli("ZB_bitki_uzak_agac", UZAK)
 
 
 # --------------------------------------------------------------------------

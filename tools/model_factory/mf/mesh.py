@@ -29,6 +29,7 @@ class Mesh:
     NV: np.ndarray | None = None       # (n, 3) elle verilmiş köşe normalleri (sıfır = hesapla)
     CV: np.ndarray | None = None       # (n, 3) köşe renkleri: verilirse köşeler paylaşılır (indeksli, yumuşak
                                        # renk geçişi; büyük arazilerde dosyayı küçültür). NV de verilmelidir.
+    UV: np.ndarray | None = None       # (n, 2) doku koordinatı -> TEXCOORD_0 (yaprak kartı, kabuk dokusu)
 
     def __post_init__(self):
         if self.W is None:
@@ -41,7 +42,8 @@ class Mesh:
     # --- dönüşümler (hepsi yeni Mesh döndürür) ---------------------------
     def copy(self) -> "Mesh":
         return Mesh(self.V.copy(), self.F.copy(), self.C.copy(), self.material, self.W.copy(), self.S.copy(),
-                    self.NV.copy(), None if self.CV is None else self.CV.copy())
+                    self.NV.copy(), None if self.CV is None else self.CV.copy(),
+                    None if self.UV is None else self.UV.copy())
 
     def kure_normal(self, merkez, olcek=(1.0, 1.0, 1.0)) -> "Mesh":
         """Yaprak kümeleri için normalleri tacın merkezinden dışa yönlendirir:
@@ -188,10 +190,13 @@ def merge(*meshes: Mesh) -> Mesh:
     CV = None
     if all(m.CV is not None for m in ms):
         CV = np.vstack([m.CV for m in ms]).astype(np.float32)
+    UV = None
+    if any(m.UV is not None for m in ms):
+        UV = np.vstack([m.UV if m.UV is not None else np.zeros((len(m.V), 2)) for m in ms]).astype(np.float32)
     return Mesh(np.vstack(V).astype(np.float32), np.vstack(F).astype(np.int64),
                 np.vstack(C).astype(np.float32), ms[0].material,
                 np.concatenate(W).astype(np.float32), np.concatenate(S).astype(np.float32),
-                np.vstack(NV).astype(np.float32), CV)
+                np.vstack(NV).astype(np.float32), CV, UV)
 
 
 def rot(axis: str, deg: float) -> np.ndarray:

@@ -4,7 +4,10 @@ extends Node3D
 ##
 ##   godot --path game res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur_ori --zb-kamera=ufuk
 ##   --zb-anim:   nur_ori (varsayılan: Nur ↔ Ori ışık geçişi, K12-K13) | nur | sky | pixar | yagli_boya
-##   --zb-kamera: ufuk | arsa | kesit
+##   --zb-kamera: ufuk | arsa | kesit | model
+##   model: tek bir modeli arsanın ortasında inceleme (K15). --zb-model=ZB_bitki_koru_agac
+##     --zb-model-aci=30 (bakış yönü, derece) --zb-model-yukseklik=6 (kamera yükseltisi, derece)
+##     --zb-model-doluluk=0.85 (modelin kadrajı doldurma oranı)
 ##   (ekran görüntüsü için ayrıca --zb-ekran=/yol.png --zb-kare=30; Game autoload yakalar)
 ##
 ## nur_ori kipinde ışık zemin olarak Nur'dur; zikir tamamlanınca ya da bir olayda
@@ -46,6 +49,8 @@ var _uclar: Array = []
 ## --zb-ayar ile denenen profil değerleri: [yol, değer]
 var _ayarlar: Array = []
 var _arg := {}
+## --zb-kamera=model: incelenen model
+var _inceleme_modeli: Node3D
 
 
 func _ready() -> void:
@@ -212,7 +217,10 @@ func _kat_kur() -> void:
 			_fiskiye((isaret as Node3D).global_position)
 	for t in yer["merdiven"]:
 		k.ornek("ZB_yapi_kat_merdiveni", t)
-	_arsa_kur()
+	if kamera_modu == "model":
+		_inceleme_modeli = k.ornek(_arg.get("model", "ZB_bitki_koru_agac"), [0, 0, 0, 0, 1])
+	else:
+		_arsa_kur()
 	_bitkiler_kur()
 	_gok_kur()
 	_parcaciklar_kur()
@@ -254,8 +262,8 @@ func _bitkiler_kur() -> void:
 	k.coklu("ZB_bitki_selvi", yer["selvi"])
 	k.coklu("ZB_bitki_gul_cali", yer["gul"])
 	k.coklu("ZB_bitki_lale_tarhi", yer["lale"], false)
-	k.coklu("ZB_bitki_koru_agac", yer["koru"])
-	k.coklu("ZB_bitki_uzak_agac", yer["uzak_agac"], false)
+	k.coklu("ZB_bitki_koru_agac", yer["koru"], true, 60.0)
+	k.coklu("ZB_bitki_uzak_agac", yer["uzak_agac"], false, 250.0)
 	k.coklu("ZB_bitki_cimen", _cimen_konumlari(), false)
 
 
@@ -552,6 +560,8 @@ func _kamera_kur() -> void:
 	kam.position = Vector3(kn[0], kn[1], kn[2])
 	kam.look_at(Vector3(hd[0], hd[1], hd[2]))
 	kam.fov = tanim["fov"]
+	if _inceleme_modeli:
+		_model_kamerasi(kam)
 	kam.near = 0.15
 	kam.far = 40000.0 if kamera_modu == "kesit" else 12000.0
 	var ayar := CameraAttributesPractical.new()
@@ -562,3 +572,27 @@ func _kamera_kur() -> void:
 		ayar.dof_blur_amount = 0.025
 	kam.attributes = ayar
 	kam.current = true
+
+
+## İnceleme kamerası: modelin sınır kutusunu dikey ya da yatay kadraja sığdırır.
+func _model_kamerasi(kam: Camera3D) -> void:
+	var kutu := AABB()
+	var ilk := true
+	for mi in _inceleme_modeli.find_children("*", "MeshInstance3D", true, false):
+		var b: AABB = (mi as MeshInstance3D).global_transform * (mi as MeshInstance3D).get_aabb()
+		kutu = b if ilk else kutu.merge(b)
+		ilk = false
+	var aci := deg_to_rad(float(_arg.get("model-aci", "30")))
+	var yuk := deg_to_rad(float(_arg.get("model-yukseklik", "6")))
+	var dolu := float(_arg.get("model-doluluk", "0.85"))
+	kam.fov = 40.0
+	var boyut := Vector2(get_window().size)
+	var oran := boyut.x / boyut.y
+	var dik := tan(deg_to_rad(kam.fov) * 0.5)
+	var yan := dik * oran
+	var genis := maxf(kutu.size.x, kutu.size.z)
+	var uzak := maxf(kutu.size.y * 0.5 / dik, genis * 0.5 / yan) / dolu + genis * 0.5
+	var merkez := kutu.get_center()
+	var yon := Vector3(sin(aci) * cos(yuk), sin(yuk), cos(aci) * cos(yuk))
+	kam.position = merkez + yon * uzak
+	kam.look_at(merkez)

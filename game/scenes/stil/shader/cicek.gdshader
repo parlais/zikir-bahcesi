@@ -4,11 +4,16 @@ render_mode blend_mix, depth_draw_opaque, cull_disabled;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
 
 uniform float ruzgar = 0.06;
+uniform float ruzgar_hiz = 1.3;
 uniform float isima_guc = 0.0;
 
+// Rüzgâr yaprak ve kabuk shader'larıyla aynı: dallardaki meyveler dallarıyla birlikte salınır.
 void vertex() {
 	vec3 w = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	VERTEX.x += sin(TIME * 1.4 + w.x * 0.5 + w.z * 0.3) * ruzgar * COLOR.a;
+	float t = TIME * ruzgar_hiz;
+	float s = sin(t + w.x * 0.35 + w.z * 0.22) + 0.4 * sin(t * 2.3 + w.x * 1.7 + w.y);
+	VERTEX.x += s * ruzgar * COLOR.a;
+	VERTEX.z += cos(t * 0.8 + w.z * 0.3) * ruzgar * 0.6 * COLOR.a;
 }
 
 void fragment() {

@@ -21,6 +21,7 @@ from mf.mesh import Mesh, blade, blob, box, cone, cylinder, icosphere, lathe, me
 from mf.palette import renk
 from mf.scene import Node
 
+from .agaclar import nar_modeli, selvi_modeli
 from . import model
 
 B = 30.0          # bahçe yarı genişliği
@@ -332,61 +333,13 @@ def _yaprak_bulutu(merkez, r, n, seed, renkler, boy=0.16):
 @model("ZB_bitki_selvi")
 def selvi() -> Node:
     """Servi/selvi: alev biçimli, dimdik (vahdet sembolü). Kanal boylarında sıra halinde."""
-    H = 9.0
-    prof = [(0.0, 0.0), (0.18, 0.0), (0.2, 0.5)]
-    for i in range(1, 15):
-        t = i / 14
-        r = 0.95 * math.sin(math.pi * min(1.0, t * 0.95 + 0.05)) ** 0.8 * (1 - t) ** 0.35 + 0.02
-        prof.append((max(r, 0.03), 0.5 + (H - 0.5) * t))
-    prof.append((0.0, H + 0.15))
-    govde = cylinder(0.14, 0.1, 0.7, 7, "govde").with_material("govde")
-    tac = lathe(prof[2:], 14, "selvi").jitter(0.07, 5).smooth(70)
-    rng = np.random.default_rng(6)
-    tac.C = np.clip(tac.C * (1 + rng.uniform(-0.08, 0.08, (len(tac.C), 1))), 0, 1).astype(np.float32)
-    ek = merge(*[
-        blob(0.42 * (1 - k / 9), "selvi", seed=40 + k, subdiv=1, squash=1.3, jitter=0.25)
-        .translate(0.55 * math.cos(k * 2.4) * (1 - k / 11), 1.5 + k * 0.78, 0.55 * math.sin(k * 2.4) * (1 - k / 11))
-        for k in range(9)
-    ]).smooth(70)
-    yaprak = merge(tac, ek).with_material("yaprak").weight(lambda V: (V[:, 1] / H) ** 1.5).eksen_normal(dikey=0.35)
-    return Node("ZB_bitki_selvi", [govde, yaprak])
+    return selvi_modeli("ZB_bitki_selvi")
 
 
 @model("ZB_bitki_nar")
 def nar_agaci() -> Node:
-    """Nar ağacı (Rahmân 68): kıvrık gövde, yuvarlak dolgun taç, kırmızı meyveler."""
-    rng = np.random.default_rng(21)
-    dallar = [tube([[0, 0, 0], [0.1, 0.9, 0.05], [0.05, 1.6, 0.0]], [0.16, 0.12, 0.1], 8, "govde").smooth(60)]
-    uclar = []
-    for k in range(4):
-        a = k * math.pi / 2 + 0.4
-        u = np.array([1.1 * math.cos(a), 2.7 + 0.2 * (k % 2), 1.1 * math.sin(a)])
-        dallar.append(tube([[0.05, 1.5, 0], [0.5 * math.cos(a), 2.1, 0.5 * math.sin(a)], u],
-                           [0.09, 0.06, 0.035], 6, "govde").smooth(60))
-        uclar.append(u)
-    kume_merkez = [np.array([0, 3.0, 0])] + [u + np.array([0, 0.2, 0]) for u in uclar]
-    kume_merkez += [np.array([0.7 * math.cos(a), 3.5, 0.7 * math.sin(a)]) for a in (0.9, 2.9, 4.8)]
-    kutle, yapraklar = [], []
-    renkler = ["yaprak", "yaprak_koyu", "yaprak_acik", "yaprak"]
-    tac_merkez = np.array([0.0, 3.2, 0.0])
-    for i, c in enumerate(kume_merkez):
-        r = 0.95 if i else 1.2
-        # Normaller önce kümenin, sonra bütün tacın merkezinden: yumuşak ve bütünlüklü taç
-        kutle.append(blob(r * 0.88, "yaprak_koyu", seed=60 + i, subdiv=2, squash=0.85, jitter=0.12).translate(*c)
-                     .kure_normal(tac_merkez * 0.6 + c * 0.4))
-        yapraklar += [y.kure_normal(tac_merkez * 0.6 + c * 0.4) for y in _yaprak_bulutu(c, r, 48, 80 + i, renkler, boy=0.3)]
-    meyve = []
-    for i in range(16):
-        c = kume_merkez[rng.integers(len(kume_merkez))]
-        v = rng.normal(0, 1, 3)
-        v[1] = -abs(v[1]) * 0.6
-        v /= np.linalg.norm(v)
-        p = c + v * 0.95
-        meyve.append(icosphere(0.11, 1, "nar").translate(*p).smooth(60))
-        meyve.append(cone(0.04, 0.06, 5, "nar_koyu").translate(p[0], p[1] + 0.09, p[2]))
-    yaprak = merge(*kutle, *yapraklar).with_material("yaprak").weight(lambda V: np.clip((V[:, 1] - 1.8) / 2.2, 0, 1))
-    return Node("ZB_bitki_nar", [merge(*dallar).with_material("govde"), yaprak,
-                                 merge(*meyve).with_material("cicek")])
+    """Nar ağacı (Rahmân 68): dipten çatallanan gövdeler, sık yuvarlak taç, sarkan narlar."""
+    return nar_modeli("ZB_bitki_nar")
 
 
 @model("ZB_bitki_gul_cali")
