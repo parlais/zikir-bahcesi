@@ -1,5 +1,41 @@
 # Faz 2a — Kur'an tasvirlerinden ilham alan cennet mekânı, 4 animasyon stilinde
 
+## Revizyon 2 (K9, K10): 8 yatay tabaka ve yağlı boya — güncel durum
+Pixar taslakları istenen şey değildi. Kullanıcı mekânı ve stili yeniden tarif etti; bu bölüm aşağıdaki ilk planın yerini alır. Aşağıdaki ilk plan geçmiş kaydı olarak duruyor.
+
+**Kurgu (K10):**
+- Cennet uçsuz bucaksız 8 yatay tabakadır. En üstte Firdevs vardır, ortasında dört ırmağın kaynağı bulunur; üstte ışık vardır, Arş tasvir edilmez.
+- İçeriden her katta ufuk açıktır ve göğe bakınca üst tabaka görünmez.
+- Irmaklar uzakta bulutların içinden inen çağlayanlarla başlar.
+- Katlar arasında çiçekli taş merdivenler bulutlara yükselir.
+- Dışarıdan bakınca bir kesit görünür: tabakalar kendi zemini ve gökleriyle üst üste dizilir.
+
+**Stil (K9):** Yağlı boya beşinci stil olarak eklendi. Diğer dört stil (Pixar, Ghibli, Arcane, Sky/Ori) mekân onayından sonra.
+
+**Yapılanlar (ara durak 2):**
+- **Model fabrikası:**
+  - `ZB_dunya_cennet`: 9 km'ye uzanan ova ve dört ırmak.
+  - `ZB_dunya_selaleler`: gökten inen dört çağlayan.
+  - `ZB_dunya_kesit`: 8 tabakanın kesiti. İçinde zeminler, toprak katmanlı kesit yüzü, gök tavanları, gök perdeleri, ırmaklar, çağlayanlar, merdivenler, köşkler ve Firdevs'in kaynağı var.
+  - `ZB_yapi_kat_merdiveni`: kullanıcının referans görseli gibi.
+  - Derece duvarları, koni-dağ ve dev Tûbâ kaldırıldı.
+- **Godot:**
+  - `cennet_sahnesi.gd`: `--zb-kamera=ufuk|arsa|kesit`. Bulut kümeleri, çağlayan sisleri, merdiven ucunda ışık.
+  - `resim_filtresi.gdshader`: yönlü Kuwahara, boya gürültüsüyle fırça darbesi, impasto, tuval, renk.
+  - `tavan.gdshader`: tabaka gökleri.
+  - `yagli_boya` profili.
+- **Taslaklar:** `docs/goruntuler/cennet/taslak_yagli_{ufuk,arsa,kesit}.png` (800×450).
+
+**Sıradaki:**
+1. Kullanıcının geri bildirimi.
+2. Diğer dört stil.
+3. 1600×900 son çekimler ve panolar.
+
+**Bilinen eksikler:**
+- Gökten inen çağlayanlar uzaktan ışık sütunu gibi görünüyor.
+- Kesit bir şema gibi duruyor; derinlik ve ışık zenginleşebilir.
+- Kuş ve kelebek yok.
+
 ## Bağlam
 Stil karşılaştırmasındaki çarbağ kullanıcıya iyi geldi ama tam istediği mekân değil. Kullanıcı Kur'an'daki cennet tasvirlerinden ilham alan bir his ve mekân istiyor.
 

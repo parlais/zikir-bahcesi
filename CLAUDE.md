@@ -49,12 +49,16 @@ Kullanıcının son geri bildirimleri:
 - Stil animasyon stili olarak seçilecek; dördü birden gösterilecek (K6).
 - Arayüz sonra baştan ele alınacak (K7).
 
-**Kullanıcının taslaklara cevabı (K9):** İstediği bu değildi. Yağlı boya beşinci stil olarak eklenecek (yalnızca boya estetiği, gece veya chiaroscuro değil). Mekân kurgusu da değişecek; yeni tarif bekleniyor.
+**Kullanıcının taslaklara cevabı (K9):** İstediği bu değildi. Yağlı boya beşinci stil olarak eklenecek (yalnızca boya estetiği, gece veya chiaroscuro değil).
 
-**Sıradaki iş:** Kullanıcının yeni mekân tarifini al, planı ona göre güncelle ve teyit ettir. Ardından:
-1. Ghibli, Arcane, Sky/Ori ve Yağlı boya profillerini `animasyon_stilleri.gd` içine yaz. `resim_filtresi.gdshader` (Kuwahara, kontur, kâğıt) ve `ortak.gdshaderinc` içine `firca` parametresini ekle.
+**Yeni kurgu (K10) ve ara durak 2:**
+- Cennet uçsuz bucaksız 8 yatay tabakadır: en üstte Firdevs, içeriden bakınca üst tabaka görünmez, dışarıdan kesit görünür. Ayrıntı `docs/kararlar.md` K10 ve `docs/plan-faz2a.md` "Revizyon 2" bölümünde.
+- Yağlı boya taslakları `docs/goruntuler/cennet/taslak_yagli_{ufuk,arsa,kesit}.png`. Kullanıcıya gönderildi, geri bildirim bekleniyor.
+
+**Sıradaki iş:** Kullanıcının yağlı boya taslakları hakkındaki geri bildirimini al ve işle. Onaydan sonra:
+1. Ghibli, Arcane ve Sky/Ori profillerini `animasyon_stilleri.gd` içine yaz (Pixar ve yağlı boya hazır). Ghibli ve Arcane için `resim_filtresi.gdshader` parametreleri ve kontur eklenebilir.
 2. 5 stil × 3 kamera (`ufuk`, `arsa`, `derece`) çek: 1600×900, `docs/goruntuler/cennet/`, ardından karşılaştırma panoları.
-3. Taslakta kalan kalite işleri: kuşlar ve kelebekler, köşk ve duvar ayrıntısı, koni-dağın daha doğal silüeti.
+3. Taslakta kalan kalite işleri: gökten inen çağlayanların görünümü, kesitin derinliği, kuşlar ve kelebekler, köşk ayrıntısı.
 
 Açık sorular:
 - Canlılar için AI 3D aracı ya da karma üretim kabul edilir mi?
@@ -88,7 +92,7 @@ godot --headless --path game --import                  # içe aktarım (yeni mod
 godot --headless --path game -s res://tests/run_tests.gd   # testler
 # Geliştirici argümanları (Game autoload): --zb-senaryo=demo|kart --zb-kartsiz=1 --zb-ekran=yol.png --zb-kare=N
 # Stil sahnesi: res://scenes/stil/stil_sahnesi.tscn -- --zb-stil=nur|ghibli|mucevher|gercekci --zb-kamera=portre|sinematik
-# Cennet sahnesi: res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=pixar --zb-kamera=ufuk|arsa|derece
+# Cennet sahnesi: res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=yagli_boya|pixar --zb-kamera=ufuk|arsa|kesit
 #   (640x360, 8 kare ~1,5 dk; üç kamera paralel ~3 dk; 800x450, 16 kare paralel ~6 dk)
 ```
 
@@ -99,6 +103,11 @@ godot --headless --path game -s res://tests/run_tests.gd   # testler
 - **Mesh özellikleri:** `smooth(aci)` yumuşak gölge verir; `kure_normal`/`eksen_normal` yaprak kütlesine yumuşak ışık verir; `weight(fn)` rüzgâr ağırlığını COLOR_0.a'ya yazar.
 - **Büyük araziler:** `Mesh.CV` (köşe renkleri) verilirse dışa aktarım indeksli olur ve dosya yaklaşık 4 kat küçülür; bu durumda `NV` de verilmelidir. `zemin` shader'ı köşe ağırlığı (`COLOR.a`) 1'den küçük yerlerde köşe rengini gösterir (toprak, kum, arsa çimeni).
 - **Ton eşleme:** AgX cennet sahnesinde soluk verdi; Pixar profili ACES kullanır.
+- **Resim filtresi:** Profilde `filtre` varsa sahne SubViewport'a çizilir, `resim_filtresi.gdshader` ile TextureRect'te boyanır.
+  - SubViewport boyutu `get_window().size` olmalı. Proje `canvas_items` ölçekleme kullandığı için görünür alan tuval biriminde büyüktür (ör. 2275×1280).
+  - TextureRect için `set_anchors_and_offsets_preset(FULL_RECT)` kullanılmalı; boyutu elle verilmemeli.
+- **Shader adları:** Godot shader dilinde `E` ve `PI` gibi adlar yerleşik sabittir; değişken adı olarak kullanılmaz.
+- **Fırça dokusu:** Ekran yönüne göre döndürülen desen moiré (parmak izi halkaları) yapar. Fırça izi, Kuwahara'nın örneklediği renklere eklenen sabit gürültüyle elde edilir.
 - **Godot'a bağımlı olmayan veri:** Test edilecek sabitler Godot'a (Game autoload) bağlı olmayan sınıflarda durmalı (örnek: `scenes/yerlesim.gd`, `ui/zikir_secenekleri.gd`). Test koşucusu derlenemeyen test dosyasını hata sayar.
 - **Commit:** Mesajlar Türkçe. Her adım ayrı commit, sonra `git push -u origin claude/sleepy-bell-nc2a9a`. PR açma (kullanıcı istemedi). Dünya modelleri büyüktür (toplam ~11 MB); ara denemelerde değil, anlamlı adımlarda commit et.
 - **Kullanıcının yüklediği dosyalar:** Ali Ünal epub'ları ve Sorularla İslamiyet PDF'i depoya konmaz (telif). Bulgular `docs/mekan-kurgusu.md` dosyasına işlendi.

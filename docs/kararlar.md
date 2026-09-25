@@ -108,4 +108,8 @@ Asset listesinin açık bıraktığı yerler için seçilen değerler aşağıda
 - Kavram eskizleri:
   - `docs/goruntuler/cennet/eskiz_katmanlar.png`
   - `docs/goruntuler/cennet/eskiz_kure_tabaka.png`
+- Kullanıcının ek kararları (aynı gün):
+  - İlk katın içinden bakınca dört ırmak gökten, bulutların içinden inen çağlayanlarla başlar; üst tabakanın kendisi görünmez.
+  - Ufuktaki dev Tûbâ kaldırıldı. Oyuncunun Tûbâ'sı arsasında çekirdekten büyür.
+  - İlk ara durak yağlı boya stilinde çekilir.
 
