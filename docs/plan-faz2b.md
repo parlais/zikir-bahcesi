@@ -1,10 +1,15 @@
-# Faz 2b — Taslak plan (kullanıcı onayı bekliyor)
+# Faz 2b — Plan (2026-09-25'te onaylandı)
 
 Faz 2a'da mekân ve ışık yönü netleşti:
 - **Mekân (K10):** uçsuz bucaksız 8 yatay tabaka.
 - **Işık (K12):** Nur ile Ori arasında değişen ışık.
 
-Bu belge sıradaki işleri toplar. Yeni oturum önce bunu kullanıcıya kısaca özetler, öncelik ve kapsam için onay alır.
+Bu belge sıradaki işleri toplar.
+
+**Onay (K13):**
+- Sıra: önce ışık geçişi (1), sonra kalite (2), sonra mekanikler (3).
+- Işık geçişi zikre ve olaylara bağlıdır.
+- Canlılar model fabrikasında üretilir.
 
 ## 1. Işık geçişi: Nur ↔ Ori (K12)
 - `animasyon_stilleri.gd` içindeki `nur` ve `sky` profilleri iki uç durumdur. Bir karıştırıcı bunları zamanla yumuşakça birbirine geçirir.
@@ -13,7 +18,11 @@ Bu belge sıradaki işleri toplar. Yeni oturum önce bunu kullanıcıya kısaca 
 - Öneri: `game/scenes/dunya/isik_karistirici.gd`.
   - Profil sözlüklerini bir `t` (0 Nur, 1 Ori) ile karıştırır ve SahneKurucu'nun kurduğu nesneleri günceller.
   - Karıştırma fonksiyonu Godot'a bağlı olmamalı ve test edilmeli.
-- Kullanıcıya sorulacak: Geçiş neye bağlı olsun (zaman, zikir, olay, seçim)? Ne sıklıkla olsun, ne kadar sürsün?
+- **Tetikleyici (K13):** zikir ve olay.
+  - Zemin Nur'dur. Zikir, dua, sure ya da esma tamamlanınca ışık Ori'ye geçer, bir süre kalır, Nur'a döner.
+  - Olaylar da aynı geçişi başlatır: Tûbâ aşaması, kat değiştirme, ziyaret, açılış.
+  - Süreler ilk tahmindir; çekimlere bakarak ayarlanır.
+- Geçişte güneşin yönü ve gökteki nurun yeri sabit kalır; gölgeler dönmez, gün dönümü gibi okunmaz.
 - Doğrulama: `t` = 0, 0.5 ve 1'de üç çekim; ayrıca kısa bir geçiş dizisi (kare dizisi).
 
 ## 2. Kalite (taslaklarda zayıf kalanlar)
@@ -26,7 +35,7 @@ Bu belge sıradaki işleri toplar. Yeni oturum önce bunu kullanıcıya kısaca 
 - **Modeller:**
   - Ağaçlar lolipop gibi; taç ve dal ayrıntısı ister.
   - Köşk ve çadırda yakın plan ayrıntısı eksik.
-- **Canlılık:** Kuşlar ve kelebekler (sade kanat çırpan billboard'lar ya da basit modeller).
+- **Canlılık:** Kuşlar ve kelebekler: model fabrikasında sade, parçalı modeller; kanat çırpma Godot'da (K13).
 
 ## 3. Planda bekleyen mekân ve mekanik öğeleri
 - **Nur tohumu ve bahar açılışı (10. Söz):** Zikirle dikim anında tomurcuk, çiçek ve meyve birlikte açar (animasyon).

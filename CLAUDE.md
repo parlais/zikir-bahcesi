@@ -10,8 +10,8 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 - Kullanıcı görsel olarak çok titiz; "ultra kaliteli", etkileyici bir sonuç istiyor. Dini hassasiyetler önemli: dayanak, temsil dili ve danışma kurulu teyidi.
 
 ## Okunacak belgeler (sırayla)
-1. `docs/kararlar.md`: bütün kararlar (K1-K12). Özellikle K10 (mekân), K11 (stil) ve K12 (ışık).
-2. `docs/plan-faz2b.md`: **sıradaki işlerin taslak planı.** Kullanıcı henüz onaylamadı; başlamadan önce kısaca özetle ve öncelikleri teyit ettir.
+1. `docs/kararlar.md`: bütün kararlar (K1-K13). Özellikle K10 (mekân), K11 (stil), K12 (ışık) ve K13 (ışık geçişinin tetikleyicisi, sıra, canlılar).
+2. `docs/plan-faz2b.md`: **sıradaki işlerin planı.** Kullanıcı 2026-09-25'te onayladı (K13).
 3. `docs/mekan-kurgusu.md`: cennet mekânının dayanakları (ayet, hadis, Risale-i Nur, Ali Ünal), 28. Söz'deki koni misalinin metni, danışma kurulu soruları.
 4. `docs/plan-faz2a.md`: geçmiş kaydı. En üstteki "Revizyon 2" bölümü, Faz 2a'nın son hâlini anlatır.
 5. `docs/asset-listesi.md`: içeriğin tek kaynağı (157 asset, 99+2 esma, tarifler). `docs/rapor.md`: fizibilite raporu. `docs/stil-karsilastirmasi.md`: ilk (çarbağ) stil karşılaştırması.
@@ -33,6 +33,7 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 - **Stil ve ışık (K11, K12):**
   - Filtresiz 3D.
   - Işık ara sıra Nur (altın) ile Sky/Ori (beyaz-turkuaz, nurani parıltılar) arasında değişir. Su, çiçek ve nur kendi ışığıyla parlar.
+  - Geçiş zikre ve olaylara bağlıdır (K13). Zemin Nur'dur. Zikir, dua, sure ya da esma tamamlanınca ışık Ori'ye geçer, bir süre kalır, Nur'a döner. Tûbâ aşaması, kat değiştirme, ziyaret ve açılış da geçişi başlatır. Gerçek saate bağlanmaz.
   - Gece yok, güneş diski yok (K5).
   - Pixar ve yağlı boya beğenilmedi; kodu duruyor, kullanılmıyor.
 
@@ -57,15 +58,13 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - `taslak_nur_*.png` ve `taslak_ori_*.png` (800×450)
   - Kavram eskizleri: `eskiz_*.png`
 
-**Sıradaki iş:** `docs/plan-faz2b.md` planını kullanıcıya kısaca özetle ve onay al. Öne çıkanlar:
-1. Nur ↔ Ori ışık geçişi (profil karıştırıcı). Tetikleyici kullanıcıya sorulacak.
-2. Kalite: gökten inen çağlayanlar su gibi görünmeli; kesitin derinliği; ağaç ve köşk modelleri; kuşlar ve kelebekler.
+**Sıradaki iş (`docs/plan-faz2b.md`, onaylı sıra):**
+1. Nur ↔ Ori ışık geçişi (profil karıştırıcı), zikir ve olaylarla tetiklenir.
+2. Kalite: gökten inen çağlayanlar su gibi görünmeli; kesitin derinliği; ağaç ve köşk modelleri; kuşlar ve kelebekler (model fabrikasında, K13).
 3. Plandaki mekanikler: nur tohumu ve bahar açılışı, açılış ve katlar arası geçiş (nur izi), merdivenle kat değiştirme, farklı katlardaki arkadaş bahçeleri, Firdevs ve nur katı çekimi.
 4. Arayüz (K7) sonra.
 
 **Açık sorular:**
-- Canlılar için AI 3D aracı ya da karma üretim kabul edilir mi?
-- Işık geçişinin tetikleyicisi ne olacak?
 - Danışma kurulu soruları: `mekan-kurgusu.md`.
 
 ## Ortam kurulumu (her yeni bulut oturumunda gerekir)

@@ -133,3 +133,17 @@ Asset listesinin açık bıraktığı yerler için seçilen değerler aşağıda
   - Danışma kuruluna sorulan "ışık tonunda hafif sabah-akşam farkı" sorusu (Meryem 62) bu kararla doğrudan ilgili.
 - Pixar ve yağlı boya profilleri ile `resim_filtresi.gdshader` kodda duruyor ama kullanılmıyor (K9, K11).
 
+## K13 — Işık geçişi zikir ve olaylarla; sıradaki iş kalite; canlılar model fabrikasında (2026-09-25)
+- Kullanıcı Faz 2b planını onayladı. Sıra:
+  1. Nur ↔ Ori ışık geçişi
+  2. kalite
+  3. mekanikler
+  4. arayüz (K7) sonra
+- **Tetikleyici:** zikir ve olay (K12'deki açık konu kapandı).
+  - Işığın zemini Nur'dur (altın). Bir zikir, dua ya da sure tamamlanınca ya da bir esma tamamlanınca ışık yavaşça Ori'nin beyaz-turkuaz nurani ışığına geçer. Bir süre öyle kalır, sonra yavaşça Nur'a döner. Zikir sürdükçe Ori'de kalır.
+  - Olaylar da aynı geçişi başlatır: Tûbâ'nın aşama atlaması, kat değiştirme, arkadaş bahçesini ziyaret, açılış.
+  - Işık gerçek saate ya da akan zamana bağlanmaz; değişim sabah-akşam gibi okunmasın (K5). Meryem 62 sorusu danışma kurulunda duruyor.
+  - Geçiş sırasında gölgelerin yönü ve gökteki ışığın yeri değişmez. Güneş hareket ediyormuş gibi görünmez; yalnızca ışığın rengi ve havası değişir.
+  - Süreler ilk tahmindir ve tek yerden ayarlanır (`game/scenes/dunya/isik_gecisi.gd`).
+- **Canlılar:** Kuş ve kelebek gibi canlılar model fabrikasında sade, parçalı modeller olarak üretilir; kanat çırpma Godot'da yapılır. K8'deki "AI 3D aracı ya da karma üretim" sorusu canlılar için kapandı; K2 geçerli.
+
