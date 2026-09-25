@@ -16,11 +16,10 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 4. `docs/plan-faz2a.md`: geçmiş kaydı. En üstteki "Revizyon 2" bölümü, Faz 2a'nın son hâlini anlatır.
 5. `docs/asset-listesi.md`: içeriğin tek kaynağı (157 asset, 99+2 esma, tarifler). `docs/rapor.md`: fizibilite raporu. `docs/stil-karsilastirmasi.md`: ilk (çarbağ) stil karşılaştırması.
 
-## Dallar (önemli)
-- Güncel iş `claude/sleepy-bell-nc2a9a` dalındadır.
-- Deponun varsayılan dalı `claude/busy-allen-p76wgo` eski durumda kalmıştır (Faz 2a öncesi).
-- Yeni oturum başka bir dalda açıldıysa önce `git fetch origin claude/sleepy-bell-nc2a9a` yapıp kendi dalına birleştirmeli ya da onun üstüne kurmalı. Ardından bu dosyayı güncel hâliyle yeniden okumalıdır.
-- Commit'ler oturumun kendi dalına gönderilir.
+## Dallar
+- Deponun varsayılan dalı `claude/busy-allen-p76wgo`, 2026-09-25'te kullanıcının onayıyla `claude/sleepy-bell-nc2a9a` ile aynı noktaya ilerletildi. İkisi de Faz 2a'nın son hâlini içerir.
+- Yeni oturum kendi dalında çalışır ve commit'lerini oraya gönderir.
+- Emin olmak için `git log --oneline -3` ile son commit'in "Oturum devri" ya da daha yeni olduğuna bak.
 
 ## Şu anki durum (2026-09-25)
 **Onaylanmış yön:**
