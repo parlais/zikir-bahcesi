@@ -45,6 +45,21 @@ Bu belge sıradaki işleri toplar.
 - **Gökten inen çağlayanlar:**
   - Uzaktan ışık sütunu gibi görünüyor, su gibi görünmeli.
   - Çare: perdede akış ve köpük, yanlardan dağılan serpinti, dipte büyük sis, tepede bulutun içinden çıkış.
+  - **Durum (2026-09-25): yapıldı**, sekiz denemede.
+    - Model (`cennet.py` `_gok_selalesi`):
+      - Perde (`selale`) tepede dar, aşağı genişler, rüzgârda salınır.
+      - Arkasında daha geniş bir serpinti zarfı (`selale_pus`) var.
+      - Enine konum ve tepe genişliği köşe renginde taşınır.
+    - Shader (`selale.gdshader`):
+      - Uzaktan seçilen sık akış çizgileri, aşağı akan köpük öbekleri, keskin köpük kenarı, ince tanecik dokusu, saçılan kenarlar.
+      - Gövde doygun su rengindedir: Nur'da camgöbeği-mavi, Ori'de turkuaz-mavi.
+      - Çizgiler uzakta seçilmez olunca köpüğün ortalamasına geçilir.
+    - Sahne: dipte parlak, kabarık su sisi (`selale_sis`); perdenin başı buluttan çıkar.
+    - Öğrenilenler:
+      - Sıcak ya da beyaz su altın gökte ışık sütunu, gri su puslu havada duman sütunu gibi okunuyor.
+      - Suyu okutan şeyler: doygun su rengi, uzun paralel çizgiler ve akış (film).
+      - Uzak görünüş oyunun dikey ekranında (720×1280) değerlendirilmeli. 800×450'lik deneme çekimi, dikey ekranın üçte biri kadar ayrıntı gösterir.
+    - İnceleme için `selale` kamerası (360 m) ve akış filmi (`tools/render/film.sh`).
 - **Kesit (dış görünüm):**
   - Şema gibi duruyor. Derinlik, ışık ve her katın farklı karakteri güçlenmeli (Rahmân 46-76: üst katlarda çeşitlilik artar).
   - Katlar arası merdivenler seçilir olmalı.

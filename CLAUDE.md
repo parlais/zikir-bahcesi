@@ -50,17 +50,24 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - `cennet_yapilari.py`: su köşkü, inci çadır, sedir köşesi, selsebil, âb-ı hayat pınarı, inci çakıl, kat merdiveni.
 - **Faz 2a, Godot:**
   - `scenes/ortak/sahne_kurucu.gd` (SahneKurucu: malzeme, çoğaltma, parçacık, ortam).
-  - `scenes/dunya/cennet_sahnesi.tscn`: kameralar `ufuk`, `arsa`, `kesit`.
+  - `scenes/dunya/cennet_sahnesi.tscn`: kameralar `ufuk`, `arsa`, `kesit` (ve inceleme için `selale`).
   - `scenes/dunya/animasyon_stilleri.gd`: profiller `nur`, `sky`, `pixar`, `yagli_boya`.
   - Shader'lar (`scenes/stil/shader/`): `gok_cennet`, `selale`, `tugla`, `tavan`, `bulut_denizi`, `resim_filtresi`.
-- **Son çekimler:**
-  - `docs/goruntuler/cennet/karsilastirma_nur_ori.jpg`
-  - `taslak_nur_*.png` ve `taslak_ori_*.png` (800×450)
+- **Faz 2b (2026-09-25):**
+  - **Işık geçişi:** Nur ↔ Ori (`isik_karistirici.gd`, `isik_gecisi.gd`, 13 test). Işıklar çapraz geçer. Cennet sahnesinin varsayılan kipi `nur_ori`.
+  - **Çağlayanlar:** at kuyruğu perde, pus zarfı, dip sisi, su rengi gövde (`selale.gdshader`). Ayrıntılar `plan-faz2b.md` içinde.
+  - **Nur kesiti:** kullanıcının gördüğü açık, pastel taslağa eşlendi (kontrast, parlaklık, doygunluk).
+  - **Araçlar:** `tools/render/dizi.sh` (geçiş dizisi), `film.sh` (akış filmi), `pano.py` (pano, GIF, şerit).
+- **Son çekimler (`docs/goruntuler/cennet/`):**
+  - `gecis_nur_ori_pano.jpg`: ufuk, arsa ve kesit; t = 0, 0,5, 1
+  - `gecis_nur_ori.gif` ve `gecis_nur_ori_serit.jpg`: Nur'dan Ori'ye geçiş
+  - `selale_once_sonra.jpg`, `selale_akis_nur.gif` ve `selale_akis_ori.gif`: çağlayanlar
+  - Eski taslaklar: `karsilastirma_nur_ori.jpg`, `taslak_*.png`
   - Kavram eskizleri: `eskiz_*.png`
 
 **Sıradaki iş (`docs/plan-faz2b.md`, onaylı sıra):**
-1. Nur ↔ Ori ışık geçişi (profil karıştırıcı), zikir ve olaylarla tetiklenir.
-2. Kalite: gökten inen çağlayanlar su gibi görünmeli; kesitin derinliği; ağaç ve köşk modelleri; kuşlar ve kelebekler (model fabrikasında, K13).
+1. ~~Nur ↔ Ori ışık geçişi~~ (yapıldı).
+2. Kalite: ~~gökten inen çağlayanlar~~ (yapıldı); sırada kesitin derinliği; ağaç ve köşk modelleri; kuşlar ve kelebekler (model fabrikasında, K13).
 3. Plandaki mekanikler: nur tohumu ve bahar açılışı, açılış ve katlar arası geçiş (nur izi), merdivenle kat değiştirme, farklı katlardaki arkadaş bahçeleri, Firdevs ve nur katı çekimi.
 4. Arayüz (K7) sonra.
 
