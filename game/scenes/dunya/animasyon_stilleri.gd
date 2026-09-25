@@ -161,7 +161,7 @@ const PROFILLER := {
 		},
 		"bulut_renk": [Color(1.3, 1.16, 0.98), Color(0.98, 0.84, 0.8)],
 		"parcacik": {"nur": 700, "nur_renk": Color(1.0, 0.9, 0.6), "sis_renk": Color(1.0, 0.95, 0.85, 0.45),
-			"selale_sis": Color(1.3, 1.24, 1.12, 0.32)},
+			"selale_sis": Color(1.3, 1.24, 1.12, 0.4)},
 		"kesit": {
 			"gunes": {"yukseklik": 30.0, "yon": 340.0, "enerji": 1.6, "golge_mesafe": 6000.0},
 			"gok": {"kozmik": 1.0, "tepe": Color("5a5aa8"), "ufuk": Color("ffe0a8"), "nur_yon": Vector3(0.0, 0.93, -0.36),
@@ -218,7 +218,7 @@ const PROFILLER := {
 		},
 		"bulut_renk": [Color(1.35, 1.42, 1.5), Color(0.7, 0.86, 1.25)],
 		"parcacik": {"nur": 1200, "nur_renk": Color(0.85, 1.0, 0.95), "sis_renk": Color(0.85, 0.97, 1.0, 0.4),
-			"selale_sis": Color(1.15, 1.32, 1.42, 0.32)},
+			"selale_sis": Color(1.15, 1.32, 1.42, 0.4)},
 		"kesit": {
 			"gunes": {"yukseklik": 35.0, "yon": 340.0, "enerji": 1.3, "golge_mesafe": 6000.0},
 			"gok": {"kozmik": 1.0, "tepe": Color("071a4a"), "ufuk": Color("c8fff0"), "nur_yon": Vector3(0.0, 0.93, -0.36),

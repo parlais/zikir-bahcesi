@@ -13,6 +13,7 @@ extends Node3D
 ##   --zb-dizi=/yol/onek           Nur'dan Ori'ye geçişi kare kare çeker (onek_00.png ...) ve çıkar
 ##       --zb-dizi-adim=13 --zb-dizi-bekle=3 --zb-isinma=16
 ##   --zb-ayar="ortam/parlama/0=0.2;ortam/parlama_kip=screen"   profil değerlerini dener
+##   --zb-film=/yol/onek --zb-film-kare=48   kare kare film (tools/render/film.sh, --fixed-fps ile)
 ##   N tuşu: zikir tamamlanmış gibi geçişi başlatır
 ##
 ## Modeller ve yerleşim (game/data/dunya_cennet.json) model fabrikasında üretilir:
@@ -77,6 +78,8 @@ func _ready() -> void:
 	_kamera_kur()
 	if gecis and _arg.has("dizi"):
 		_dizi_cek.call_deferred(_arg["dizi"])
+	elif _arg.has("film"):
+		_film_cek.call_deferred(_arg["film"])
 
 
 # --------------------------------------------------------------------------
@@ -147,6 +150,19 @@ func _dizi_cek(onek: String) -> void:
 		var yol := "%s_%02d.png" % [onek, i]
 		var err := _vp.get_texture().get_image().save_png(yol)
 		print("Dizi karesi: %s t=%.3f (%s)" % [yol, t, error_string(err)])
+	get_tree().quit()
+
+
+## Geliştirici: ısınmadan sonra her kareyi kaydeder. Motor --fixed-fps ile çalıştırılırsa
+## kareler eşit zaman adımıyla ilerler (su, parçacık, rüzgâr doğru hızda akar).
+func _film_cek(onek: String) -> void:
+	for i in int(_arg.get("isinma", "16")):
+		await get_tree().process_frame
+	for i in int(_arg.get("film-kare", "48")):
+		await get_tree().process_frame
+		var yol := "%s_%03d.png" % [onek, i]
+		var err := _vp.get_texture().get_image().save_png(yol)
+		print("Film karesi: %s (%s)" % [yol, error_string(err)])
 	get_tree().quit()
 
 
@@ -327,7 +343,7 @@ func _parcaciklar_kur() -> void:
 		return p["parcacik"].get("selale_sis", p["parcacik"]["sis_renk"])
 	for s in yer["selale_dip"]:
 		var g: float = s[3]
-		k.parcacik(40, Vector3(s[0], s[1] + g * 0.7, s[2]), Vector3(g * 1.2, g * 0.5, g * 0.8), g * 1.5, sis_renk,
+		k.parcacik(50, Vector3(s[0], s[1] + g * 0.9, s[2]), Vector3(g * 1.3, g * 0.7, g * 0.8), g * 1.8, sis_renk,
 			0.0, Vector3(0, 0.7, 0), 1.2, 16.0, BaseMaterial3D.BILLBOARD_ENABLED, _bulut_doku())
 	# Selsebil levhasının dibinde ince serpinti
 	for t in yer["selsebil"]:
