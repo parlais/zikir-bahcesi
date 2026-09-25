@@ -60,26 +60,32 @@ void fragment() {
 		EMISSION = c * isima_guc * 0.9;
 	} else {
 		float o = cizgi_olcek;
-		float g1 = 6.0 * o;
-		float g2 = 2.5 * o;
-		float g3 = 1.0 * o;
-		// Düşeyde çok uzun desenler: su, saç teli gibi kesintisiz paralel çizgilerle okunur
-		float n1 = zb_gurultu(vec3(x / g1, (y + t * 16.0) / (g1 * 22.0), tohum));
-		float n2 = zb_gurultu(vec3((x + 3.1) / g2, (y + t * 24.0) / (g2 * 30.0), tohum + 11.0));
-		float n3 = zb_gurultu(vec3((x + 7.7) / g3, (y + t * 34.0) / (g3 * 40.0), tohum + 23.0));
+		float g1 = 7.0 * o;
+		float g2 = 2.8 * o;
+		float g3 = 1.1 * o;
+		// Düşeyde uzun desenler: su, kesintisiz paralel çizgilerle okunur
+		float n1 = zb_gurultu(vec3(x / g1, (y + t * 16.0) / (g1 * 18.0), tohum));
+		float n2 = zb_gurultu(vec3((x + 3.1) / g2, (y + t * 24.0) / (g2 * 24.0), tohum + 11.0));
+		float n3 = zb_gurultu(vec3((x + 7.7) / g3, (y + t * 34.0) / (g3 * 30.0), tohum + 23.0));
+		float s1 = secilir(x / g1);
 		float s2 = secilir(x / g2);
-		float akis = 0.5 + (n1 - 0.5) * 1.2 * secilir(x / g1) + (n2 - 0.5) * 0.7 * s2
-				+ (n3 - 0.5) * 0.4 * secilir(x / g3);
+		float s3 = secilir(x / g3);
+		float akis = 0.5 + (n1 - 0.5) * 1.3 * s1 + (n2 - 0.5) * 0.8 * s2 + (n3 - 0.5) * 0.5 * s3;
 		// Aşağı düşen beyaz öbekler (arkalarında uzun iz bırakır)
-		float kume = smoothstep(0.58, 0.85, zb_gurultu(vec3(x / 8.0, (y + t * 20.0) / 60.0, tohum + 31.0)));
-		// Havalanma: tepede cam gibi su, aşağı indikçe köpük artar; dipte her yer beyaz
+		float kume = smoothstep(0.6, 0.8, zb_gurultu(vec3(x / 8.0, (y + t * 20.0) / 55.0, tohum + 31.0)));
+		// Havalanma: tepede cam gibi su, aşağı indikçe köpük artar. Köpük çizgileri keskin kenarlı.
 		float hava = smoothstep(0.0, 0.85, dus);
-		float kop = smoothstep(0.7 - hava * 0.25, 0.86 - hava * 0.16, akis) + kume * 0.3 * (0.2 + 0.8 * hava);
-		// Uzakta ince çizgiler seçilmez: köpüğün ortalamasına geç (yoksa gövde rengi kalır,
+		float esik_k = 0.64 - hava * 0.2;
+		float kop = smoothstep(esik_k, esik_k + 0.07, akis) + kume * 0.35 * (0.2 + 0.8 * hava);
+		// Uzakta çizgiler seçilmez: köpüğün ortalamasına geç (yoksa gövde rengi kalır,
 		// pusla griye döner ve perde duman sütunu gibi okunur)
-		kop = mix(mix(0.3, 0.65, hava), kop, s2);
-		kop = clamp(kop + smoothstep(0.82, 1.0, dus) * 0.5, 0.0, 1.0);
-		vec3 govde = mix(derin_renk, su_renk, clamp((akis - 0.3) * 1.2, 0.0, 1.0) * 0.6);
+		kop = mix(mix(0.3, 0.55, hava), kop, s1 * 0.5 + s2 * 0.5);
+		kop = clamp(kop + smoothstep(0.84, 1.0, dus) * 0.5, 0.0, 1.0);
+		// İnce su taneciği: köpüğe doku
+		float tane = zb_gurultu(vec3(x / 0.7, (y + t * 40.0) / 5.0, tohum + 60.0));
+		kop *= mix(1.0, 0.75 + 0.5 * tane, s3);
+		// Gövde ırmaklarla aynı doygun turkuaz; çizgi aralarında derinleşir
+		vec3 govde = mix(derin_renk, su_renk, clamp(akis * 1.4 - 0.25, 0.0, 1.0));
 		c = mix(govde, kopuk, kop);
 		// Kenarlar aşağı doğru saçılır: akış yönünde uzamış, yumuşak saçaklar
 		float dag = zb_gurultu(vec3(x / 4.0, (y + t * 18.0) / 50.0, tohum + 47.0));
@@ -90,10 +96,10 @@ void fragment() {
 		float dagilma = 1.0 - smoothstep(0.8, 1.0, dus) * (0.3 + 0.4 * (1.0 - n1));
 		// İnce kenarlar ışığı geçirir: daha saydam ve ışıyan
 		float ince = smoothstep(0.35, 0.95, yan);
-		a = saydamlik * mix(0.92, 0.55, ince) * mix(0.85, 1.0, kop) * yay * tepe * dagilma;
+		a = saydamlik * mix(0.95, 0.6, ince) * yay * tepe * dagilma;
 		ROUGHNESS = 0.3;
 		SPECULAR = 0.5;
-		EMISSION = (kopuk * kop * 0.8 + mix(su_renk, kopuk, 0.5) * ince * 0.7) * isima_guc;
+		EMISSION = (kopuk * kop * 0.8 + govde * 0.25 + mix(su_renk, kopuk, 0.5) * ince * 0.5) * isima_guc;
 	}
 	ALBEDO = zb_renk(c);
 	ALPHA = clamp(a, 0.0, 1.0);

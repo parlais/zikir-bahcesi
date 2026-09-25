@@ -148,9 +148,9 @@ const PROFILLER := {
 				"akis": Vector2(0.0, 0.35)},
 			"bal": {"isima_guc": 0.3, "isima": Color("ffb040"), "akis": Vector2(0.0, 0.25), "puruz": 0.06},
 			"serbet": {"isima_guc": 0.2, "isima": Color("ff6070"), "akis": Vector2(0.0, 0.4)},
-			# Çağlayan suyu soğuk beyaz-turkuazdır; altın ışık onu yalnız arkadan geçerken ısıtır
-			# (sıcak renkli su, altın gökte bir ışık sütunu gibi okunuyordu).
-			"selale": {"su_renk": Color("dff4f6"), "derin_renk": Color("5aa9c4"), "isima_guc": 0.4,
+			# Çağlayan suyu ırmaklarla aynı doygun turkuazdır: altın ışığın karşısında su olarak
+			# okunur (sıcak renkli su ışık sütunu, gri su duman sütunu gibi okunuyordu).
+			"selale": {"su_renk": Color("7fd0d8"), "derin_renk": Color("2a8fa6"), "isima_guc": 0.4,
 				"gecirgenlik": 0.35, "gecirgen_renk": Color("ffdca0")},
 			"tugla": {"tugla_a": Color("f0c878"), "tugla_b": Color("ece8e2"), "isima_guc": 0.0},
 			"cini": {"isima_guc": 0.05},
@@ -207,7 +207,7 @@ const PROFILLER := {
 				"akis": Vector2(0.0, 0.35)},
 			"bal": {"isima_guc": 0.5, "isima": Color("ffc050"), "akis": Vector2(0.0, 0.25), "puruz": 0.06},
 			"serbet": {"isima_guc": 0.45, "isima": Color("ff6090"), "akis": Vector2(0.0, 0.4)},
-			"selale": {"su_renk": Color("e0ffff"), "derin_renk": Color("3fa6cf"), "isima_guc": 0.9,
+			"selale": {"su_renk": Color("a8f0ff"), "derin_renk": Color("1c9ccf"), "isima_guc": 0.9,
 				"gecirgenlik": 0.35, "gecirgen_renk": Color("d8fff8")},
 			"tugla": {"tugla_a": Color("f4d890"), "tugla_b": Color("eaf6ff"), "isima_guc": 0.05},
 			"cini": {"isima_guc": 0.25},

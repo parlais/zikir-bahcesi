@@ -359,13 +359,13 @@ def _gok_selalesi(x, z, y_alt, y_ust, gen, bakis, seed):
                 pz = z + yan[1] * (u * g / 2 + kivrim) + b[1] * ic
                 V.append([px, y, pz])
                 W.append(1 - v)
-                CV.append([i / nu, gen * 0.75 / 200.0, tohum])
+                CV.append([i / nu, gen * 0.9 / 200.0, tohum])
         CV = _lin2srgb(np.asarray(CV))
         m = _izgara(V, nu, nv, CV, malzeme, W=W)
         return _yuz_yonu(m, (b[0], 0, b[1]))
 
-    ana = perde(lambda v: gen * (0.75 + 0.7 * v ** 1.7), 0.0, "selale")
-    pus = perde(lambda v: gen * (0.9 + 1.2 * v ** 1.5), gen * 0.18, "selale_pus")
+    ana = perde(lambda v: gen * (0.9 + 0.7 * v ** 1.7), 0.0, "selale")
+    pus = perde(lambda v: gen * (1.1 + 1.2 * v ** 1.5), gen * 0.18, "selale_pus")
     return ana, pus
 
 
