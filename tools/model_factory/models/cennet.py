@@ -351,7 +351,7 @@ def _gok_selalesi(x, z, y_alt, y_ust, gen, bakis, seed):
             v = j / nv                                          # 0 tepe, 1 dip
             y = y_ust + (y_alt - y_ust) * v
             g = genislik(v)
-            kivrim = gen * 0.14 * math.sin(v * 4.2 + faz) * v   # rüzgârla hafif kıvrılır
+            kivrim = gen * 0.3 * math.sin(v * 3.0 + faz) * v    # rüzgârda salınan şerit gibi kıvrılır
             for i in range(nu + 1):
                 u = i / nu * 2 - 1
                 ic = (1 - u * u) * gen * 0.14 * (0.4 + v) - geri  # ortası öne kabarık, aşağıda daha çok

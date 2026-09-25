@@ -343,7 +343,7 @@ func _parcaciklar_kur() -> void:
 		return p["parcacik"].get("selale_sis", p["parcacik"]["sis_renk"])
 	for s in yer["selale_dip"]:
 		var g: float = s[3]
-		k.parcacik(50, Vector3(s[0], s[1] + g * 0.9, s[2]), Vector3(g * 1.3, g * 0.7, g * 0.8), g * 1.8, sis_renk,
+		k.parcacik(45, Vector3(s[0], s[1] + g * 0.8, s[2]), Vector3(g * 1.2, g * 0.6, g * 0.8), g * 1.6, sis_renk,
 			0.0, Vector3(0, 0.7, 0), 1.2, 16.0, BaseMaterial3D.BILLBOARD_ENABLED, _bulut_doku())
 	# Selsebil levhasının dibinde ince serpinti
 	for t in yer["selsebil"]:
