@@ -209,3 +209,8 @@ K14'teki iki açık soru ve iş sırası kullanıcıya soruldu.
   | Fidan | 100 | Yaklaşık 4 m |
   | Olgun | 1000 | Yaklaşık 11 m |
   | Ulu | 10000 | Yaklaşık 22 m |
+
+## K18 — Tûbâ ve büyüme aşamaları beğenildi; sıradaki iş kesit, yeni oturumda (2026-09-25)
+- Kullanıcı MVP ağaçlarına, büyüme aşamalarına ve Tûbâ'ya baktı: "Güzel olmuş, sıradaki aşamaya geçebiliriz."
+- Sıradaki iş kesitin derinliğidir (K15'teki sıra). Oturum bağlam dolduğu için yeni sohbette devam edecek.
+- Varsayılan dal `claude/busy-allen-p76wgo`, kullanıcının onayıyla bu oturumun dalına (`claude/optimistic-fermi-u1sscb`) ileri sarıldı.

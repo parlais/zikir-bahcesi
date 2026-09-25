@@ -102,9 +102,26 @@ Bu belge sıradaki işleri toplar.
     - `buyume_agaclar.jpg`: yedi tür, tohumdan olguna
     - `buyume_tuba_arsa.jpg`: arsada Tûbâ'nın beş aşaması
     - `tuba_yakin.jpg`: fidan, olgun, ulu (Nur ve Ori)
-- **Kesit (dış görünüm):**
+- **Kesit (dış görünüm):** Sıradaki iş (K18).
   - Şema gibi duruyor. Derinlik, ışık ve her katın farklı karakteri güçlenmeli (Rahmân 46-76: üst katlarda çeşitlilik artar).
   - Katlar arası merdivenler seçilir olmalı.
+  - **Şu anki hâl, dikey ekranda (`docs/goruntuler/cennet/kesit_dikey_simdi.jpg`):**
+    - 8 eşit bant üst üste dizilmiş.
+    - Tele kamera derinliği yok ediyor: 16,5 km uzaktan, 10,5° görüş açısı.
+    - Her kat birbirinin aynısı; ağaçlar nokta nokta (ufuk ağacı, 100 üçgen).
+    - Merdiven yalnızca bir katta seçiliyor.
+    - Kesit yüzü ince pastel çizgilerden ibaret.
+    - Ekranın üstünde ve altında yaklaşık %20'lik boş, pembe bir alan kalıyor.
+  - **Kod:**
+    - `tools/model_factory/models/cennet.py`: `dunya_kesit` ve `_kesit_*` fonksiyonları (zemin, dilim, arka perde, ırmaklar, çağlayanlar, merdivenler, köşkler), sabitler `KAT`, `KAT_H`, `KAT_T`, `KESIT_X`, `KESIT_Z`.
+    - Yerleşim `game/data/dunya_cennet.json` içinde (`kesit`; kamera `kameralar/kesit`).
+    - Godot: `cennet_sahnesi.gd` `_kesit_kur()`. Profillerin `kesit` alt sözlükleri `animasyon_stilleri.gd` içinde.
+  - **Fikirler (kullanıcıya henüz sorulmadı):**
+    - Perspektifli ve hafif yukarıdan bakan bir kamera, katlar arasında atmosferik derinlik (pus).
+    - Her katın kendi karakteri; yukarı çıktıkça çeşitlilik ve incelik artar.
+    - Seçilebilir merdivenler, kesit yüzünde katman ve kök ayrıntısı.
+    - Dikey kadraja göre kompozisyon: boş alanlar yerine bulut denizi ve nur.
+    - K16'ya göre katlardaki her şey zikirle oluşur. Öteki katlarda ne görüneceği (dolu bahçeler mi, arkadaş bahçeleri mi; 28. Söz'deki beraberlik) kullanıcıya sorulabilir.
 - **Modeller:**
   - Ağaçlar lolipop gibi; taç ve dal ayrıntısı ister.
   - Köşk ve çadırda yakın plan ayrıntısı eksik.

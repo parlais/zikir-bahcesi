@@ -10,23 +10,25 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 - Kullanıcı görsel olarak çok titiz; "ultra kaliteli", etkileyici bir sonuç istiyor. Dini hassasiyetler önemli: dayanak, temsil dili ve danışma kurulu teyidi.
 
 ## Okunacak belgeler (sırayla)
-1. `docs/kararlar.md`: bütün kararlar (K1-K17). Özellikle şunlar:
+1. `docs/kararlar.md`: bütün kararlar (K1-K18). Özellikle şunlar:
    - K10 (mekân), K11 (stil), K12 (ışık)
    - K13 (ışık geçişinin tetikleyicisi, sıra, canlılar)
    - K14 (son geri bildirim: "her şey daha detaylı ve gerçekçi")
    - K15 (gerçekçilik ölçütü, CC0 dokular), K16 (her şey zikirle oluşur; ağaç asset'lerinin durumu)
    - K17 (önce MVP ağaçları; Tûbâ tanıdık ama nurlu, ulu hâli arsayı gölgeler)
-2. `docs/plan-faz2b.md`: **sıradaki işlerin planı** (K13'te onaylandı). Işık geçişi ve çağlayanlar yapıldı; sırada öteki kalite işleri var.
+   - K18 (Tûbâ ve büyüme aşamaları beğenildi; sıradaki iş kesit)
+2. `docs/plan-faz2b.md`: **sıradaki işlerin planı** (K13'te onaylandı). Işık geçişi, çağlayanlar, ağaçlar ve büyüme aşamaları yapıldı. Sırada kesit var; plandaki "Kesit (dış görünüm)" bölümünde şu anki hâli, kodun yerleri ve fikirler yazılı.
 3. `docs/mekan-kurgusu.md`: cennet mekânının dayanakları (ayet, hadis, Risale-i Nur, Ali Ünal), 28. Söz'deki koni misalinin metni, danışma kurulu soruları.
 4. `docs/plan-faz2a.md`: geçmiş kaydı. En üstteki "Revizyon 2" bölümü, Faz 2a'nın son hâlini anlatır.
 5. `docs/asset-listesi.md`: içeriğin tek kaynağı (157 asset, 99+2 esma, tarifler). `docs/rapor.md`: fizibilite raporu. `docs/stil-karsilastirmasi.md`: ilk (çarbağ) stil karşılaştırması.
 
 ## Dallar
-- **En güncel iş Faz 2b'nin ağaçlarıdır** (K15). Bu iş `claude/optimistic-fermi-u1sscb` dalında yapıldı.
-- Işık geçişi ve çağlayanlar `claude/confident-volta-gmupfz` dalında yapıldı. Varsayılan dal `claude/busy-allen-p76wgo` da o noktadadır; ağaçları içermez.
+- **En güncel iş Faz 2b'nin ağaçları, büyüme aşamaları ve Tûbâ'dır** (K15-K18). Bu iş `claude/optimistic-fermi-u1sscb` dalında yapıldı.
+- Varsayılan dal `claude/busy-allen-p76wgo`, 2026-09-25'te kullanıcının onayıyla bu dalın son hâline ileri sarıldı (K18). İki dal aynı noktadadır.
+- Işık geçişi ve çağlayanlar daha önce `claude/confident-volta-gmupfz` dalında yapılmıştı.
 - Varsayılan dal yalnızca kullanıcı onaylarsa ilerletilir.
 - Yeni oturum kendi dalında çalışır ve commit'lerini oraya gönderir.
-- Başlarken `git log --oneline -3` çalıştır. Son commit "Oturum devri: Faz 2b ağaçlar" ya da daha yeni değilse şunu yap: `git fetch origin claude/optimistic-fermi-u1sscb && git merge FETCH_HEAD`.
+- Başlarken `git log --oneline -3` çalıştır. Son commit "Oturum devri: Faz 2b MVP ağaçları ve Tûbâ" ya da daha yeni değilse şunu yap: `git fetch origin claude/optimistic-fermi-u1sscb && git merge FETCH_HEAD`.
 
 ## Şu anki durum (2026-09-25)
 **Onaylanmış yön:**
@@ -44,10 +46,11 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - Geçiş zikre ve olaylara bağlıdır (K13). Zemin Nur'dur. Zikir, dua, sure ya da esma tamamlanınca ışık Ori'ye geçer, bir süre kalır, Nur'a döner. Tûbâ aşaması, kat değiştirme, ziyaret ve açılış da geçişi başlatır. Gerçek saate bağlanmaz.
   - Gece yok, güneş diski yok (K5).
   - Pixar ve yağlı boya beğenilmedi; kodu duruyor, kullanılmıyor.
-- **Son geri bildirim (K14):**
-  - "Şu anki durum fena olmamış."
-  - Işık geçişinin süreleri onaylandı; çağlayanlar kabul edildi.
-  - Genel yön: **"Her şeyin daha detaylı ve gerçekçi olmasını istiyorum."**
+- **Geri bildirimler (K14, K16, K18):**
+  - K14: "Şu anki durum fena olmamış." Işık geçişinin süreleri onaylandı; çağlayanlar kabul edildi.
+  - K14, genel yön: **"Her şeyin daha detaylı ve gerçekçi olmasını istiyorum."**
+  - K16: Yeni ağaçlar "çok beğenildi".
+  - K18: Tûbâ ve büyüme aşamaları: "Güzel olmuş, sıradaki aşamaya geçebiliriz."
 
 **Yapılanlar:**
 - **Faz 1:** İçerik veri katmanı, oyun çekirdeği (`game/core`, 34 test), model fabrikası, küçük adada oynanabilir ilk dilim (`game/scenes/main.tscn`).
@@ -58,11 +61,11 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
     - `ZB_dunya_selaleler`: gökten inen çağlayanlar
     - `ZB_dunya_kesit`: 8 tabakanın kesiti
     - yerleşim `game/data/dunya_cennet.json`
-  - `cennet_bitkileri.py`: sidr, talh, üzüm (a1-a4), koru ve uzak ağaç, Tûbâ çekirdeği.
+  - `cennet_bitkileri.py`: sidr, talh, üzüm (a1-a4), koru, uzak ve ufuk ağacı. Tûbâ (a1-a5) artık `agac_asamalari.py` içinde.
   - `cennet_yapilari.py`: su köşkü, inci çadır, sedir köşesi, selsebil, âb-ı hayat pınarı, inci çakıl, kat merdiveni.
 - **Faz 2a, Godot:**
   - `scenes/ortak/sahne_kurucu.gd` (SahneKurucu: malzeme, çoğaltma, parçacık, ortam).
-  - `scenes/dunya/cennet_sahnesi.tscn`: kameralar `ufuk`, `arsa`, `kesit` (ve inceleme için `selale`).
+  - `scenes/dunya/cennet_sahnesi.tscn`: kameralar `ufuk`, `arsa`, `kesit`; inceleme için `selale` ve `model`.
   - `scenes/dunya/animasyon_stilleri.gd`: profiller `nur`, `sky`, `pixar`, `yagli_boya`.
   - Shader'lar (`scenes/stil/shader/`): `gok_cennet`, `selale`, `tugla`, `tavan`, `bulut_denizi`, `resim_filtresi`.
 - **Faz 2b (2026-09-25):**
@@ -84,6 +87,7 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - `selale_once_sonra.jpg`, `selale_akis_nur.gif`, `selale_akis_ori.gif` ve `selale_telefon_ekrani.jpg` (dikey 720×1280): çağlayanlar
   - `agac_once_sonra.jpg`, `agac_hurma_talh_uzum.jpg`, `agac_sahne_once_sonra.jpg`, `agac_sahne_ori.jpg`: ağaçlar (dikey)
   - `buyume_agaclar.jpg`, `buyume_tuba_arsa.jpg`, `tuba_yakin.jpg`: büyüme aşamaları ve Tûbâ (dikey)
+  - `kesit_dikey_simdi.jpg`: kesitin şu anki hâli, dikey (sıradaki işin başlangıç noktası)
   - Eski taslaklar: `karsilastirma_nur_ori.jpg`, `taslak_*.png`
   - Kavram eskizleri: `eskiz_*.png`
 
@@ -94,7 +98,7 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
    - ~~ağaçlar~~ (yapıldı; kullanıcı çok beğendi).
    - ~~MVP ağaçları ve büyüme aşamaları~~ (K17; Tûbâ, çınar, servi, nar; bütün tohum ve filiz aşamaları).
    - Kesitten sonra: zeytin, incir, Toros sediri, defne (v2).
-   - kesitin derinliği (sıradaki)
+   - **kesitin derinliği (sıradaki, K18).** Şu anki hâl, kodun yerleri ve fikirler `plan-faz2b.md` "Kesit (dış görünüm)" bölümünde; dikey çekim `docs/goruntuler/cennet/kesit_dikey_simdi.jpg`.
    - köşk ve çadır: yakın plan ayrıntı eksik
    - kuşlar ve kelebekler (model fabrikasında, K13)
    - K15'teki sıra: ağaçlar, kesit, köşk ve çadır, kuşlar ve kelebekler.
