@@ -117,5 +117,14 @@ python3 tools/render/pano.py gif /tmp/gecis.gif --gidis-donus /tmp/dizi/ufuk_*.p
 - **Shader adları:** Godot shader dilinde `E` ve `PI` gibi adlar yerleşik sabittir; değişken adı olarak kullanılmaz.
 - **Fırça dokusu:** Ekran yönüne göre döndürülen desen moiré (parmak izi halkaları) yapar. Fırça izi, Kuwahara'nın örneklediği renklere eklenen sabit gürültüyle elde edilir.
 - **Godot'a bağımlı olmayan veri:** Test edilecek sabitler Godot'a (Game autoload) bağlı olmayan sınıflarda durmalı (örnek: `scenes/yerlesim.gd`, `ui/zikir_secenekleri.gd`). Test koşucusu derlenemeyen test dosyasını hata sayar.
+- **Işık geçişi (K12, K13):** Nur ile Ori `IsikKaristirici` ile karışır.
+  - Kesikli değerler (metin, bool, parıltı kipi) iki uçta aynı olmalı; yoksa geçişin ortasında sıçrama olur. `test_isik.gd` bunu denetler.
+  - Yeni bir profil anahtarı iki uca birden yazılmalı; shader varsayılanı bile olsa açıkça yazılır.
+  - Işığın yönü karıştırılmaz, iki ışıkla çapraz geçer. Güneşi döndürmek gölgeleri çevirir; yönü sabitlemek de Ori'nin ırmak parıltısını siliyordu.
+- **Shader'da ad çakışması:** `ortak.gdshaderinc` uniform'larıyla (`kenar`, `spek`, `sarma`, `toon`, `parlaklik`, `doygunluk`...) aynı adlı yerel değişken "Redefinition" hatası verir ve malzeme hiç çizilmez. Çekim günlüğünde `SHADER ERROR` aranmalı.
+- **Köşe renginde veri:** `gltf_export` köşe renklerini sRGB'den doğrusala çevirir. Renk kanalına veri (ör. enine konum) yazılacaksa `_lin2srgb` ile ters çevrilerek yazılır (bkz. `cennet.py` `_gok_selalesi`).
+- **Uzak ayrıntı:** Desen `fwidth` ile söndürülürken ortalama görünüşe geçilmeli. Yalnızca söndürülürse zemin rengi kalır; çağlayan uzakta gri bir duman sütununa dönüyordu.
+- **Denetim kipi:** `godot --check-only --script` autoload'ları yüklemez; "Identifier not found: Game" hatası yanıltıcıdır. Sahneyi başsız birkaç kare çalıştırmak daha güvenilirdir.
+- **Çekimler ve kod:** `taslak_nur_kesit.png`, profilin son ayarından önce çekilmişti; kod 13 ton daha koyu çiziyordu. Taslak çekimi profil değişince yenilenmeli; karşılaştırma yaparken önce eski kodla (git worktree) doğrulanmalı.
 - **Commit:** Mesajlar Türkçe. Her adım ayrı commit, sonra oturumun kendi dalına `git push -u origin <dal>`. PR açma (kullanıcı istemedi). Dünya modelleri büyüktür (toplam ~13 MB); ara denemelerde değil, anlamlı adımlarda commit et.
 - **Kullanıcının yüklediği dosyalar:** Ali Ünal epub'ları ve Sorularla İslamiyet PDF'i depoya konmaz (telif). Bulgular `docs/mekan-kurgusu.md` dosyasına işlendi.
