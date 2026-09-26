@@ -49,7 +49,7 @@
   },
   "ozet": {
    "MVP": {
-    "asset": 40,
+    "asset": 44,
     "model": 59
    },
    "v2": {
@@ -61,7 +61,7 @@
     "model": 31
    },
    "toplam": {
-    "asset": 157,
+    "asset": 161,
     "model": 203
    }
   }
@@ -2796,6 +2796,142 @@
    ],
    "esikler_serbest": [
     33
+   ],
+   "grup": false
+  },
+  {
+   "id": "irmak_su",
+   "ad": "Su ırmağı (çağlayanıyla)",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Nuh 10-12, istiğfar edene yağmur, bahçeler ve ırmaklar verilir (dünya bağlamında; burada temsil); Muhammed 15, bozulmayan sudan ırmaklar",
+    "ham": "N: Nuh 10-12, istiğfar edene yağmur, bahçeler ve ırmaklar verilir (dünya bağlamında; burada temsil); Muhammed 15, bozulmayan sudan ırmaklar"
+   },
+   "tetikleyici": {
+    "ham": "Estağfirullah toplamı 100 (bir kez)",
+    "tur": "zikir",
+    "kaynak": "istigfar",
+    "adet": 100,
+    "grup": false,
+    "kural": "toplam",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "dunya_parcasi": "ZB_dunya_cennet",
+   "esikler": [
+    100
+   ],
+   "esikler_serbest": [
+    100
+   ],
+   "grup": false
+  },
+  {
+   "id": "irmak_sut",
+   "ad": "Süt ırmağı",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Muhammed 15, tadı bozulmayan sütten ırmaklar; Nuh 10-12, istiğfar ve ırmaklar (temsil)",
+    "ham": "N: Muhammed 15, tadı bozulmayan sütten ırmaklar; Nuh 10-12, istiğfar ve ırmaklar (temsil)"
+   },
+   "tetikleyici": {
+    "ham": "Estağfirullah toplamı 300 (bir kez)",
+    "tur": "zikir",
+    "kaynak": "istigfar",
+    "adet": 300,
+    "grup": false,
+    "kural": "toplam",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "dunya_parcasi": "ZB_dunya_cennet",
+   "esikler": [
+    300
+   ],
+   "esikler_serbest": [
+    300
+   ],
+   "grup": false
+  },
+  {
+   "id": "irmak_bal",
+   "ad": "Bal ırmağı",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Muhammed 15, süzme baldan ırmaklar; Nuh 10-12, istiğfar ve ırmaklar (temsil)",
+    "ham": "N: Muhammed 15, süzme baldan ırmaklar; Nuh 10-12, istiğfar ve ırmaklar (temsil)"
+   },
+   "tetikleyici": {
+    "ham": "Estağfirullah toplamı 700 (bir kez)",
+    "tur": "zikir",
+    "kaynak": "istigfar",
+    "adet": 700,
+    "grup": false,
+    "kural": "toplam",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "dunya_parcasi": "ZB_dunya_cennet",
+   "esikler": [
+    700
+   ],
+   "esikler_serbest": [
+    700
+   ],
+   "grup": false
+  },
+  {
+   "id": "irmak_serbet",
+   "ad": "Şerbet ırmağı",
+   "bolum": "D",
+   "kategori": "yapi",
+   "tip": "3D",
+   "oncelik": "MVP",
+   "dayanak": {
+    "kod": "N",
+    "metin": "Muhammed 15, içenlere lezzet veren içecekten ırmaklar; adı ve yakut renkli temsili danışma kurulunda (I); Nuh 10-12, istiğfar ve ırmaklar (temsil)",
+    "ham": "N: Muhammed 15, içenlere lezzet veren içecekten ırmaklar; adı ve yakut renkli temsili danışma kurulunda (I); Nuh 10-12, istiğfar ve ırmaklar (temsil)"
+   },
+   "tetikleyici": {
+    "ham": "Estağfirullah toplamı 1000 (bir kez)",
+    "tur": "zikir",
+    "kaynak": "istigfar",
+    "adet": 1000,
+    "grup": false,
+    "kural": "toplam",
+    "kosul": null,
+    "not": null
+   },
+   "asama_sayisi": 1,
+   "asama_adlari": [],
+   "modeller": [],
+   "dunya_parcasi": "ZB_dunya_cennet",
+   "esikler": [
+    1000
+   ],
+   "esikler_serbest": [
+    1000
    ],
    "grup": false
   },

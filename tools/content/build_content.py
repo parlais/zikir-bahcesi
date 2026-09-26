@@ -70,6 +70,20 @@ COKLU_MODEL = {
 # Yeni model istemeyen varyantlar.
 VARYANT = {"harem_guvercini": ("guvercin", "harem")}
 
+# Tablodaki addan türemeyen, sözleşmeyle sabitlenmiş kimlikler (tablodaki adın
+# sluggu -> asset id). Sahne dört ırmağı bu kimliklerle açar (DunyaDurumu,
+# hal.irmak = [su, sut, bal, serbet]).
+KIMLIK = {
+    "su_irmagi": "irmak_su", "sut_irmagi": "irmak_sut",
+    "bal_irmagi": "irmak_bal", "serbet_irmagi": "irmak_serbet",
+}
+# Dünya modelinin parçası olan assetler: ayrı .glb dosyaları yoktur. Irmak
+# yatağı ve suyu dünya modelindedir; sahne onları oyuncunun durumundan açar.
+DUNYA_PARCASI = {
+    "irmak_su": "ZB_dunya_cennet", "irmak_sut": "ZB_dunya_cennet",
+    "irmak_bal": "ZB_dunya_cennet", "irmak_serbet": "ZB_dunya_cennet",
+}
+
 # Dosya adındaki kısa isim (ZB_[kategori]_[isim]). Verilmezse id'den türetilir.
 KISA_AD = {
     "tuba": "tuba", "uzum_asmasi_ve_cardak": "uzum", "toros_sediri": "sedir",
@@ -156,8 +170,8 @@ def slug(text: str) -> str:
 
 
 def asset_id(name: str) -> str:
-    base = re.split(r"[(:,]", name, maxsplit=1)[0]
-    return slug(base)
+    base = slug(re.split(r"[(:,]", name, maxsplit=1)[0])
+    return KIMLIK.get(base, base)
 
 
 def parse_tables(md: str) -> dict[str, list[list[str]]]:
@@ -206,6 +220,15 @@ def oransal_esikler(toplam: int, oranlar: list[float]) -> list[int]:
 # --------------------------------------------------------------------------
 
 def parse_trigger(text: str, esma_by_slug: dict) -> dict:
+    """Tablodaki tetikleyici metnini yapıya çevirir. Kurallar (kural alanı):
+      birikimli  sayaç her eşiğe ulaştığında yeniden verilir ("Estağfirullah ×100")
+      toplam     ömür boyu toplam; bir kez verilir, tekrarlanmaz. Tûbâ aşamalarla
+                 büyür ("Toplam La ilahe illallah sayısıyla büyür"); ırmaklar tek
+                 eşiklidir ("Estağfirullah toplamı 100 (bir kez)")
+      her_n      her N sözde bir item (rastgele tür olabilir)
+      ardisik    N kez art arda söylenince
+      surekli    sürekli kaynak (envantere girmez)
+    """
     t = {"ham": text, "tur": None, "kaynak": None, "adet": None, "grup": False,
          "kural": "birikimli", "kosul": None, "not": None}
 
@@ -272,6 +295,8 @@ def parse_trigger(text: str, esma_by_slug: dict) -> dict:
             t["not"] = ic
         elif ic == "ayet başına bir basamak":
             t.update(kural="her_n", adet=1)
+        elif ic == "bir kez":
+            t["kural"] = "toplam"
         elif ic in KOSUL_ESLEME:
             t["kosul"] = KOSUL_ESLEME[ic]
         else:
@@ -287,6 +312,13 @@ def parse_trigger(text: str, esma_by_slug: dict) -> dict:
     key = slug(body)
     if key.startswith("toplam_"):
         t["kural"] = "toplam"
+    # "Estağfirullah toplamı 100 (bir kez)": ömür boyu toplam, tekrarsız.
+    toplamli = key.endswith("_toplami")
+    if toplamli:
+        key = key[: -len("_toplami")]
+        t["kural"] = "toplam"
+    if toplamli != text.endswith(" (bir kez)"):
+        raise ValueError(f"'toplamı N' ile '(bir kez)' birlikte yazılmalı: {text!r}")
     if key == "cuma_gunu_salavat":
         t["kosul"] = "cuma"
     if key not in SOZ_ESLEME:
@@ -315,6 +347,8 @@ def asama_sayisi(aid: str, bolum: str, tip: str) -> int:
 
 
 def model_kategori(aid: str, bolum: str, tip: str) -> str | None:
+    if aid in DUNYA_PARCASI:
+        return None
     if tip in ("VFX", "Sky"):
         return None
     if tip == "UI":
@@ -428,6 +462,8 @@ def main() -> None:
                     else:
                         files.append(stem)
         a["modeller"] = files
+        if a["id"] in DUNYA_PARCASI:
+            a["dunya_parcasi"] = DUNYA_PARCASI[a["id"]]
         a["esikler"] = esikler_hesapla(a, serbest=False)
         a["esikler_serbest"] = esikler_hesapla(a, serbest=True)
         a["grup"] = bool(a["tetikleyici"]["grup"]) or (
@@ -458,6 +494,11 @@ def main() -> None:
         e = a["esikler"]
         if len(e) != max(1, a["asama_sayisi"]) or e != sorted(set(e)):
             raise ValueError(f"Eşikler hatalı: {a['id']} {e}")
+        if t["kural"] == "toplam" and a["asama_sayisi"] == 1 and not t["adet"]:
+            raise ValueError(f"Tek eşikli 'toplam' kuralının adedi yok: {a['id']}")
+    for aid in DUNYA_PARCASI:
+        if aid not in by_id:
+            raise ValueError(f"Dünya parçası listede yok: {aid}")
 
     ozet = {}
     for s in ("MVP", "v2", "v3"):

@@ -16,7 +16,13 @@ var assets: Dictionary = {}      ## id -> asset
 var esma: Dictionary = {}        ## id -> esma
 var zikirler: Dictionary = {}    ## id -> söz
 var tarifler: Dictionary = {}    ## id -> tarif
-## anahtar -> [asset id] (sayaçla ilerleyenler; kural "birikimli" veya "toplam")
+## anahtar -> [asset id] (sayaçla ilerleyenler; kural "birikimli" veya "toplam").
+##   birikimli  her eşikte yeniden verilir (her 100 istiğfarda nisan yağmuru)
+##   toplam     ömür boyu toplamla bir kez verilir, tekrarlanmaz (Tûbâ; 100, 300,
+##              700 ve 1000 istiğfarda dört ırmak)
+## Aynı anahtarı paylaşanların sırası, aynı sayıda gelen olayların sırasıdır:
+## önce birinci item'lar, sonra "ikinci item"; eşitlikte asset listesindeki sıra
+## (nisan yağmuru A bölümünde, ırmaklar D bölümünde: önce yağmur, sonra ırmak).
 var by_key: Dictionary = {}
 ## anahtar -> [asset id] (her N sözde bir kazanılanlar)
 var her_n_by_key: Dictionary = {}
@@ -28,6 +34,8 @@ var surekli_by_key: Dictionary = {}
 var turev_by_key: Dictionary = {}
 ## esma anahtarı -> öğretici kart (celâlî isimler)
 var kart_by_key: Dictionary = {}
+## asset id -> asset listesindeki sıra (assets.json'daki yeri)
+var liste_sirasi: Dictionary = {}
 
 
 static func load_default() -> Content:
@@ -40,6 +48,7 @@ func load_from(dir: String) -> void:
 	var a: Dictionary = _read(dir + "assets.json")
 	meta = a["meta"]
 	for x in a["assets"]:
+		liste_sirasi[x["id"]] = assets.size()
 		assets[x["id"]] = x
 	for x in _read(dir + "esma.json")["esma"]:
 		esma[x["id"]] = x
@@ -78,9 +87,10 @@ func _index() -> void:
 							_add(surekli_by_key, key, id)
 						_:
 							_add(by_key, key, id)
-	# Aynı tetikleyiciyi paylaşanlar: önce birinci item'lar, sonra "ikinci item".
+	# Aynı tetikleyiciyi paylaşanlar: önce birinci item'lar, sonra "ikinci item";
+	# eşitlikte liste sırası. sort_custom kararlı değildir, sıra açıkça verilir.
 	for key in by_key:
-		by_key[key].sort_custom(func(x, y): return sira(x) < sira(y))
+		by_key[key].sort_custom(_once_gelir)
 
 
 func _add(d: Dictionary, key: String, id: String) -> void:
@@ -110,6 +120,17 @@ static func trigger_keys(t: Dictionary) -> Array[String]:
 			key += "@" + str(t["kosul"])
 		out.append(key)
 	return out
+
+
+func _once_gelir(x: String, y: String) -> bool:
+	if sira(x) != sira(y):
+		return sira(x) < sira(y)
+	return int(liste_sirasi[x]) < int(liste_sirasi[y])
+
+
+## Ömür boyu toplamla bir kez verilen, tekrarlanmayan asset mi (Tûbâ, ırmaklar)?
+func tekrarsiz(asset_id: String) -> bool:
+	return assets[asset_id]["tetikleyici"]["kural"] == "toplam"
 
 
 ## 1: tetikleyicinin ilk item'ı, 2: "ikinci item" notlu olan.

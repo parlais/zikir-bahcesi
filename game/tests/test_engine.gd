@@ -138,3 +138,99 @@ func test_oturum_acilisi_bismillah() -> void:
 	var e := _yeni()
 	var o := e.say("bismillah", 1, {"oturum_acilisi": true})
 	dogru(olay_var(o, "tamamlandi", {"asset": "bahce_kapisi"}), "Bismillah ile kapı açılır")
+
+
+# --------------------------------------------------------------------------
+# Dört ırmak (K20): istiğfarın ömür boyu toplamıyla, her biri bir kez
+# --------------------------------------------------------------------------
+
+const IRMAKLAR := ["irmak_su", "irmak_sut", "irmak_bal", "irmak_serbet"]
+
+
+## Olay listesinde (tür, asset) olayının yeri; yoksa -1.
+func _yer(olaylar: Array, tur: String, asset: String) -> int:
+	for i in olaylar.size():
+		if olaylar[i]["tur"] == tur and olaylar[i].get("asset") == asset:
+			return i
+	return -1
+
+
+func test_99_istigfarda_irmak_yok() -> void:
+	var e := _yeni()
+	var o := e.say("istigfar", 99)
+	for id in IRMAKLAR:
+		dogru(not olay_var(o, "tamamlandi", {"asset": id}), "99'da ırmak yok: " + id)
+		esit(e.state.adet(id), 0, id + " envanterde yok")
+		dogru(not e.state.tamamlanan.has(id), id + " tamamlanmadı")
+	dogru(not olay_var(o, "tamamlandi", {"asset": "nisan_yagmuru"}), "99'da yağmur da yok")
+
+
+func test_100_istigfarda_once_yagmur_sonra_su_irmagi() -> void:
+	var e := _yeni()
+	e.say("istigfar", 99)
+	var o := e.say("istigfar")
+	var yagmur := _yer(o, "tamamlandi", "nisan_yagmuru")
+	var irmak := _yer(o, "tamamlandi", "irmak_su")
+	dogru(yagmur >= 0, "100'de nisan yağmuru")
+	dogru(irmak >= 0, "100'de su ırmağı")
+	dogru(yagmur < irmak, "önce yağmur, sonra ırmak")
+	dogru(olay_var(o, "tamamlandi", {"asset": "irmak_su", "adet": 1}), "su ırmağı envantere 1 olarak girer")
+	dogru(not olay_var(o, "asama"), "tek aşamalı ırmak aşama olayı üretmez")
+	esit(e.state.tamamlanan.get("irmak_su", 0), 1, "su ırmağı tamamlandı")
+	esit(e.state.adet("irmak_sut"), 0, "100'de süt ırmağı yok")
+
+
+func test_200_istigfarda_ikinci_yagmur_irmak_tekrarlanmaz() -> void:
+	var e := _yeni()
+	e.say("istigfar", 100)
+	var o := e.say("istigfar", 100)
+	dogru(olay_var(o, "tamamlandi", {"asset": "nisan_yagmuru", "adet": 2}), "200'de ikinci yağmur")
+	dogru(not olay_var(o, "tamamlandi", {"asset": "irmak_su"}), "su ırmağı yeniden gelmez")
+	esit(e.state.adet("nisan_yagmuru"), 2, "iki yağmur")
+	esit(e.state.adet("irmak_su"), 1, "su ırmağı hâlâ 1")
+	esit(e.state.tamamlanan.get("irmak_su", 0), 1, "su ırmağının tamamlanması hâlâ 1")
+
+
+func test_300_istigfarda_sut_irmagi() -> void:
+	var e := _yeni()
+	var o := e.say("istigfar", 299)
+	dogru(not olay_var(o, "tamamlandi", {"asset": "irmak_sut"}), "299'da süt ırmağı yok")
+	o = e.say("istigfar")
+	dogru(olay_var(o, "tamamlandi", {"asset": "irmak_sut", "adet": 1}), "300'de süt ırmağı")
+	dogru(_yer(o, "tamamlandi", "nisan_yagmuru") < _yer(o, "tamamlandi", "irmak_sut"), "önce yağmur")
+	esit(e.state.adet("irmak_bal"), 0, "300'de bal ırmağı yok")
+
+
+func test_1000_istigfarda_dort_irmak_acik() -> void:
+	var e := _yeni()
+	var o := e.say("istigfar", 999)
+	dogru(olay_var(o, "tamamlandi", {"asset": "irmak_bal"}), "700'de bal ırmağı")
+	dogru(not olay_var(o, "tamamlandi", {"asset": "irmak_serbet"}), "999'da şerbet ırmağı yok")
+	o = e.say("istigfar")
+	dogru(olay_var(o, "tamamlandi", {"asset": "irmak_serbet"}), "1000'de şerbet ırmağı")
+	for id in IRMAKLAR:
+		esit(e.state.tamamlanan.get(id, 0), 1, id + " açık")
+		esit(e.state.adet(id), 1, id + " envanterde 1")
+	esit(e.state.adet("nisan_yagmuru"), 10, "on yağmur")
+
+
+func test_5000_istigfarda_her_irmak_hala_bir() -> void:
+	var e := _yeni()
+	e.say("istigfar", 1000)
+	var o := e.say("istigfar", 4000)
+	for id in IRMAKLAR:
+		dogru(not olay_var(o, "tamamlandi", {"asset": id}), id + " yeniden gelmez")
+		esit(e.state.tamamlanan.get(id, 0), 1, id + " tamamlanması 1")
+		esit(e.state.adet(id), 1, id + " envanterde 1")
+	esit(e.state.adet("nisan_yagmuru"), 50, "yağmur her 100'de tekrarlanır")
+
+
+func test_irmaklar_kayittan_donunce_tekrarlanmaz() -> void:
+	var e := _yeni()
+	e.say("istigfar", 150)
+	var s := GardenState.from_dict(JSON.parse_string(JSON.stringify(e.state.to_dict())))
+	var e2 := ZikirEngine.new(c, s)
+	var o := e2.say("istigfar", 150)
+	dogru(not olay_var(o, "tamamlandi", {"asset": "irmak_su"}), "kayıttan sonra su ırmağı yeniden gelmez")
+	dogru(olay_var(o, "tamamlandi", {"asset": "irmak_sut"}), "300'de süt ırmağı")
+	esit(e2.state.adet("irmak_su"), 1, "su ırmağı hâlâ 1")

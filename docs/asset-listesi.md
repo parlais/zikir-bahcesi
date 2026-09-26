@@ -4,10 +4,11 @@
 
 ## Okuma kılavuzu
 
-Bu liste 144 asset ve 13 tarif ürünü içerir. Her biri mikrofona söylenebilen bir zikir, esma, dua veya sureyle tetiklenir. Namaz, oruç ve ahlaki amellere dayanan karşılıklar ölçülemediği için listede yoktur.
+Bu liste 148 asset ve 13 tarif ürünü içerir. Her biri mikrofona söylenebilen bir zikir, esma, dua veya sureyle tetiklenir. Namaz, oruç ve ahlaki amellere dayanan karşılıklar ölçülemediği için listede yoktur.
 
 - **Adet kuralı:** Esma item'larında eşik, ismin ebced değeridir. Ebcedi 500 ve üzeri olan isimler aile veya grup hedefidir.
 - **Aşama kuralı:** Ağaçlar 4 aşamalıdır: 1 tohum, 10 filiz, 33 fidan, 100 olgun. Çiçekler 3 aşamalıdır: tohum, gonca, açmış.
+- **Tekrar kuralı:** "×100" gibi bir sayı her 100'de yeniden verilir (her 100 istiğfarda bir nisan yağmuru). "Toplamı 100 (bir kez)" ömür boyu toplam sayıdır: sayaç eşiğe ulaşınca asset bir kez verilir, bir daha verilmez (dört ırmak). Tûbâ da ömür boyu toplamla büyür ve bir kez olgunlaşır.
 - **Dayanak kodu:** N = nass (ayet veya hadis), G = gelenek, A = ismin anlamı. Bu sütun item kartındaki "Neden bu?" metninin kaynağıdır.
 - **Öncelik:** MVP ilk sürüm, v2 ilk büyük güncelleme, v3 sonrası.
 - **Sınırlar:** İnsan, melek ve peygamber tasviri yoktur. Allah lafzı ve esmalar yere konan veya üzerine basılan objelerde yer almaz.
@@ -109,7 +110,7 @@ Bu 18 canlının 10'u kuş, 5'i dört ayaklı, 2'si böcek, 1'i balıktır; dör
 
 ## D. Yapılar ve mimari
 
-Bu 45 satır 48 model eder (sur 2, patika 3 parçadır). Su yapıları model fabrikasında kuru üretilir; su yüzeyi A bölümündeki shader'dan gelir.
+Bu 49 satır 48 model eder (sur 2, patika 3 parçadır). Su yapıları model fabrikasında kuru üretilir; su yüzeyi A bölümündeki shader'dan gelir. Dört ırmak (su, süt, bal, şerbet) dünya modelinin (`ZB_dunya_cennet`) parçasıdır; ayrı model dosyaları yoktur, sahne onları oyuncunun durumundan açar. Başta hiçbiri yoktur; istiğfarın ömür boyu toplamı 100, 300, 700 ve 1000'e ulaşınca her biri bir kez gelir (K20). Su ırmağı çağlayanıyla birlikte gelir. Kaynakları Firdevs'tedir (Buhârî, Cihâd 4).
 
 | Asset | Tetikleyici | Dayanak | Tip | Öncelik |
 | --- | --- | --- | --- | --- |
@@ -119,6 +120,10 @@ Bu 45 satır 48 model eder (sur 2, patika 3 parçadır). Su yapıları model fab
 | Köşk | İhlas ×10 | N: Müsned, zayıf rivayet | 3D | MVP |
 | Şadırvan | Ya Kuddûs (170) | A: arınma | 3D | MVP |
 | Âb-ı hayat pınarı | Ya Hayy (18) | A: hayat veren | 3D | MVP |
+| Su ırmağı (çağlayanıyla) | Estağfirullah toplamı 100 (bir kez) | N: Nuh 10-12, istiğfar edene yağmur, bahçeler ve ırmaklar verilir (dünya bağlamında; burada temsil); Muhammed 15, bozulmayan sudan ırmaklar | 3D | MVP |
+| Süt ırmağı | Estağfirullah toplamı 300 (bir kez) | N: Muhammed 15, tadı bozulmayan sütten ırmaklar; Nuh 10-12, istiğfar ve ırmaklar (temsil) | 3D | MVP |
+| Bal ırmağı | Estağfirullah toplamı 700 (bir kez) | N: Muhammed 15, süzme baldan ırmaklar; Nuh 10-12, istiğfar ve ırmaklar (temsil) | 3D | MVP |
+| Şerbet ırmağı | Estağfirullah toplamı 1000 (bir kez) | N: Muhammed 15, içenlere lezzet veren içecekten ırmaklar; adı ve yakut renkli temsili danışma kurulunda (I); Nuh 10-12, istiğfar ve ırmaklar (temsil) | 3D | MVP |
 | Parsel kapısı ve anahtar | Ya Fettâh (489) | A: açan | 3D | MVP |
 | Sur parçaları (düz, köşe) | Tehlil-i kebir ×100 | N: Buhârî-Müslim, o gün şeytandan korunur | 3D | MVP |
 | Bahçe çiti | Ya Mâni' (161) | A: engelleyen | 3D | v2 |
@@ -332,14 +337,14 @@ Mevcut item'lar birleşerek 13 yeni model üretir; hiçbiri yeni zikir gerektirm
 
 > **Revizyon (2026-09-24):** Modeller artık Tripo'da değil, depodaki prosedürel **ZB model fabrikasında** (`tools/model_factory/`) üretilir. Kredi ve plan hesabı kaldırıldı. Ayrıntı: `docs/kararlar.md`.
 
-Toplam 157 asset, büyüme aşamalarıyla birlikte 203 model dosyası eder; MVP bunun 59'udur. Sayılar `game/data/assets.json` içindeki `meta.ozet` alanından gelir ve `tools/content/build_content.py` her çalıştığında yeniden hesaplanır. Önceki Tripo tahmini v2 için 115 diyordu. Aradaki 2'lik fark, harem güvercininin ayrı model değil renk varyantı sayılmasından ve aşama sayılarının artık kuraldan hesaplanmasından gelir.
+Toplam 161 asset, büyüme aşamalarıyla birlikte 203 model dosyası eder; MVP bunun 59'udur. Dört ırmak dünya modelinin parçası olduğu için model dosyası sayısını artırmaz. Sayılar `game/data/assets.json` içindeki `meta.ozet` alanından gelir ve `tools/content/build_content.py` her çalıştığında yeniden hesaplanır. Önceki Tripo tahmini v2 için 115 diyordu. Aradaki 2'lik fark, harem güvercininin ayrı model değil renk varyantı sayılmasından ve aşama sayılarının artık kuraldan hesaplanmasından gelir.
 
 | Sürüm | Asset | Model dosyası |
 | --- | --- | --- |
-| MVP | 40 | 59 |
+| MVP | 44 | 59 |
 | v2 | 87 | 113 |
 | v3 | 30 | 31 |
-| Toplam | 157 | 203 |
+| Toplam | 161 | 203 |
 
 - **Üretim yöntemi:** Her model bir Python fonksiyonudur (`tools/model_factory/models/`). Parametreler koddadır, yani model istenildiği an yeniden üretilebilir, renk veya oran değişikliği tek satırdır. `python3 tools/model_factory/build_all.py` bütün modelleri `game/assets/models/` altına `.glb` olarak yazar.
 - **Stil:** Stilize low-poly, düz gölgeli (flat shading), tek palet. Palet `tools/model_factory/palette.py` içindedir; Osmanlı çini ve bahçe renklerinden seçilmiştir.
@@ -364,3 +369,5 @@ Listedeki ayet ve hadis atıflarının bir kısmı araştırma raporundan, bir k
 - [ ] Ebced adetleri ve Salât-ı Tefriciye gelenek kaynaklıdır. "Gelenek" etiketi ve kapatılabilir ebced modu yeterli mi?
 - [ ] Günlük dildeki sözler (İnşallah, Mâşâallah, Selâmün aleyküm, Cezâkallah) ödüle bağlanabilir mi?
 - [ ] Kıtmir'in köpek olarak bahçede yer alması tüm hedef pazarlarda kabul görür mü?
+- [ ] Nuh 10-12 (istiğfar edene yağmur, mal, evlat, bahçeler ve ırmaklar) dünya hayatıyla ilgili bir vaattir. Oyunda istiğfarın nisan yağmurunu ve cennetin dört ırmağını (Muhammed 15) açması bir temsil olarak kullanılıyor (K20). Bu bağlantı ve kartta "bu bir temsildir" dili uygun mu?
+- [ ] Şerbet ırmağı: Muhammed 15'teki şarap ırmağının çocuk diline uygun adı ve yakut renkli temsili (`docs/mekan-kurgusu.md`, "Danışma kuruluna sorulacaklar"). Kesinleşene kadar "şerbet" adı geçicidir.
