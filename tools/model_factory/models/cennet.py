@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import math
+from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
@@ -39,6 +40,9 @@ ARSA_R = 13.0                # oyuncu arsasının yarıçapı
 YAKIN = (-70.0, -100.0, 70.0, 45.0)   # çimen ızgarası (x0, z0, x1, z1), 1 m adım
 OVA_R = 9000.0               # ovanın uzandığı yarıçap (ötesi pusta kaybolur)
 SELALE_UST = 360.0           # gökten inen çağlayanların başladığı yükseklik (bulutun içi)
+# Kesit (K10): ilk kat bu dikey düzlemde kesilir. İç kameraların (ufuk z=38, arsa z=21)
+# arkasında kalır; içeride kesit hiç görünmez. Dört ırmak da bu düzlemi arsanın iki yanında keser.
+KESME_Z = 60.0
 
 # Dört ırmak: kaynak (gökten inen çağlayanın dibi) ve kontrol noktaları (x, z)
 IRMAKLAR = [
@@ -116,6 +120,74 @@ def _izgara(V, nu, nv, CV, material, W=None) -> Mesh:
     m.NV = _kose_normalleri(V, F)
     m.CV = CV
     return m
+
+
+def _kes(m: Mesh, z0: float):
+    """Mesh'i z = z0 dikey düzleminde ikiye böler: (arka: z <= z0, on: z > z0, cizgi).
+    Düzlemi kesen üçgenler kenarları boyunca bölünür; yeni köşelerin konumu, köşe rengi,
+    normali ve ağırlığı kenar boyunca doğrusal enterpole edilir. Yüzey birebir aynı
+    kalır (iki parçanın birleşimi eski yüzeydir); iki parça kesme çizgisindeki köşeleri
+    paylaşır, aralarında boşluk yoktur. cizgi: kesme çizgisinin x'e göre sıralı (x, y)
+    noktaları (kesit yüzünün üst kenarı). İndeksli mesh ister (CV ve NV verilmiş)."""
+    assert m.CV is not None, "_kes indeksli mesh ister (CV)"
+    V = m.V.astype(np.float64)
+    d = V[:, 2] - z0
+    d = np.where(np.abs(d) < 1e-4, -1e-4, d)          # düzlemdeki köşe arka tarafa sayılır
+    on_k = d > 0
+    yeniV, yeniCV, yeniNV, yeniW = [], [], [], []
+    kenar = {}
+
+    def kes_nokta(a, b):
+        anahtar = (min(a, b), max(a, b))
+        if anahtar not in kenar:
+            t = d[a] / (d[a] - d[b])
+            kenar[anahtar] = len(V) + len(yeniV)
+            yeniV.append(V[a] + (V[b] - V[a]) * t)
+            yeniCV.append(m.CV[a] + (m.CV[b] - m.CV[a]) * t)
+            yeniNV.append(m.NV[a] + (m.NV[b] - m.NV[a]) * t)
+            yeniW.append(m.W[a] + (m.W[b] - m.W[a]) * t)
+        return kenar[anahtar]
+
+    arka_F, arka_C, on_F, on_C = [], [], [], []
+    tf = on_k[m.F]
+    for fi in np.nonzero(tf.any(1) & ~tf.all(1))[0]:
+        f = m.F[fi]
+        s = tf[fi]
+        # Yalnız kalan köşe (tek başına bir tarafta olan) başa alınır, sıra (yön) korunur
+        yalniz = int(np.nonzero(s != (s.sum() >= 2))[0][0])
+        a, b, c = f[yalniz], f[(yalniz + 1) % 3], f[(yalniz + 2) % 3]
+        pab, pac = kes_nokta(a, b), kes_nokta(a, c)
+        uc = [[a, pab, pac]]
+        dort = [[pab, b, c], [pab, c, pac]]
+        if on_k[a]:
+            on_F += uc; on_C += [m.C[fi]]
+            arka_F += dort; arka_C += [m.C[fi]] * 2
+        else:
+            arka_F += uc; arka_C += [m.C[fi]]
+            on_F += dort; on_C += [m.C[fi]] * 2
+    tum_on = tf.all(1)
+    tum_arka = ~tf.any(1)
+    V2 = np.vstack([V, np.asarray(yeniV).reshape(-1, 3)]).astype(np.float32)
+    CV2 = np.vstack([m.CV, np.asarray(yeniCV).reshape(-1, 3)]).astype(np.float32)
+    NV2 = np.vstack([m.NV, np.asarray(yeniNV).reshape(-1, 3)]).astype(np.float32)
+    W2 = np.concatenate([m.W, np.asarray(yeniW, np.float32)]).astype(np.float32)
+
+    def parca(F_eski, C_eski, F_ek, C_ek):
+        F = np.vstack([F_eski, np.asarray(F_ek, np.int64).reshape(-1, 3)])
+        C = np.vstack([C_eski, np.asarray(C_ek, np.float32).reshape(-1, 3)])
+        kullan = np.unique(F)
+        yeni = np.full(len(V2), -1, np.int64)
+        yeni[kullan] = np.arange(len(kullan))
+        p = Mesh(V2[kullan], yeni[F], C.astype(np.float32), m.material, W=W2[kullan])
+        p.NV = NV2[kullan]
+        p.CV = CV2[kullan]
+        return p
+
+    arka = parca(m.F[tum_arka], m.C[tum_arka], arka_F, arka_C)
+    on = parca(m.F[tum_on], m.C[tum_on], on_F, on_C)
+    cizgi = np.asarray(yeniV).reshape(-1, 3)[:, :2] if yeniV else np.zeros((0, 2))
+    cizgi = cizgi[np.argsort(cizgi[:, 0])]
+    return arka, on, cizgi
 
 
 def _yuz_yonu(m: Mesh, yon) -> Mesh:
@@ -303,15 +375,31 @@ def _su_seritleri(irmaklar):
                  np.tile(np.array(renk(ir.ad), np.float32), (len(F), 1)), ir.ad)
         m = _yuz_yonu(m, (0, 1, 0))
         m.NV = np.tile(np.array([0, 1, 0], np.float32), (len(m.V), 1))
+        # İndeksli (kesme düzleminde bölünebilsin); renk ve normal düz olduğu için görünüş aynı
+        m.CV = np.tile(np.array(renk(ir.ad), np.float32), (len(m.V), 1))
         out.append(m)
     return out
 
 
+@lru_cache(maxsize=1)
+def ilk_kat_kesimi():
+    """İlk katın arazisi ve ırmakları, kesme düzleminde (KESME_Z) ikiye bölünmüş hâlde:
+    {"arazi": (arka, on), "irmaklar": [(arka, on), ...], "cizgi": arazinin kesme çizgisi}.
+    İçeride iki parça birlikte görünür (yüzey aynı); kesitte öndekiler gizlenir."""
+    irmaklar = _irmaklar()
+    arka, on, cizgi = _kes(_ova(irmaklar), KESME_Z)
+    ir = [_kes(m, KESME_Z)[:2] for m in _su_seritleri(irmaklar)]
+    return {"arazi": (arka, on), "irmaklar": ir, "cizgi": cizgi}
+
+
 @model("ZB_dunya_cennet")
 def dunya_cennet() -> Node:
-    irmaklar = _irmaklar()
+    k = ilk_kat_kesimi()
     root = Node("ZB_dunya_cennet")
-    root.add(Node("arazi", [_ova(irmaklar)]), Node("irmaklar", _su_seritleri(irmaklar)))
+    # "_on" düğümleri kesme düzleminin önündedir (z > KESME_Z): kesit ve yakınlaşmada gizlenir
+    root.add(Node("arazi", [k["arazi"][0]]), Node("arazi_on", [k["arazi"][1]]),
+             Node("irmaklar", [a for a, _ in k["irmaklar"]]),
+             Node("irmaklar_on", [o for _, o in k["irmaklar"] if len(o.F)]))
     return root
 
 
