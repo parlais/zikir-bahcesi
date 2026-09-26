@@ -25,14 +25,14 @@ const AGAC_BUYUT := 1.8
 const MALZEME_TABLOSU := {
 	"mat": ["yuzey", {"puruz": 0.75, "detay": 0.05}, ""],
 	"tas": ["yuzey", {"puruz": 0.5, "detay": 0.12, "detay_olcek": 0.9}, "tas"],
-	"govde": ["yuzey", {"puruz": 0.95, "detay": 0.25, "detay_olcek": 5.0, "agac_buyut": 1.0}, ""],
+	"govde": ["yuzey", {"puruz": 0.95, "detay": 0.25, "detay_olcek": 5.0}, ""],
 	"metal": ["yuzey", {"puruz": 0.32, "metal": 0.85, "detay": 0.0}, "altin"],
 	"altin": ["yuzey", {"puruz": 0.3, "metal": 0.9, "detay": 0.0}, "altin"],
 	"kursun": ["yuzey", {"puruz": 0.45, "metal": 0.6, "detay": 0.05}, ""],
 	"inci": ["yuzey", {"puruz": 0.25, "detay": 0.0}, "inci"],
 	"uzak": ["yuzey", {"puruz": 1.0, "detay": 0.1, "detay_olcek": 0.02}, "uzak"],
 	"zemin": ["zemin", {"spek": 0.03}, "zemin"],
-	"yaprak": ["yaprak", {"spek": 0.03, "agac_buyut": 1.0}, "yaprak"],
+	"yaprak": ["yaprak", {"spek": 0.03}, "yaprak"],
 	"cimen_ot": ["cimen", {"spek": 0.03}, "cimen"],
 	"cicek": ["cicek", {}, "cicek"],
 	"meyve": ["cicek", {"ruzgar": 0.08}, "cicek"],
@@ -50,13 +50,13 @@ const MALZEME_TABLOSU := {
 	"tavan": ["tavan", {}, "tavan"],
 	# Dallanan ağaçlar (K15): kabuk dokusu; "yaprak_*" adları _satir() ile yaprak_kart'a gider.
 	"kabuk": ["kabuk", {"doku": DOKULAR + "kabuk.png", "doku_n": DOKULAR + "kabuk_n.png", "golge_alma": 0.75,
-		"spek": 0.1, "agac_buyut": 1.0}, ""],
+		"spek": 0.1}, ""],
 	# Tûbâ (K17): gümüş-fildişi kabuk hafifçe kendi ışığıyla parlar; yaprak kenarlarındaki
 	# altın-beyaz ışıltı da öyle
 	"kabuk_tuba": ["kabuk", {"doku": DOKULAR + "kabuk_tuba.png", "doku_n": DOKULAR + "kabuk_tuba_n.png",
-		"golge_alma": 0.6, "spek": 0.15, "isima_guc": 0.22, "isima_renk": Color(1.0, 0.93, 0.78), "agac_buyut": 1.0}, ""],
+		"golge_alma": 0.6, "spek": 0.15, "isima_guc": 0.22, "isima_renk": Color(1.0, 0.93, 0.78)}, ""],
 	"yaprak_tuba": ["yaprak_kart", {"doku": DOKULAR + "yaprak_tuba.png", "golge_alma": 0.5, "spek": 0.05,
-		"isima_guc": 0.9, "isima_renk": Color(1.0, 0.88, 0.6), "agac_buyut": 1.0}, "yaprak"],
+		"isima_guc": 0.9, "isima_renk": Color(1.0, 0.88, 0.6)}, "yaprak"],
 	# Kesit (K10, K18): öteki katların zemini (çimen katın tonuyla çarpılır), kesit yüzü
 	# (za'ferân toprak), katın göğü, merdiven şeridi, uzak siluetler
 	"zemin_kesit": ["zemin", {"spek": 0.03, "kose_ton": 1.0}, "zemin"],
@@ -306,15 +306,12 @@ func _satir(ad: String) -> Array:
 	if MALZEME_TABLOSU.has(ad):
 		return MALZEME_TABLOSU[ad]
 	if ad.begins_with("yaprak_"):
-		return ["yaprak_kart", {"doku": DOKULAR + ad + ".png", "golge_alma": 0.5, "spek": 0.05, "agac_buyut": 1.0},
-			"yaprak"]
+		return ["yaprak_kart", {"doku": DOKULAR + ad + ".png", "golge_alma": 0.5, "spek": 0.05}, "yaprak"]
 	if ad.begins_with("kabuk_") or ad.begins_with("yuzey_"):
 		# Dokulu yüzeyler (kabuk, dikim yerinin toprağı): kabuk shader'ı, dokusu adından
 		var satir: Array = MALZEME_TABLOSU["kabuk"].duplicate(true)
 		satir[1]["doku"] = DOKULAR + ad + ".png"
 		satir[1]["doku_n"] = DOKULAR + ad + "_n.png"
-		# Dikim yerinin toprağı (yuzey_*) ağaç değildir: kesitte büyümez
-		satir[1]["agac_buyut"] = 1.0 if ad.begins_with("kabuk_") else 0.0
 		return satir
 	return []
 
@@ -404,9 +401,12 @@ var on_ebeveyn: Node3D
 var kesme_z := INF
 
 
-func coklu(model: String, konumlar: Array, golge := true, parca := 0.0) -> MultiMeshInstance3D:
+## Örnekler parça hücrelerine bölünür; bütün hücreler (MultiMeshInstance3D) döner.
+## agac: kesitte uzakta büyüyen ağaç (K20); büyüyen tepe sınır kutusundan taşmasın diye kırpma payı.
+func coklu(model: String, konumlar: Array, golge := true, parca := 0.0, agac := false) -> Array[MultiMeshInstance3D]:
+	var hucreler: Array[MultiMeshInstance3D] = []
 	if konumlar.is_empty():
-		return null
+		return hucreler
 	var mesh := bitki_mesh(model)
 	var gruplar := {}
 	for i in konumlar.size():
@@ -424,7 +424,6 @@ func coklu(model: String, konumlar: Array, golge := true, parca := 0.0) -> Multi
 	var ozel := PackedColorArray()
 	for i in konumlar.size():
 		ozel.append(Color(rng.randf(), rng.randf(), 0, 0))
-	var ilk: MultiMeshInstance3D
 	for anahtar in gruplar:
 		var sira: Array = gruplar[anahtar]
 		var mm := MultiMesh.new()
@@ -440,10 +439,21 @@ func coklu(model: String, konumlar: Array, golge := true, parca := 0.0) -> Multi
 		var mmi := MultiMeshInstance3D.new()
 		mmi.multimesh = mm
 		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if golge else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		if agac:
+			agac_isaretle(mmi)
 		(on_ebeveyn if anahtar.z == 1 else kok).add_child(mmi)
-		if ilk == null:
-			ilk = mmi
-	return ilk
+		hucreler.append(mmi)
+	return hucreler
+
+
+## Ağaç örneği: kesitte uzakta hafifçe büyür (K20). Yalnız ağaçlara verilir; merdivenin
+## sarmaşığı, köşkün ahşabı gibi aynı malzemeyi kullanan yapılar gerçek boyda kalır.
+func agac_isaretle(n: Node) -> void:
+	var liste: Array = [n] if n is GeometryInstance3D else []
+	liste.append_array(n.find_children("*", "GeometryInstance3D", true, false))
+	for g in liste:
+		(g as GeometryInstance3D).set_instance_shader_parameter("agac_buyut", 1.0)
+		(g as GeometryInstance3D).extra_cull_margin = 25.0
 
 
 # --------------------------------------------------------------------------

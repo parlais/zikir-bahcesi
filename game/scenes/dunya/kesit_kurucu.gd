@@ -95,6 +95,8 @@ func _siluetler() -> void:
 		var mmi := MultiMeshInstance3D.new()
 		mmi.multimesh = mm
 		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		# Uzakta büyüyen kartlar (K20) sınır kutusundan taşar
+		mmi.extra_cull_margin = 60.0
 		kok.add_child(mmi)
 
 

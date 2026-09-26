@@ -9,9 +9,12 @@ uniform float ruzgar_hiz = 1.3;
 uniform float isima_guc = 0.0;
 
 // Rüzgâr yaprak ve kabuk shader'larıyla aynı: dallardaki meyveler dallarıyla birlikte salınır.
+instance uniform float agac_buyut = 0.0;   // 1: ağacın meyvesi ya da çiçeği; ağaçla birlikte büyür (K20)
 varying vec3 zb_dunya;
 
 void vertex() {
+	// Kesitte uzak ağaç büyütmesi (K20); içeride etkisiz
+	VERTEX *= mix(1.0, zb_agac_olcek(MODEL_MATRIX[3].xyz, CAMERA_POSITION_WORLD), agac_buyut);
 	zb_dunya = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	vec3 w = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	float t = TIME * ruzgar_hiz;

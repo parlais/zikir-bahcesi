@@ -19,7 +19,7 @@ uniform float isima_guc = 0.0;
 uniform vec3 isima_renk : source_color = vec3(1.0);
 uniform float alfa_uzak = 0.22;       // mipmap seviyesi başına alfa artışı (uzakta taç seyrelmesin)
 
-uniform float agac_buyut = 0.0;   // 1: ağaç malzemesi, kesitte uzakta büyür
+instance uniform float agac_buyut = 0.0;   // 1: ağaç örneği (SahneKurucu), kesitte uzakta büyür
 varying float cesit;
 varying vec3 dunya;
 

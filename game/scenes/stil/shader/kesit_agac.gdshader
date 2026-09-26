@@ -31,8 +31,11 @@ void vertex() {
 		vec4(0.0, length(MODEL_MATRIX[1].xyz), 0.0, 0.0), vec4(0.0, 0.0, length(MODEL_MATRIX[2].xyz), 0.0),
 		vec4(0.0, 0.0, 0.0, 1.0));
 	MODELVIEW_NORMAL_MATRIX = mat3(MODELVIEW_MATRIX);
-	// Uzakta hafifçe büyür, yaklaştıkça gerçek boya döner (K20)
-	VERTEX *= zb_agac_olcek(MODEL_MATRIX[3].xyz, CAMERA_POSITION_WORLD);
+	// Ağaçlar uzakta hafifçe büyür, yaklaştıkça gerçek boya döner (K20). Yapılar (atlas hücresi
+	// 7 ve sonrası: su köşkü, inci çadır) gerçek boyda kalır: köşkün ırmakla oranı bozulmaz.
+	if (INSTANCE_CUSTOM.g * 16.0 < 6.5) {
+		VERTEX *= zb_agac_olcek(MODEL_MATRIX[3].xyz, CAMERA_POSITION_WORLD);
+	}
 	dunya = (INV_VIEW_MATRIX * MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	cesit = INSTANCE_CUSTOM.r;
 	hucre = floor(INSTANCE_CUSTOM.g * 16.0 + 0.5);

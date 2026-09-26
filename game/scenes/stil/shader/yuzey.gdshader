@@ -11,7 +11,7 @@ uniform float detay_olcek = 1.6;
 uniform vec3 isima : source_color = vec3(0.0);
 uniform float isima_guc = 0.0;
 
-uniform float agac_buyut = 0.0;   // 1: ağaç malzemesi, kesitte uzakta büyür
+instance uniform float agac_buyut = 0.0;   // 1: ağaç örneği (SahneKurucu), kesitte uzakta büyür
 varying vec3 dunya;
 
 void vertex() {

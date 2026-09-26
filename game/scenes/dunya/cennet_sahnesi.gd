@@ -271,10 +271,12 @@ func _kat_kur() -> void:
 func _arsa_kur() -> void:
 	var a: Dictionary = yer["arsa"]
 	var nur_renk := k.yol("parcacik/nur_renk")
-	_nur_isaretleri(k.ornek("ZB_agac_tuba_a%d" % clampi(int(_arg.get("tuba", "1")), 1, 5), a["tuba"]))
+	var tuba := k.ornek("ZB_agac_tuba_a%d" % clampi(int(_arg.get("tuba", "1")), 1, 5), a["tuba"])
+	k.agac_isaretle(tuba)
+	_nur_isaretleri(tuba)
 	k.coklu("ZB_obje_inci_cakil", yer["inci_cakil"], false)
 	for f in a["fidan"]:
-		k.ornek(f[5], f.slice(0, 5))
+		k.agac_isaretle(k.ornek(f[5], f.slice(0, 5)))
 	for c in a["cicek"]:
 		k.ornek("ZB_cicek_lale_a3", c)
 	for p in a["nur_tohumu"]:
@@ -283,22 +285,22 @@ func _arsa_kur() -> void:
 
 
 func _bitkiler_kur() -> void:
-	k.coklu("ZB_agac_sidr_a4", yer["sidr"])
-	k.coklu("ZB_agac_uzum_a4", yer["uzum"])
-	k.coklu("ZB_agac_hurma_a4", yer["hurma"])
-	k.coklu("ZB_agac_talh_a4", yer["talh"])
-	k.coklu("ZB_bitki_nar", yer["nar"])
-	k.coklu("ZB_bitki_selvi", yer["selvi"])
+	k.coklu("ZB_agac_sidr_a4", yer["sidr"], true, 0.0, true)
+	k.coklu("ZB_agac_uzum_a4", yer["uzum"], true, 0.0, true)
+	k.coklu("ZB_agac_hurma_a4", yer["hurma"], true, 0.0, true)
+	k.coklu("ZB_agac_talh_a4", yer["talh"], true, 0.0, true)
+	k.coklu("ZB_bitki_nar", yer["nar"], true, 0.0, true)
+	k.coklu("ZB_bitki_selvi", yer["selvi"], true, 0.0, true)
 	k.coklu("ZB_bitki_gul_cali", yer["gul"])
 	k.coklu("ZB_bitki_lale_tarhi", yer["lale"], false)
-	k.coklu("ZB_bitki_koru_agac", yer["koru"], true, 60.0)
+	k.coklu("ZB_bitki_koru_agac", yer["koru"], true, 60.0, true)
 	# Uzak korular: 700 m'ye kadar dallı hafif ağaç, ötesinde (dikey ekranda birkaç piksel) ufuk ağacı
 	var yakin_uzak := []
 	var ufuk := []
 	for t in yer["uzak_agac"]:
 		(yakin_uzak if Vector2(t[0], t[2]).length() < UFUK_AGACI_MESAFE else ufuk).append(t)
-	k.coklu("ZB_bitki_uzak_agac", yakin_uzak, false, 250.0)
-	k.coklu("ZB_bitki_ufuk_agaci", ufuk, false, 500.0)
+	k.coklu("ZB_bitki_uzak_agac", yakin_uzak, false, 250.0, true)
+	k.coklu("ZB_bitki_ufuk_agaci", ufuk, false, 500.0, true)
 	k.coklu("ZB_bitki_cimen", _cimen_konumlari(), false)
 
 
