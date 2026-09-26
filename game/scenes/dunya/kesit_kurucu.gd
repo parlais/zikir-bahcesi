@@ -146,6 +146,7 @@ func _bulut_denizi() -> void:
 	mat.set_shader_parameter("kabarma", 300.0)
 	mat.set_shader_parameter("olcek", 0.00035)
 	mat.set_shader_parameter("oz_isik", 0.85)
+	mat.set_shader_parameter("kabarcik", 1.0)
 	for a in ["acik", "golge", "isima", "isima_guc"]:
 		k.bagla(mat, "shader_parameter/" + a, k.yol("bulut_denizi/" + a))
 	pm.material = mat

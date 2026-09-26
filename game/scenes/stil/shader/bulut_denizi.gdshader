@@ -12,6 +12,9 @@ uniform float olcek = 0.0012;
 // Kesit (K18): bulut denizi kendi ışığıyla da aydınlanır (güneş arkadan vurunca kameraya bakan
 // yamaçlar gölgede kalıp düz bir alana dönüyordu)
 uniform float oz_isik = 0.0;
+// Kesit (K19): piksel başına kümülüs kabarcıkları; yakınlaşmada yukarıdan bakınca bulut denizi
+// düz bir pembe alan gibi kalmasın. Uzakta ortalama görünüşe söner.
+uniform float kabarcik = 0.0;
 
 varying vec3 dunya;
 varying float yogun;
@@ -47,7 +50,17 @@ void vertex() {
 
 void fragment() {
 	float ince = fbm(vec3(dunya.xz * olcek * 6.0, TIME * 0.02));
-	vec3 c = mix(golge, acik, clamp(yogun * 1.2 + ince * 0.4, 0.0, 1.0));
+	float t = yogun * 1.2 + ince * 0.4;
+	if (kabarcik > 0.0) {
+		// İki ölçekte yuvarlak kabarcıklar, aralarında gölgeli yarıklar
+		vec2 q = dunya.xz * olcek * 14.0;
+		float sonum = 1.0 - smoothstep(0.35, 1.2, length(fwidth(q)));
+		float b1 = smoothstep(0.32, 0.72, fbm(vec3(q, TIME * 0.02)));
+		float b2 = smoothstep(0.3, 0.75, fbm(vec3(q * 3.3 + 7.1, TIME * 0.03)));
+		float kab = mix(0.5, b1 * 0.7 + b2 * 0.3, sonum);
+		t = mix(t, t * 0.75 + (kab - 0.5) * 0.9 + 0.12, kabarcik);
+	}
+	vec3 c = mix(golge, acik, clamp(t, 0.0, 1.0));
 	ALBEDO = c;
 	ROUGHNESS = 1.0;
 	SPECULAR = 0.0;
