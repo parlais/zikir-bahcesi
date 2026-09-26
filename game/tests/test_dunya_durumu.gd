@@ -16,7 +16,8 @@ func _yuvalar(adet := 3) -> DunyaYuvalari:
 	ids.sort()
 	for id in ids:
 		var a: Dictionary = c.assets[id]
-		if a["oncelik"] != "MVP" or not a["tip"] in ["3D", "3D-A"]:
+		# Irmaklar dünya modelinin parçasıdır (ırmak başına düğüm); yuvaları yoktur
+		if a["oncelik"] != "MVP" or not a["tip"] in ["3D", "3D-A"] or id in DunyaDurumu.IRMAKLAR:
 			continue
 		for i in (1 if id in TEKLER else adet):
 			liste.append([float(sira), 0.0, 0.0, 0.0, 1.0, id, sira])

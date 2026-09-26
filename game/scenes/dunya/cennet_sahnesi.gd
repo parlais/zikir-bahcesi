@@ -506,19 +506,19 @@ func _en_cok_zerre() -> int:
 # Boş başlangıç (K20): dünyanın hâli
 # --------------------------------------------------------------------------
 
-## vitrin: dolu bahçe (çekimler, tanıtım). bos: hiç zikir söylenmemiş; yalnız çerçeve.
-## (Oyun kipi DunyaDurumu.hesapla ile gelecek; anahtarlar aynıdır.)
+## Dünyanın hâli DunyaDurumu'ndan (game/core; testli). vitrin: dolu bahçe (çekimler,
+## tanıtım; Tûbâ aşaması --zb-tuba). bos: hiç zikir söylenmemiş, yalnız çerçeve. ilk: açılıştaki
+## ilk Bismillah'tan sonra (nur izi arsayı dolaşır; çakıl sınırı ve kapı gelir).
+## (Oyun kipi DunyaDurumu.hesapla ile, açılma katmanlarıyla gelecek.)
 func _durum_kur(ad: String) -> Dictionary:
-	var d := {"vitrin": true, "tuba": clampi(int(_arg.get("tuba", "1")), 1, 5), "kapi": true, "cakil": true,
-		"irmak": [1.0, 1.0, 1.0, 1.0], "merdiven": true,
-		"yansima": {"cevre": 1.0, "ova": 1.0, "ufuk": 1.0, "cicek": 1.0, "cimen": 1.0}}
+	var d := DunyaDurumu.vitrin()
 	if ad == "bos" or ad == "ilk":
-		d = {"vitrin": false, "tuba": 0, "kapi": false, "cakil": false, "irmak": [0.0, 0.0, 0.0, 0.0],
-			"merdiven": false, "yansima": {"cevre": 0.0, "ova": 0.0, "ufuk": 0.0, "cicek": 0.0, "cimen": 0.0}}
-	# ilk: açılıştaki ilk Bismillah'tan sonra (nur izi arsayı dolaşır, çakıl sınırı ve kapı gelir)
+		d = DunyaDurumu.bos()
 	if ad == "ilk":
 		d["kapi"] = true
 		d["cakil"] = true
+	if d["vitrin"]:
+		d["tuba"] = clampi(int(_arg.get("tuba", "1")), 1, 5)
 	if _arg.has("irmak"):
 		var v := str(_arg["irmak"]).split_floats(",")
 		for i in mini(v.size(), 4):
