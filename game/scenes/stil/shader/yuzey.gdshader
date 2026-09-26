@@ -11,9 +11,12 @@ uniform float detay_olcek = 1.6;
 uniform vec3 isima : source_color = vec3(0.0);
 uniform float isima_guc = 0.0;
 
+uniform float agac_buyut = 0.0;   // 1: ağaç malzemesi, kesitte uzakta büyür
 varying vec3 dunya;
 
 void vertex() {
+	// Kesitte uzak ağaç büyütmesi (K20); içeride etkisiz
+	VERTEX *= mix(1.0, zb_agac_olcek(MODEL_MATRIX[3].xyz, CAMERA_POSITION_WORLD), agac_buyut);
 	dunya = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 

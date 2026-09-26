@@ -66,3 +66,7 @@ zb_kesit_kamera={
 "type": "vec4",
 "value": Vector4(8809, 48194, 360, 0)
 }
+zb_agac_buyut={
+"type": "float",
+"value": 1.8
+}

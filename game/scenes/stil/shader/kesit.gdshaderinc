@@ -15,6 +15,15 @@ global uniform vec3 zb_pus_gok : source_color;
 global uniform vec3 zb_pus_nur : source_color;
 global uniform vec4 zb_pus_aralik;
 global uniform vec4 zb_kesit_kamera;   // kesit kamerasının (y, z), pencere_m: katın pencere derinliği için
+global uniform float zb_agac_buyut;    // kesitte uzak ağaçların en çok büyütmesi (K20)
+
+// Uzak ağaç büyütmesi (K20): dışarıdan bakınca uzak ağaçlar hafifçe büyür (gerçek boyda
+// dikey ekranda 2-4 piksel kalıyorlardı), yaklaştıkça gerçek boya döner. İçeride (zb_kesit
+// = 0) ve 3 km'den yakında tam 1'dir. Ölçek örneğin kökenine (ağacın dibi) göre uygulanır.
+float zb_agac_olcek(vec3 zb_koken, vec3 zb_kam) {
+	float zb_u = smoothstep(3000.0, 20000.0, distance(zb_koken, zb_kam));
+	return 1.0 + (zb_agac_buyut - 1.0) * zb_u * zb_kesit;
+}
 
 // Noktanın katı (0 ilk kat, 7 Firdevs) ve zeminden yüksekliğinin havaya oranı
 vec2 zb_kat(vec3 zb_w) {

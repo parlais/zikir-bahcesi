@@ -18,19 +18,21 @@ extends RefCounted
 const MODELLER := "res://assets/models/"
 const SHADER := "res://scenes/stil/shader/"
 const DOKULAR := "res://assets/dokular/"
+## Kesitte uzak ağaçların en çok büyütmesi (K20): gerçek boyda dikey ekranda 2-4 piksel kalıyorlardı
+const AGAC_BUYUT := 1.8
 
 ## glTF malzeme adı -> [shader, sabit parametreler, profil malzeme anahtarı]
 const MALZEME_TABLOSU := {
 	"mat": ["yuzey", {"puruz": 0.75, "detay": 0.05}, ""],
 	"tas": ["yuzey", {"puruz": 0.5, "detay": 0.12, "detay_olcek": 0.9}, "tas"],
-	"govde": ["yuzey", {"puruz": 0.95, "detay": 0.25, "detay_olcek": 5.0}, ""],
+	"govde": ["yuzey", {"puruz": 0.95, "detay": 0.25, "detay_olcek": 5.0, "agac_buyut": 1.0}, ""],
 	"metal": ["yuzey", {"puruz": 0.32, "metal": 0.85, "detay": 0.0}, "altin"],
 	"altin": ["yuzey", {"puruz": 0.3, "metal": 0.9, "detay": 0.0}, "altin"],
 	"kursun": ["yuzey", {"puruz": 0.45, "metal": 0.6, "detay": 0.05}, ""],
 	"inci": ["yuzey", {"puruz": 0.25, "detay": 0.0}, "inci"],
 	"uzak": ["yuzey", {"puruz": 1.0, "detay": 0.1, "detay_olcek": 0.02}, "uzak"],
 	"zemin": ["zemin", {"spek": 0.03}, "zemin"],
-	"yaprak": ["yaprak", {"spek": 0.03}, "yaprak"],
+	"yaprak": ["yaprak", {"spek": 0.03, "agac_buyut": 1.0}, "yaprak"],
 	"cimen_ot": ["cimen", {"spek": 0.03}, "cimen"],
 	"cicek": ["cicek", {}, "cicek"],
 	"meyve": ["cicek", {"ruzgar": 0.08}, "cicek"],
@@ -48,13 +50,13 @@ const MALZEME_TABLOSU := {
 	"tavan": ["tavan", {}, "tavan"],
 	# Dallanan ağaçlar (K15): kabuk dokusu; "yaprak_*" adları _satir() ile yaprak_kart'a gider.
 	"kabuk": ["kabuk", {"doku": DOKULAR + "kabuk.png", "doku_n": DOKULAR + "kabuk_n.png", "golge_alma": 0.75,
-		"spek": 0.1}, ""],
+		"spek": 0.1, "agac_buyut": 1.0}, ""],
 	# Tûbâ (K17): gümüş-fildişi kabuk hafifçe kendi ışığıyla parlar; yaprak kenarlarındaki
 	# altın-beyaz ışıltı da öyle
 	"kabuk_tuba": ["kabuk", {"doku": DOKULAR + "kabuk_tuba.png", "doku_n": DOKULAR + "kabuk_tuba_n.png",
-		"golge_alma": 0.6, "spek": 0.15, "isima_guc": 0.22, "isima_renk": Color(1.0, 0.93, 0.78)}, ""],
+		"golge_alma": 0.6, "spek": 0.15, "isima_guc": 0.22, "isima_renk": Color(1.0, 0.93, 0.78), "agac_buyut": 1.0}, ""],
 	"yaprak_tuba": ["yaprak_kart", {"doku": DOKULAR + "yaprak_tuba.png", "golge_alma": 0.5, "spek": 0.05,
-		"isima_guc": 0.9, "isima_renk": Color(1.0, 0.88, 0.6)}, "yaprak"],
+		"isima_guc": 0.9, "isima_renk": Color(1.0, 0.88, 0.6), "agac_buyut": 1.0}, "yaprak"],
 	# Kesit (K10, K18): öteki katların zemini (çimen katın tonuyla çarpılır), kesit yüzü
 	# (za'ferân toprak), katın göğü, merdiven şeridi, uzak siluetler
 	"zemin_kesit": ["zemin", {"spek": 0.03, "kose_ton": 1.0}, "zemin"],
@@ -183,6 +185,8 @@ var kesit_dislik := 0.0
 
 func kesit_globalleri() -> void:
 	RenderingServer.global_shader_parameter_set("zb_kesit", kesit_dislik)
+	# Kesitte uzak ağaçların en çok büyütmesi (K20); --zb-ayar="agac_buyut=2" ile denenir
+	RenderingServer.global_shader_parameter_set("zb_agac_buyut", float(profil.get("agac_buyut", AGAC_BUYUT)))
 	if profil.has("kesit_pus"):
 		var kp: Dictionary = profil["kesit_pus"]
 		# Uzak zemin, katın göğünün ufkuna karışır (perdenin altıyla zemin arasında dikiş kalmasın)
@@ -302,12 +306,15 @@ func _satir(ad: String) -> Array:
 	if MALZEME_TABLOSU.has(ad):
 		return MALZEME_TABLOSU[ad]
 	if ad.begins_with("yaprak_"):
-		return ["yaprak_kart", {"doku": DOKULAR + ad + ".png", "golge_alma": 0.5, "spek": 0.05}, "yaprak"]
+		return ["yaprak_kart", {"doku": DOKULAR + ad + ".png", "golge_alma": 0.5, "spek": 0.05, "agac_buyut": 1.0},
+			"yaprak"]
 	if ad.begins_with("kabuk_") or ad.begins_with("yuzey_"):
 		# Dokulu yüzeyler (kabuk, dikim yerinin toprağı): kabuk shader'ı, dokusu adından
 		var satir: Array = MALZEME_TABLOSU["kabuk"].duplicate(true)
 		satir[1]["doku"] = DOKULAR + ad + ".png"
 		satir[1]["doku_n"] = DOKULAR + ad + "_n.png"
+		# Dikim yerinin toprağı (yuzey_*) ağaç değildir: kesitte büyümez
+		satir[1]["agac_buyut"] = 1.0 if ad.begins_with("kabuk_") else 0.0
 		return satir
 	return []
 

@@ -19,10 +19,13 @@ uniform float isima_guc = 0.0;
 uniform vec3 isima_renk : source_color = vec3(1.0);
 uniform float alfa_uzak = 0.22;       // mipmap seviyesi başına alfa artışı (uzakta taç seyrelmesin)
 
+uniform float agac_buyut = 0.0;   // 1: ağaç malzemesi, kesitte uzakta büyür
 varying float cesit;
 varying vec3 dunya;
 
 void vertex() {
+	// Kesitte uzak ağaç büyütmesi (K20); içeride etkisiz
+	VERTEX *= mix(1.0, zb_agac_olcek(MODEL_MATRIX[3].xyz, CAMERA_POSITION_WORLD), agac_buyut);
 	vec3 w = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	float t = TIME * ruzgar_hiz;
 	float s = sin(t + w.x * 0.35 + w.z * 0.22) + 0.4 * sin(t * 2.3 + w.x * 1.7 + w.y);
