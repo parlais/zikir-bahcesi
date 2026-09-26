@@ -10,27 +10,29 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 - Kullanıcı görsel olarak çok titiz; "ultra kaliteli", etkileyici bir sonuç istiyor. Dini hassasiyetler önemli: dayanak, temsil dili ve danışma kurulu teyidi.
 
 ## Okunacak belgeler (sırayla)
-1. `docs/kararlar.md`: bütün kararlar (K1-K18). Özellikle şunlar:
+1. `docs/kararlar.md`: bütün kararlar (K1-K19). Özellikle şunlar:
    - K10 (mekân), K11 (stil), K12 (ışık)
    - K13 (ışık geçişinin tetikleyicisi, sıra, canlılar)
    - K14 (son geri bildirim: "her şey daha detaylı ve gerçekçi")
    - K15 (gerçekçilik ölçütü, CC0 dokular), K16 (her şey zikirle oluşur; ağaç asset'lerinin durumu)
    - K17 (önce MVP ağaçları; Tûbâ tanıdık ama nurlu, ulu hâli arsayı gölgeler)
    - K18 (Tûbâ ve büyüme aşamaları beğenildi; sıradaki iş kesit)
-2. `docs/plan-faz2b.md`: **sıradaki işlerin planı** (K13'te onaylandı). Işık geçişi, çağlayanlar, ağaçlar ve büyüme aşamaları yapıldı. Sırada kesit var; plandaki "Kesit (dış görünüm)" bölümünde şu anki hâli, kodun yerleri ve fikirler yazılı.
+   - K19 (kesit aynı mekânın dıştan görünüşü; katlar Rahmân suresindeki gibi; Firdevs nurlu bahçe)
+2. `docs/plan-faz2b.md`: **sıradaki işlerin planı** (K13'te onaylandı). Işık geçişi, çağlayanlar, ağaçlar, büyüme aşamaları ve kesit yapıldı. Kesitin tasarımı, kodun yerleri ve öğrenilenler plandaki "Kesit (dış görünüm)" bölümünde.
 3. `docs/mekan-kurgusu.md`: cennet mekânının dayanakları (ayet, hadis, Risale-i Nur, Ali Ünal), 28. Söz'deki koni misalinin metni, danışma kurulu soruları.
 4. `docs/plan-faz2a.md`: geçmiş kaydı. En üstteki "Revizyon 2" bölümü, Faz 2a'nın son hâlini anlatır.
 5. `docs/asset-listesi.md`: içeriğin tek kaynağı (157 asset, 99+2 esma, tarifler). `docs/rapor.md`: fizibilite raporu. `docs/stil-karsilastirmasi.md`: ilk (çarbağ) stil karşılaştırması.
 
 ## Dallar
-- **En güncel iş Faz 2b'nin ağaçları, büyüme aşamaları ve Tûbâ'dır** (K15-K18). Bu iş `claude/optimistic-fermi-u1sscb` dalında yapıldı.
+- **En güncel iş kesit ve yakınlaşmadır** (K19, 2026-09-26). Bu iş `claude/eloquent-curie-ai1rcu` dalında yapıldı; kullanıcıya gösterildi, geri bildirim bekleniyor.
+- Ondan önceki iş (ağaçlar, büyüme aşamaları, Tûbâ; K15-K18) `claude/optimistic-fermi-u1sscb` dalındadır.
 - Varsayılan dal `claude/busy-allen-p76wgo`, 2026-09-25'te kullanıcının onayıyla bu dalın son hâline ileri sarıldı (K18). İki dal aynı noktadadır.
 - Işık geçişi ve çağlayanlar daha önce `claude/confident-volta-gmupfz` dalında yapılmıştı.
 - Varsayılan dal yalnızca kullanıcı onaylarsa ilerletilir.
 - Yeni oturum kendi dalında çalışır ve commit'lerini oraya gönderir.
-- Başlarken `git log --oneline -3` çalıştır. Son commit "Oturum devri: Faz 2b MVP ağaçları ve Tûbâ" ya da daha yeni değilse şunu yap: `git fetch origin claude/optimistic-fermi-u1sscb && git merge FETCH_HEAD`.
+- Başlarken `git log --oneline -3` çalıştır. Son commit "Kesit ve yakınlaşma: belgeler ve çekimler (K19)" ya da daha yeni değilse şunu yap: `git fetch origin claude/eloquent-curie-ai1rcu && git merge FETCH_HEAD`.
 
-## Şu anki durum (2026-09-25)
+## Şu anki durum (2026-09-26)
 **Onaylanmış yön:**
 - **Mekân (K10):** Cennet uçsuz bucaksız 8 yatay tabakadır.
   - En üstte Firdevs vardır, ortasında dört ırmağın kaynağı bulunur. Üstte ışık vardır; Arş tasvir edilmez.
@@ -59,13 +61,12 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - `cennet.py`:
     - `ZB_dunya_cennet`: 9 km'lik ova ve dört ırmak
     - `ZB_dunya_selaleler`: gökten inen çağlayanlar
-    - `ZB_dunya_kesit`: 8 tabakanın kesiti
     - yerleşim `game/data/dunya_cennet.json`
   - `cennet_bitkileri.py`: sidr, talh, üzüm (a1-a4), koru, uzak ve ufuk ağacı. Tûbâ (a1-a5) artık `agac_asamalari.py` içinde.
   - `cennet_yapilari.py`: su köşkü, inci çadır, sedir köşesi, selsebil, âb-ı hayat pınarı, inci çakıl, kat merdiveni.
 - **Faz 2a, Godot:**
   - `scenes/ortak/sahne_kurucu.gd` (SahneKurucu: malzeme, çoğaltma, parçacık, ortam).
-  - `scenes/dunya/cennet_sahnesi.tscn`: kameralar `ufuk`, `arsa`, `kesit`; inceleme için `selale` ve `model`.
+  - `scenes/dunya/cennet_sahnesi.tscn`: kameralar `ufuk`, `arsa`, `kesit`, `yakinlasma`; inceleme için `selale` ve `model`.
   - `scenes/dunya/animasyon_stilleri.gd`: profiller `nur`, `sky`, `pixar`, `yagli_boya`.
   - Shader'lar (`scenes/stil/shader/`): `gok_cennet`, `selale`, `tugla`, `tavan`, `bulut_denizi`, `resim_filtresi`.
 - **Faz 2b (2026-09-25):**
@@ -81,13 +82,22 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
     - Ortak parçalar: dikim yeri, türe özgü tohumlar, gerçek yapraklı filizler.
     - Yeni asset'ler: nar, servi ve çınar (a1-a4), Tûbâ (a1-a5; nurlu, ulu hâli arsayı gölgeler).
     - Hurma, sidr, talh ve üzümün tohum ve filiz aşamaları yenilendi.
+- **Kesit ve yakınlaşma (K19, 2026-09-26):** `models/kesit.py`, `scenes/dunya/kesit_kurucu.gd`.
+  - 1. kat içerideki dünyanın gerçek ölçekteki kendisidir (kesme düzlemi z = 60). 2-8. katlar aynı ölçüde, Rahmân 46-76'ya göre karakterli; Firdevs nurlu bahçe.
+  - Kat başına pencere ve içerideki gökle aynı gök perdesi, malzeme başına analitik pus, gerçek modellerden siluet atlası, prosedürel kesit toprağı (za'ferân, misk, inci, yakut), bulut denizi.
+  - `--zb-kamera=yakinlasma`: kesitten arsaya kesintisiz iniş; son kare arsa kamerasıyla aynı.
+  - Bütçe: kesit 0,45 milyon üçgen, 547 çizim çağrısı. Ayrıntılar `plan-faz2b.md` içinde.
 - **Son çekimler (`docs/goruntuler/cennet/`):**
   - `gecis_nur_ori_pano.jpg`: ufuk, arsa ve kesit; t = 0, 0,5, 1
   - `gecis_nur_ori.gif` ve `gecis_nur_ori_serit.jpg`: Nur'dan Ori'ye geçiş
   - `selale_once_sonra.jpg`, `selale_akis_nur.gif`, `selale_akis_ori.gif` ve `selale_telefon_ekrani.jpg` (dikey 720×1280): çağlayanlar
   - `agac_once_sonra.jpg`, `agac_hurma_talh_uzum.jpg`, `agac_sahne_once_sonra.jpg`, `agac_sahne_ori.jpg`: ağaçlar (dikey)
   - `buyume_agaclar.jpg`, `buyume_tuba_arsa.jpg`, `tuba_yakin.jpg`: büyüme aşamaları ve Tûbâ (dikey)
-  - `kesit_dikey_simdi.jpg`: kesitin şu anki hâli, dikey (sıradaki işin başlangıç noktası)
+  - `kesit_once_sonra.jpg`: eski kesit ve yeni kesit (Nur, Ori), dikey
+  - `kesit_yakinlasma.gif`: kesitten arsaya yakınlaşma filmi (Nur, 8 sn)
+  - `kesit_yakinlasma_nur.jpg`, `kesit_yakinlasma_ori.jpg`: yakınlaşmanın anahtar kareleri (dikey)
+  - `kesit_firdevs.jpg`: Firdevs (nurlu bahçe), Nur ve Ori
+  - `kesit_dikey_simdi.jpg`: eski kesit (K18'deki hâli)
   - Eski taslaklar: `karsilastirma_nur_ori.jpg`, `taslak_*.png`
   - Kavram eskizleri: `eskiz_*.png`
 
@@ -98,7 +108,7 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
    - ~~ağaçlar~~ (yapıldı; kullanıcı çok beğendi).
    - ~~MVP ağaçları ve büyüme aşamaları~~ (K17; Tûbâ, çınar, servi, nar; bütün tohum ve filiz aşamaları).
    - Kesitten sonra: zeytin, incir, Toros sediri, defne (v2).
-   - **kesitin derinliği (sıradaki, K18).** Şu anki hâl, kodun yerleri ve fikirler `plan-faz2b.md` "Kesit (dış görünüm)" bölümünde; dikey çekim `docs/goruntuler/cennet/kesit_dikey_simdi.jpg`.
+   - ~~kesitin derinliği~~ (yapıldı, K19; kullanıcının geri bildirimi bekleniyor). İki soru açık: uzak ağaçların boyu, 1. katın seyrekliği (`plan-faz2b.md`).
    - köşk ve çadır: yakın plan ayrıntı eksik
    - kuşlar ve kelebekler (model fabrikasında, K13)
    - K15'teki sıra: ağaçlar, kesit, köşk ve çadır, kuşlar ve kelebekler.
@@ -140,15 +150,19 @@ cd /home/user/zikir-bahcesi/tools/preview && npm install
 ```sh
 python3 tools/content/build_content.py                 # asset listesi -> game/data/*.json
 python3 tools/model_factory/build_all.py [filtre]      # modeller -> game/assets/models/*.glb (+ sahne_carbag.json, dunya_cennet.json)
+python3 tools/model_factory/build_all.py kesit         # kesit katları + dunya_kesit.json, dunya_kesit_agac.bin, siluet atlası
 node tools/preview/contact.mjs [filtre] [çıktı.png] [hücre]   # model kontakt sayfası (hücre boyu, varsayılan 320)
 godot --headless --path game --import                  # içe aktarım (yeni model/shader sonrası şart)
 godot --headless --path game -s res://tests/run_tests.gd   # testler
 # Geliştirici argümanları (Game autoload): --zb-senaryo=demo|kart --zb-kartsiz=1 --zb-ekran=yol.png --zb-kare=N
 # Stil sahnesi: res://scenes/stil/stil_sahnesi.tscn -- --zb-stil=nur|ghibli|mucevher|gercekci --zb-kamera=portre|sinematik
-# Cennet sahnesi: res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur_ori|nur|sky|pixar|yagli_boya --zb-kamera=ufuk|arsa|kesit|model
+# Cennet sahnesi: res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur_ori|nur|sky|pixar|yagli_boya --zb-kamera=ufuk|arsa|kesit|yakinlasma|model
 #   model: tek modeli arsada inceleme, ör. --zb-model=ZB_agac_hurma_a4 --zb-model-aci=0 (cek.sh ek argümanıyla)
 #   --zb-tuba=1..5: arsadaki Tûbâ'nın aşaması (tohum, filiz, fidan, olgun, ulu)
 #   --zb-kam="x,y,z;hx,hy,hz;fov": kamerayı dosyaya dokunmadan dener (konum; hedef; görüş açısı)
+#   yakinlasma: kesitten arsaya iniş. --zb-yakin=0..1 tek an; --zb-yakin-sure=8 oynatma (sn);
+#   filmde --zb-yakin-bas=0 --zb-yakin-son=1 --zb-film-kare=192
+#   --zb-olcum: ekran görüntüsü anında üçgen, çizim çağrısı ve nesne sayısını yazar
 #   nur_ori (varsayılan): Nur ↔ Ori geçişi. --zb-isik=0..1 ışığı sabitler; --zb-ayar="ortam/parlama/0=0.2;gok/bulut=0.5"
 #   profil değerlerini dosyaya dokunmadan dener; N tuşu geçişi başlatır.
 tools/render/cek.sh nur ufuk 800x450 16 /tmp/nur_ufuk.png   # cennet sahnesi çekimi (lavapipe; ~5 dk, üçü paralel olur)
@@ -156,6 +170,8 @@ tools/render/cek.sh nur_ori arsa 800x450 16 /tmp/a.png --zb-isik=0.5   # ek arg�
 tools/render/dizi.sh ufuk 640x360 /tmp/dizi/ufuk            # Nur -> Ori geçişi kare kare (~5 dk)
 tools/render/film.sh nur_ori selale 640x360 /tmp/film/s --zb-isik=1   # sabit zaman adımlı akış filmi (48 kare, ~4 dk)
 python3 tools/render/pano.py gif /tmp/gecis.gif --gidis-donus /tmp/dizi/ufuk_*.png   # ayrıca: pano, serit
+ZB_SABIT=1 tools/render/cek.sh nur_ori arsa 720x1280 8 /tmp/b.png   # sabit zaman adımı: iki çekim karşılaştırılabilir
+python3 tools/render/pano.py fark /tmp/a.png /tmp/b.png /tmp/fark.png   # ortalama, %99, en büyük fark ve ısı haritası
 ```
 
 ## Kodlama kuralları ve bilinen tuzaklar
@@ -191,4 +207,13 @@ python3 tools/render/pano.py gif /tmp/gecis.gif --gidis-donus /tmp/dizi/ufuk_*.p
 - **Uzak görünüşü değerlendirmek:** Oyun dikey ekranda (720×1280) çalışır. 800×450'lik deneme çekimi dikey ekranın üçte biri kadar ayrıntı gösterir. Uzaktaki ayrıntıyı (çağlayan, kesit) dikey çekimle değerlendir; hareketli öğeler için film çek.
 - **Çekim sürerken dosya değiştirmek:** Godot betik ve shader'ları sahne yüklenirken okur (~30 sn). Bu sürede `.gd` ya da `.gdshader` değiştirme. Çekim sürerken modelleri (`.glb`) yeniden üretme.
 - **Commit:** Mesajlar Türkçe. Her adım ayrı commit, sonra oturumun kendi dalına `git push -u origin <dal>`. PR açma (kullanıcı istemedi). Dünya modelleri büyüktür (toplam ~13 MB); ara denemelerde değil, anlamlı adımlarda commit et.
+- **Kesit (K19):** 1. kat içerideki dünyanın kendisidir; kesme düzlemi `KESME_Z` = 60 (`cennet.py`). Ölçüler, katların karakteri ve yerleşim `models/kesit.py` içindedir.
+  - Kesit ölçüsü, kat ya da kamera değişince hem `build_all.py kesit` hem `build_all.py ZB_dunya_cennet` (kamera anahtarları `dunya_cennet.json`'da) çalıştırılmalı.
+  - Kesit pusu ve ölçüleri global shader uniform'larıyla sürülür (`project.godot` `[shader_globals]`: `zb_kesit`, `zb_kesit_olcu`, `zb_pus_*`). Yeni global orada tanımlanmadan shader'da kullanılırsa malzeme çizilmez.
+  - Include dosyalarındaki (`kesit.gdshaderinc`, `gok_ortak.gdshaderinc`) yerel değişkenler `zb_` önekli olmalı: include edildiği shader'ın uniform'uyla çakışır (`su` shader'ının `derin`'i "cannot convert" hatası verdi).
+  - Yeni bir yüzey shader'ı kesitte görünecekse `kesit.gdshaderinc` eklenir ve fragment'in sonunda `ZB_KESIT_PUS(dünya_konumu)` çağrılır.
+  - İçerideki bulutlar MultiMesh'tir; her küme kameraya göre uzak ve yakın yarıya bölünür. Tek MultiMesh saydam sıralamayı bozar (hale ile bulut).
+  - Yakınlaşmada kesikli profil değerleri (SDFGI, SSR, parıltı kipi) iç profilden alınır (`dis_karistir`); yarıda el değiştirirse ışık sıçrar.
+  - Shader'da `ALPHA` yazmak (1 olsa bile) malzemeyi saydam geçişe atar; derinlik yazmaz, arkasındakiler sıraya göre üstüne çizilebilir. Büyük opak yüzeylerde (perde, tavan) yazılmaz; eriyen tek perde ayrı türdür (`kat_gogu_saydam`).
+- **Bellek:** Kesit ve yakınlaşma sahnesi çekim başına ~3,5 GB kullanır. Dört paralel çekimde biri "Killed" ile ölür; en çok üç paralel.
 - **Kullanıcının yüklediği dosyalar:** Ali Ünal epub'ları ve Sorularla İslamiyet PDF'i depoya konmaz (telif). Bulgular `docs/mekan-kurgusu.md` dosyasına işlendi.

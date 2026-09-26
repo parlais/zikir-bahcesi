@@ -64,9 +64,12 @@ def gif(cikti, dosyalar, sure, bekle, gidis_donus, genislik=None):
     if gidis_donus and len(kareler) > 2:
         kareler += kareler[-2:0:-1]
         sureler += [sure] * (len(kareler) - len(sureler))
-    # Ortak palet: gök geçişlerinde kare kare titreme olmasın
-    ornek = Image.new("RGB", (kareler[0].width, kareler[0].height * 3))
-    for i, k in enumerate([kareler[0], kareler[len(kareler) // 4], kareler[len(kareler) // 2]]):
+    # Ortak palet: gök geçişlerinde kare kare titreme olmasın. Baştan sona dört kare
+    # örneklenir (yakınlaşma filminde son karelerin yeşili paletin dışında kalıyordu).
+    n = len(kareler)
+    secilen = [kareler[round(i * (n - 1) / 3)] for i in range(4)]
+    ornek = Image.new("RGB", (kareler[0].width, kareler[0].height * len(secilen)))
+    for i, k in enumerate(secilen):
         ornek.paste(k, (0, i * kareler[0].height))
     palet = ornek.quantize(colors=255, method=Image.Quantize.MEDIANCUT)
     p_kareler = [k.quantize(palette=palet, dither=Image.Dither.FLOYDSTEINBERG) for k in kareler]

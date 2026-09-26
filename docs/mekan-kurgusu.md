@@ -114,6 +114,9 @@ Metin (web arama özetlerinden; basılı Sözler ile teyit edilecek):
 - Dört ırmağın üst derecelerden çağlayan olarak inmesi (süt ve bal çağlayanı dahil) uygun bir temsil mi?
 - K10: Cenneti uçsuz bucaksız 8 yatay tabaka olarak, dışarıdan da dilimi kesilmiş bir kesit olarak göstermek uygun mu?
 - Firdevs'in yeri: "evsatu'l-cenne" ifadesini "en seçkin" olarak okuyup Firdevs'i en üst tabakaya, dört ırmağın kaynağını da onun ortasına koymak doğru mu? İlgili Tirmizî rivayeti teyit edilecek.
+- K19: Katların karakterini Rahmân 46-76'ya göre ayırmak (alttaki iki cennet koyu ve yabani korulu, üstteki iki cennet açık ve düzenli bahçeli) uygun bir okuma mı? Âyetlerdeki "iki cennet" ile 8 tabaka arasındaki eşleme bir temsildir.
+- K19: Kesit yüzünde toprak katmanları za'ferân, misk, inci ve yakut olarak çizildi (et-Tâc 5/402: misk harç, inci ve yakut). "Toprağı za'ferân" ifadesinin geçtiği rivayet (Tirmizî, Sıfatu'l-Cenne) teyit edilecek.
+- K19: Firdevs'in "nurlu bahçe" olarak (ışıktan ağaçlar, ortada ışıyan kaynak, mavi olmayan ışıktan gök) gösterilmesi uygun mu? Arş tasvir edilmiyor; gökte tek bir ışık noktası konmadı.
 - Ufukta, üst derecelerin üstünde yükselen dev bir Tûbâ ağacı gösterilebilir mi? Oyuncunun kendi Tûbâ'sı arsasında çekirdekten büyür.
 - Asset listesi I bölümündeki maddeler (hafızadan yazılmış dayanaklar, zayıf rivayetler, ebced gibi) hâlâ geçerli.
 

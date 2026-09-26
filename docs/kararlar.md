@@ -214,3 +214,14 @@ K14'teki iki açık soru ve iş sırası kullanıcıya soruldu.
 - Kullanıcı MVP ağaçlarına, büyüme aşamalarına ve Tûbâ'ya baktı: "Güzel olmuş, sıradaki aşamaya geçebiliriz."
 - Sıradaki iş kesitin derinliğidir (K15'teki sıra). Oturum bağlam dolduğu için yeni sohbette devam edecek.
 - Varsayılan dal `claude/busy-allen-p76wgo`, kullanıcının onayıyla bu oturumun dalına (`claude/optimistic-fermi-u1sscb`) ileri sarıldı.
+
+## K19 — Kesit: aynı mekânın dıştan görünüşü; katlar Rahmân suresindeki gibi; Firdevs nurlu bahçe (2026-09-26)
+- **Kullanıcının geri bildirimi:** Önden, 8 bantlı kompozisyon güzel; kalır. Ama kesit kurduğumuz dünyalara uymuyor, eskiz gibi: "uzaklaştırma, yakınlaştırma yapılınca aynı mekân olduğu belli olsun."
+- **Aynı mekân:** Kesitteki 1. kat, içerideki dünyanın (ova, ırmaklar, arsa, Tûbâ) gerçek ölçekteki kendisidir; öteki katlar aynı ölçü ve aynı öğelerle kurulur. Açılışta kesitten arsaya kesintisiz yakınlaşılır.
+- **Katlar (Rahmân 46-76):** Alttaki iki cennet ile üstteki iki cennet ayrışır:
+  - Alt katlar: koyu yeşil, yabani korular (64 "yemyeşil, koyu"), hurma ve nar (68), inci çadırlar (72).
+  - Üst katlar: açık, düzenli meyve bahçeleri, çiçek tarlaları, köşkler. Yukarı çıktıkça çeşit ve ışık artar.
+- **Firdevs (8. kat): nur tabakası, mavi gök yok.** Kullanıcının seçimi "nurlu bahçe":
+  - Zemin görünür ama her şey nurdur: ağaçlar ışıktan siluetler, ortadaki tepede dört ırmağın kaynağı ışır.
+  - Gök mavi değil, ışıktandır. Arş tasvir edilmez; gökte tek bir noktada toplanan ışık ya da ışık sütunu yoktur.
+- Sonuç (yakınlaşma filmi ve dikey çekimler) kullanıcıya gösterilecek.

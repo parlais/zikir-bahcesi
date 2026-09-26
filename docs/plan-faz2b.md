@@ -102,26 +102,50 @@ Bu belge sıradaki işleri toplar.
     - `buyume_agaclar.jpg`: yedi tür, tohumdan olguna
     - `buyume_tuba_arsa.jpg`: arsada Tûbâ'nın beş aşaması
     - `tuba_yakin.jpg`: fidan, olgun, ulu (Nur ve Ori)
-- **Kesit (dış görünüm):** Sıradaki iş (K18).
-  - Şema gibi duruyor. Derinlik, ışık ve her katın farklı karakteri güçlenmeli (Rahmân 46-76: üst katlarda çeşitlilik artar).
-  - Katlar arası merdivenler seçilir olmalı.
-  - **Şu anki hâl, dikey ekranda (`docs/goruntuler/cennet/kesit_dikey_simdi.jpg`):**
-    - 8 eşit bant üst üste dizilmiş.
-    - Tele kamera derinliği yok ediyor: 16,5 km uzaktan, 10,5° görüş açısı.
-    - Her kat birbirinin aynısı; ağaçlar nokta nokta (ufuk ağacı, 100 üçgen).
-    - Merdiven yalnızca bir katta seçiliyor.
-    - Kesit yüzü ince pastel çizgilerden ibaret.
-    - Ekranın üstünde ve altında yaklaşık %20'lik boş, pembe bir alan kalıyor.
+- **Kesit (dış görünüm), durum (2026-09-26): yeniden yapıldı (K18, K19); kullanıcıya gösterilecek.**
+  - **Önceki hâl** (`docs/goruntuler/cennet/kesit_dikey_simdi.jpg`): 8 eşit, birbirinin aynı bant; ağaçlar nokta nokta, kesit yüzü ince pastel çizgiler, üstte ve altta boş pembe alan. İçerideki dünyayla ilgisi yoktu (eskiz).
+  - **Kullanıcının kararları (K19):**
+    - Önden, 8 bantlı kompozisyon kalır.
+    - Katlar Rahmân suresindeki gibi (46-76): alttaki iki cennet ile üstteki iki cennet ayrışır.
+    - En üst kat Firdevs nur tabakasıdır: mavi gök yok. Seçim "nurlu bahçe": zemin görünür, ağaçlar ışıktan siluetler, ortada dört ırmağın kaynağı ışır; Arş tasvir edilmez, gökte tek bir ışık noktası yok.
+    - Kesit içerideki dünyanın kendisi olmalı: uzaklaşınca ve yakınlaşınca aynı mekân olduğu belli olmalı.
+  - **Tasarım** (üç öneri ve hakem, ultracode; notlar oturum çalışma alanındaydı, özeti burada):
+    - **Gerçek ölçek, tek sahne.** 1. kat, içerideki dünyanın (ZB_dunya_cennet) kendisidir. Kesme düzlemi z = 60'ta arazi ve ırmaklar ikiye bölünür (`arazi_on`, `irmaklar_on`); kesitte önü gizlenir. Arsa, Tûbâ, köşk ve korular yerindedir.
+    - Ölçüler: `KAT_H` 1000 m (zeminden zemine), `KAT_T` 200 m dilim, `KAT_HAVA` 800 m (içerideki bulutların en yükseği 725 m). Firdevs zemini 7000 m, ortasında 250 m'lik tepe (Buhârî, Cihâd 4: "ortası ve en yükseği").
+    - **Pencere ve perde:** Her katın zemini yalnız okunur derinliğe kadar kurulur: `pencere(k)` = 2000 m (1. kat) ... 9000 m (Firdevs). Arkasında o katın göğü olan bir perde durur (`kat_gogu`). Perde içerideki göğün aynısını çizer (`gok_ortak.gdshaderinc`, `gok_cennet` ile ortak kod). Gök, katın havasına konmuş sanal bir gözden görülür: göz perdenin 440 m önünde, zemin hizasındadır; perdede 0-440 m, 0-45° bakışa eşlenir, her bantta ufuk ışığı, gök ve bulutlar görünür. Tavanlar (`kat_tavani`) aynı gözden görülür ve perdenin üst kenarından dikişsiz devam eder (bakış yüksekliği ~61°'de sınırlı). Yakınlaşmada ikisi de gerçek bakış yönüne döner: içeriden bakana göğün kendisi.
+    - **Pus:** Malzeme başına analitik pus (`kesit.gdshaderinc`, `ZB_KESIT_PUS`): pencereye göre derinlik oranıyla, yukarı katlarda nura karışarak. Global uniform'larla sürülür (`zb_kesit`, `zb_kesit_olcu`, `zb_pus_*`); içeride `zb_kesit` = 0'dır ve etkisizdir. Hacim sisi ve güçlü parıltı kullanılmaz.
+    - **Katların karakteri (Rahmân 46-76, `KARAKTERLER`):**
+      - 2-3. kat (alttaki iki cennet): koyu, yabani korular, hurma ve nar (Rahmân 64 "yemyeşil, koyu"; 68), inci çadır obaları (72).
+      - 4-7. kat (üstteki cennetler): açık, düzenli meyve bahçeleri; çınar, servi, sidr; çiçek tarlaları; ırmak kıyısında köşkler (Zümer 20). Yukarı çıktıkça çeşit, ışık ve incelik artar (`isik` = (k/7)^1,4).
+      - Firdevs (8. kat): seyrek, düzenli nur ağaçları (~370): dört ırmağın kıyılarında kaynaktan açılan çınar ve servi sıraları, kaynağın çevresinde halka, arkada seyrek sidrler. Kaynakta yere yakın 700 m'lik hale ve yükselen zerreler; ışık sütunu yok.
+    - **Uzak ağaçlar:** Gerçek modellerden çizilen siluet kartları (`mf/siluet.py`, 3×3 atlas `kesit_siluet.png`), kat başına bir MultiMesh, Y ekseninde kameraya döner. Boyları gerçektir: kesitte 2-4 piksel.
+    - **Irmaklar ve çağlayanlar:** Her katta dört ırmak aynı sırayla kesme düzlemini geçer (bal, su, süt, şerbet); uzaktan kendi ışığıyla parlar (`su` shader'ı, `zb_kesit`). Çağlayanlar katın bulut kuşağından iner.
+    - **Merdivenler:** Katlar arası zikzak yol. İçeride gerçek merdiven modeli; kesitte devamı ekranda en az 4 piksel genişliğe açılan bir şerit (`kesit_serit`), mermer orta, çiçekli kenarlar.
+    - **Kesit yüzü:** Prosedürel toprak dokusu (`kesit_toprak`, normal haritalı): çim kökleri, koyu üst toprak, za'ferân, misk damarı, inci (sedef), yakut ve altın damarlar (et-Tâc 5/402: misk harç, inci ve yakut; "toprağı za'ferân" aynı rivayetin Tirmizî lafzında, danışma kurulunca teyit edilecek). Üst katlarda açılır, nur damarları artar.
+    - **Bulutlar:** İçeridekiyle aynı kural (`_bulut_kumesi`), MultiMesh (`bulut_kart.gdshader`). İçeride her küme kameraya göre uzak ve yakın yarıya bölünür (saydam sıralama). En altta bulut denizi (`bulut_denizi`, kendi ışığıyla).
+    - **Arsa işareti:** Tûbâ çekirdeğinin yerinde ekranda sabit boylu yumuşak nur: "buradasın". Yakınlaşmada söner.
+  - **Yakınlaşma (`--zb-kamera=yakinlasma`):** Kesitten arsaya kesintisiz iniş.
+    - Anahtar kareler `cennet.py` `kameralar/yakinlasma` (kesit kamerası ... arsa kamerası). Kamera arsaya uzaklığın logaritmasıyla ilerler (ekranda sabit algılanan hız); yön ve hedef Catmull-Rom, görüş açısı log-tan ile karışır.
+    - Dışarılık `d` (1 kesit, 0 içeride) kameranın arsaya uzaklığından hesaplanır (6 km ile 80 m arası, log): ileride oyuncu elle yakınlaştırsa da çalışır.
+    - Işık `IsikKaristirici.dis_karistir(iç, kesit, d)`: sürekli değerler karışır, sis yoğunluğu logaritmik; kesikli değerler (SDFGI, SSR, parıltı kipi) hep içeriden alınır, ortamın yapısı değişmez.
+    - Kamera kesme düzlemini geçince önü görünür; 1. katın havasına girince kesit katmanı gizlenir (o an tavan göğün aynısıdır). 1. katın perdesi yaklaştıkça bant kipinden bakış yönüne döner, sonra erir; ardında içerideki gök ve ova vardır.
+    - Tek kare: `--zb-yakin=0.5`; film: `film.sh nur_ori yakinlasma 360x640 /yol --zb-yakin-bas=0 --zb-yakin-son=1 --zb-film-kare=192`; oynatma: `--zb-yakin-sure=8`.
   - **Kod:**
-    - `tools/model_factory/models/cennet.py`: `dunya_kesit` ve `_kesit_*` fonksiyonları (zemin, dilim, arka perde, ırmaklar, çağlayanlar, merdivenler, köşkler), sabitler `KAT`, `KAT_H`, `KAT_T`, `KESIT_X`, `KESIT_Z`.
-    - Yerleşim `game/data/dunya_cennet.json` içinde (`kesit`; kamera `kameralar/kesit`).
-    - Godot: `cennet_sahnesi.gd` `_kesit_kur()`. Profillerin `kesit` alt sözlükleri `animasyon_stilleri.gd` içinde.
-  - **Fikirler (kullanıcıya henüz sorulmadı):**
-    - Perspektifli ve hafif yukarıdan bakan bir kamera, katlar arasında atmosferik derinlik (pus).
-    - Her katın kendi karakteri; yukarı çıktıkça çeşitlilik ve incelik artar.
-    - Seçilebilir merdivenler, kesit yüzünde katman ve kök ayrıntısı.
-    - Dikey kadraja göre kompozisyon: boş alanlar yerine bulut denizi ve nur.
-    - K16'ya göre katlardaki her şey zikirle oluşur. Öteki katlarda ne görüneceği (dolu bahçeler mi, arkadaş bahçeleri mi; 28. Söz'deki beraberlik) kullanıcıya sorulabilir.
+    - Model fabrikası: `models/kesit.py` (ölçüler, katların karakteri ve verisi `kat_dunyasi(k)`, modeller `ZB_kesit_kat1..7`, `ZB_kesit_firdevs`, yerleşim `game/data/dunya_kesit.json` ve `dunya_kesit_agac.bin`), `mf/siluet.py`, `mf/doku.py` `kesit_toprak`; `cennet.py` `KESME_Z`, `KESIT_KAMERA`, `_kes`.
+    - Godot: `scenes/dunya/kesit_kurucu.gd` (KesitKurucu), `cennet_sahnesi.gd` `_kesit_kur`, `_yakin_*`; shader'lar `kesit.gdshaderinc`, `gok_ortak.gdshaderinc`, `kat_gogu`, `kesit_yuzu`, `kesit_agac`, `kesit_serit`, `bulut_kart`.
+    - Profiller: `kesit` alt sözlükleri (`animasyon_stilleri.gd`), `kesit_pus`, `bulut_denizi`, `kat_gok` (içerideki `gok`'un kopyası).
+  - **Bütçe (ölçüm `--zb-olcum`, 720×1280):** kesit 0,45 milyon üçgen, 547 çizim çağrısı (önceki 0,28 milyon / 360). Yakınlaşmanın son karesi arsa kamerasıyla aynı: 1,62 milyon üçgen, 351 çizim çağrısı (kesit katmanı içeride tamamen gizli). İçeride bulutlar MultiMesh'e geçti: ufukta 465 → 295 çizim çağrısı.
+  - **Öğrenilenler:**
+    - Gerçek ölçekte tele kamera her katın zeminini kilometrelerce derin görür; bantların göğü kaybolur. Çözüm kat başına pencere ve perde.
+    - Include dosyalarındaki yerel değişkenler `zb_` önekli olmalı: `su` shader'ının `derin` uniform'u ile çakışıp "cannot convert" hatası verdi.
+    - İçerideki bulutları tek MultiMesh yapmak saydam sıralamayı bozdu (merdiven ucundaki bulut hale ile soldu). Her küme kameraya göre iki yarıya bölündü.
+    - Yakınlaşmada kesikli değerler yarıda el değiştirirse (SDFGI) ışık sıçrar; iç profilden alınır.
+    - Yüksekten bakınca iç sis ovayı süt beyazına boğar; içeri geçiş ancak yere yaklaşınca tamamlanır.
+    - Perde ve tavan `ALPHA` yazınca saydam geçişe düştü, derinlik yazmadı: üst katın ağaç siluetleri tavanın üstünde benek benek göründü. Yalnız eriyen ilk kat perdesi saydam.
+    - Gök fonksiyonunun başucu içeriden hiç görülmez ve koyudur (Ori'de lacivert). Tavanın bakış yüksekliği perdenin üst kenarındakiyle (~61°) sınırlı.
+  - **Çekimler (`docs/goruntuler/cennet/`, dikey):** `kesit_once_sonra.jpg` (eski, yeni Nur, yeni Ori), `kesit_yakinlasma.gif` (Nur, 8 sn), `kesit_yakinlasma_nur.jpg` ve `kesit_yakinlasma_ori.jpg` (anahtar kareler), `kesit_firdevs.jpg`.
+    - Yakınlaşmanın son karesi arsa kamerasıyla karşılaştırıldı (`pano.py fark`): kadraj ve öğeler aynı; fark rüzgâr, zerre ve çağlayanın akışı (ortalama 3,3/255).
+  - **Kullanıcıya sorulacaklar:** Uzak ağaçlar gerçek boyda (2-4 piksel) mı kalsın, uzakta hafifçe büyütülüp yaklaşınca gerçek boya mı dönsün? 1. kat öteki katlardan seyrek; uzak korular eklensin mi (içerideki görünüşü de değiştirir)?
 - **Modeller:**
   - Ağaçlar lolipop gibi; taç ve dal ayrıntısı ister.
   - Köşk ve çadırda yakın plan ayrıntısı eksik.
