@@ -78,3 +78,7 @@ zb_ova_cicek={
 "type": "vec2",
 "value": Vector2(1, 100000)
 }
+zb_dalga={
+"type": "vec4",
+"value": Vector4(0, 0, 0, 0)
+}

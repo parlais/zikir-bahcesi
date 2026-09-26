@@ -8,6 +8,7 @@ extends Node3D
 ##   --zb-durum=vitrin | bos | ilk (K20): vitrin dolu bahçe (varsayılan; çekimler), bos yeni oyuncunun
 ##     gördüğü: yalnız çerçeve (ışık, gök, bulutlar, nur zerreleri, ova, arsanın çimeni,
 ##     süzülen Tûbâ çekirdeği). --zb-irmak=1,0,0,0 ırmakları (su, süt, bal, şerbet) tek tek açar.
+##   --zb-dalga=4: her 4 sn'de bir sabâ halkası (oyunda her sayımda; film için)
 ##   yakinlasma (K18): kesitten arsaya kesintisiz iniş (aynı mekân). --zb-yakin=0.4 tek bir an;
 ##     --zb-yakin-sure=8 (sn, oynatma); filmde --zb-yakin-bas=0 --zb-yakin-son=1 (film.sh ile)
 ##   model: tek bir modeli arsanın ortasında inceleme (K15). --zb-model=ZB_bitki_koru_agac
@@ -78,6 +79,10 @@ const ARSA_R := 13.0
 ## Kapalı ırmak ve çağlayan düğümleri gizli bir tutucuya taşınır (kesitin ve yakınlaşmanın
 ## görünürlük ayarları onlara dokunmaz)
 var _kapali: Node3D
+## Sabâ halkası (K20): her zikirde çekirdekten ovaya yayılan halkanın yaşı (sn; < 0 yok)
+var _saba_yas := -1.0
+const SABA_HIZ := 15.0
+const SABA_SURE := 6.0
 
 
 func _ready() -> void:
@@ -101,6 +106,8 @@ func _ready() -> void:
 		if _arg.has("isik"):
 			gecis.zorla(float(_arg["isik"]))
 		Game.olay.connect(gecis.olay)
+	# Her sayımda sabâ halkası (boş dünya da her zikre görünür bir karşılık verir)
+	Game.durum_degisti.connect(_saba)
 	yer = JSON.parse_string(FileAccess.get_file_as_string(YERLESIM))
 	durum = _durum_kur(_arg.get("durum", "vitrin"))
 	if _yakin:
@@ -145,6 +152,7 @@ func _profil_hesapla(t: float) -> Dictionary:
 
 
 func _process(dt: float) -> void:
+	_saba_ilerle(dt)
 	if _yakin and not _arg.has("yakin") and not _arg.has("film"):
 		_yakin_uygula(minf(_u + dt / float(_arg.get("yakin-sure", "8")), 1.0))
 	if gecis == null:
@@ -516,6 +524,28 @@ func _durum_kur(ad: String) -> Dictionary:
 		for i in mini(v.size(), 4):
 			d["irmak"][i] = clampf(v[i], 0.0, 1.0)
 	return d
+
+
+## Sabâ halkası başlar (art arda sayımda halka yeniden doğar; çok sık değil)
+func _saba() -> void:
+	if _saba_yas < 0.0 or _saba_yas > 0.8:
+		_saba_yas = 0.0
+
+
+func _saba_ilerle(dt: float) -> void:
+	# Geliştirme: --zb-dalga=4 her 4 sn'de bir halka (film için)
+	if _arg.has("dalga"):
+		var p := float(_arg["dalga"])
+		if _saba_yas < 0.0 or _saba_yas >= p:
+			_saba_yas = 0.0
+	if _saba_yas < 0.0:
+		return
+	_saba_yas += dt
+	var guc := smoothstep(0.0, 0.3, _saba_yas) * (1.0 - smoothstep(SABA_SURE * 0.5, SABA_SURE, _saba_yas))
+	RenderingServer.global_shader_parameter_set("zb_dalga", Vector4(0.0, 0.0, _saba_yas * SABA_HIZ, guc))
+	if _saba_yas >= SABA_SURE:
+		_saba_yas = -1.0
+		RenderingServer.global_shader_parameter_set("zb_dalga", Vector4.ZERO)
 
 
 func _irmak_acik(i: int) -> bool:

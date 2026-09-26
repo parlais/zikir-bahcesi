@@ -3,6 +3,7 @@ shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_back;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
 #include "res://scenes/stil/shader/kesit.gdshaderinc"
+#include "res://scenes/stil/shader/cayir.gdshaderinc"
 
 uniform vec3 cimen_acik : source_color = vec3(0.55, 0.72, 0.32);
 uniform vec3 cimen_koyu : source_color = vec3(0.22, 0.42, 0.2);
@@ -81,12 +82,12 @@ void fragment() {
 	c = mix(kose, c, cim);
 	// Rüzgâr dalgası: rüzgâr yönünde yavaşça kayan, kenarları yumuşak açık bantlar (çimen
 	// yatınca daha çok ışık yansır); uzakta desen söner, ortalama kalır
-	vec2 zb_rz = vec2(0.8, -0.6);
-	float zb_yol = dot(dunya.xz, zb_rz) * 0.028 - TIME * 0.35 + zb_fbm(dunya * 0.006) * 5.0;
-	float zb_dalga = smoothstep(0.35, 1.0, sin(zb_yol)) * smoothstep(0.3, 0.7, zb_fbm(dunya * 0.012 + vec3(TIME * 0.01, 0.0, 0.0)));
 	float zb_uzak = smoothstep(0.6, 3.0, length(fwidth(dunya.xz)));
-	zb_dalga = mix(zb_dalga, 0.18, zb_uzak) * cim;
-	c = mix(c, c * 1.16 + vec3(0.025, 0.03, 0.0), zb_dalga * ruzgar_dalga);
+	float zb_bant = mix(zb_ruzgar_bandi(dunya, TIME), 0.18, zb_uzak) * cim;
+	c = mix(c, c * 1.16 + vec3(0.025, 0.03, 0.0), zb_bant * ruzgar_dalga);
+	// Sabâ halkası: her zikirde çekirdekten yayılan açık, sıcak bir halka
+	float zb_h = zb_halka(dunya.xz) * cim;
+	c = mix(c, c * 1.3 + vec3(0.06, 0.055, 0.02), zb_h);
 	ALBEDO = zb_renk(c);
 	// Kadife: yatık bakışta çimen uçlarının yumuşak parıltısı
 	float zb_yatik = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0);

@@ -3,6 +3,7 @@ shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_disabled;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
 #include "res://scenes/stil/shader/kesit.gdshaderinc"
+#include "res://scenes/stil/shader/cayir.gdshaderinc"
 
 uniform vec3 dip : source_color = vec3(0.16, 0.34, 0.14);
 uniform vec3 uc : source_color = vec3(0.62, 0.8, 0.36);
@@ -20,6 +21,12 @@ void vertex() {
 	float dalga = sin(TIME * ruzgar_hiz + w.x * 0.25 + w.z * 0.18) * 0.7 + sin(TIME * 3.1 + w.x * 1.3) * 0.3;
 	VERTEX.x += dalga * ruzgar * COLOR.a * COLOR.a;
 	VERTEX.z += dalga * ruzgar * 0.5 * COLOR.a * COLOR.a;
+	// Ovanın rüzgâr bandında yatar, sabâ halkasında dışa eğilir (dünya yönü -> yerel; ölçek s:
+	// M^-1 = M^T / s²)
+	vec2 zb_itis = vec2(0.8, -0.6) * zb_ruzgar_bandi(w, TIME) * 0.12;
+	zb_itis += normalize(w.xz - zb_dalga.xy + vec2(1e-3)) * zb_halka(w.xz) * 0.3;
+	mat3 zb_m = mat3(MODEL_MATRIX);
+	VERTEX += transpose(zb_m) * vec3(zb_itis.x, 0.0, zb_itis.y) / dot(zb_m[0], zb_m[0]) * COLOR.a * COLOR.a;
 	NORMAL = normalize(mix(NORMAL, vec3(0.0, 1.0, 0.0), 0.75));
 	boy = COLOR.a;
 	cesit = INSTANCE_CUSTOM.r;
