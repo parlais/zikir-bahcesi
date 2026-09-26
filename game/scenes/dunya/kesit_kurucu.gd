@@ -129,7 +129,8 @@ func _firdevs() -> void:
 		var p := Vector3(kat["kaynak"][0], kat["kaynak"][1], kat["kaynak"][2])
 		# Kaynağın yer seviyesindeki yumuşak ışığı; gökte tek bir ışık noktası konmaz
 		sahne._hale(p + Vector3(0, 30, 0), 700.0, nur_renk, 0.9, true)
-		k.parcacik(260, p + Vector3(0, 250, 0), Vector3(1800, 220, 1200), 16.0, nur_renk, 3.0,
+		# Kaynağın üstünde yavaşça yükselen, ~400 m'de sönen zerreler
+		k.parcacik(140, p + Vector3(0, 150, 0), Vector3(800, 140, 500), 12.0, nur_renk, 3.0,
 			Vector3(0, 6.0, 0), 4.0, 30.0)
 
 

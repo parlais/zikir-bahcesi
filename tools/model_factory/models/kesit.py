@@ -237,6 +237,48 @@ def _cicek_alani(k, x, z):
     return _noise2(np.asarray(x) * 0.7, np.asarray(z) * 0.7, 560 + k, 3) / 1.6
 
 
+def _firdevs_agaclari(irmaklar, rng, bos, derin_max) -> dict:
+    """Firdevs (nurlu bahçe): seyrek ve düzenli, ışıktan ağaçlar (~400). Dört ırmağın iki
+    kıyısında kaynaktan açılan sıralar (çınar ve servi dönüşümlü), kaynağın çevresinde bir
+    halka, arkada seyrek sidrler. Kesitte sıralar ırmakları kaynağa bağlayan ışık çizgileri
+    gibi okunur; ortası ve kaynağı açık kalır."""
+    kx, kz = FIRDEVS_KAYNAK
+    agaclar = {"cinar": [], "selvi": [], "sidr": []}
+    olcek = {"cinar": (1.2, 1.45), "selvi": (1.45, 1.65), "sidr": (1.25, 1.4)}
+
+    def ekle(t, x, z):
+        agaclar[t].append([x, 0.0, z, rng.uniform(0, 360), rng.uniform(*olcek[t])])
+
+    # Irmak kıyısı sıraları: yay uzunluğunca 70 m'de bir, iki yanda
+    for ir in irmaklar:
+        i = 0
+        sira = 0
+        for s_hedef in np.arange(200.0, ir.s[-1] - 30.0, 70.0):
+            i = int(np.searchsorted(ir.s, s_hedef))
+            x, z = ir.P[i]
+            t = "cinar" if sira % 2 == 0 else "selvi"
+            for yan in (-1.0, 1.0):
+                n = ir.N[i] * (ir.a[i] + ir.banka()[i] + 22.0) * yan
+                if bos(x + n[0], z + n[1], 0.0):
+                    ekle(t, x + n[0], z + n[1])
+            sira += 1
+    # Kaynağın çevresinde halka (ırmak ağızları açık kalır)
+    for j in range(18):
+        a = 2 * math.pi * (j + 0.5) / 18
+        x, z = kx + 230.0 * math.sin(a), kz + 230.0 * math.cos(a)
+        if bos(x, z, 30.0):
+            ekle("selvi" if j % 2 else "cinar", x, z)
+    # Arkada ve yanlarda seyrek sidrler (380 m'lik titreşimli ızgara)
+    for x in np.arange(-2600.0, 2601.0, 380.0):
+        for z in np.arange(KESME_Z - 150.0, KESME_Z - derin_max, -380.0):
+            px, pz = x + rng.uniform(-120, 120), z + rng.uniform(-120, 120)
+            if math.hypot(px - kx, pz - kz) < 420.0 or rng.uniform() < 0.35:
+                continue
+            if bos(px, pz, 40.0):
+                ekle("sidr", px, pz)
+    return agaclar
+
+
 @lru_cache(maxsize=None)
 def kat_dunyasi(k: int) -> KatDunyasi:
     """k. katın (1..7) verisi: kesit bunun hafif hâlini çizer; ileride katın içi de
@@ -273,6 +315,9 @@ def kat_dunyasi(k: int) -> KatDunyasi:
     derin_max = pencere(k) + 200.0
     agaclar = {t: [] for t in turler}
     z = KESME_Z - 12.0
+    if kar.grup == "firdevs":
+        agaclar = _firdevs_agaclari(irmaklar, rng, bos, derin_max)
+        z = -1e9
     while KESME_Z - z < derin_max:
         derin = KESME_Z - z
         adim = 26.0 + derin * 0.012
@@ -446,7 +491,8 @@ def _duz(y, z0, z1, x0, x1, malzeme, yon, n=8) -> Mesh:
 
 
 def _perde(k: int, malzeme: str = "kat_gogu") -> Mesh:
-    """Katın göğü (kesme düzleminden PERDE_DERIN geride): ufukta sıcak, yukarıda gök."""
+    """Katın göğü: kesme düzleminden pencere(k) geride dikey perde; kat_gogu shader'ı
+    içerideki göğü çizer."""
     xs = np.linspace(-KABUK_X - 2000, KABUK_X + 2000, 9)
     ys = np.linspace(G(k) - 60.0, G(k) + KAT_HAVA + 5.0, 5)
     X, Y = np.meshgrid(xs, ys)
