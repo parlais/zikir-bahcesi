@@ -468,14 +468,21 @@ def _kesit_yuzu(cizgi: np.ndarray, taban_y: float, k: int) -> Mesh:
     kaysın), COLOR.a = 1."""
     oranlar = np.array([0.0, 0.004, 0.02, 0.06, 0.13, 0.25, 0.42, 0.62, 0.82, 1.0])
     x, yu = cizgi[:, 0], cizgi[:, 1]
-    V, UV = [], []
+    V, UV, OY = [], [], []
+    # 1. katta çizgi ırmak yatağı verisini de taşır (cennet._kes): ırmak kapalıyken yüzün üst
+    # kenarı da düzleşir, derinlikte söner (COLOR.g = oyma / 16 * (1 - oran), COLOR.b =
+    # (ırmak + 1) / 8; ırmak yoksa 0).
+    oyma = cizgi[:, 2] if cizgi.shape[1] >= 4 else np.zeros_like(x)
+    irmak = np.where(cizgi[:, 3] % 1.0 > 0.01, np.floor(cizgi[:, 3]) + 1, 0) if cizgi.shape[1] >= 4 else np.zeros_like(x)
     for o in oranlar:
         y = yu + (taban_y - yu) * o
         V.append(np.stack([x, y, np.full_like(x, KESME_Z)], 1))
         UV.append(np.stack([x / 300.0, np.full_like(x, o)], 1))
+        OY.append(np.stack([np.clip(oyma / 16.0 * (1 - o), 0, 1), irmak / 8.0], 1))
     V = np.vstack(V)
     UV = np.vstack(UV)
-    cv = _lin2srgb(np.tile([k / 8.0, 0.5, 0.5], (len(V), 1)))
+    OY = np.vstack(OY)
+    cv = _lin2srgb(np.column_stack([np.full(len(V), k / 8.0), OY]))
     m = _izgara(V, len(x) - 1, len(oranlar) - 1, cv, "kesit_yuzu")
     m.UV = UV.astype(np.float32)
     m = _yuz_yonu(m, (0, 0, 1))

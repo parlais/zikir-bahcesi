@@ -137,7 +137,7 @@ def _kes(m: Mesh, z0: float):
     d = V[:, 2] - z0
     d = np.where(np.abs(d) < 1e-4, -1e-4, d)          # düzlemdeki köşe arka tarafa sayılır
     on_k = d > 0
-    yeniV, yeniCV, yeniNV, yeniW = [], [], [], []
+    yeniV, yeniCV, yeniNV, yeniW, yeniUV = [], [], [], [], []
     kenar = {}
 
     def kes_nokta(a, b):
@@ -149,6 +149,8 @@ def _kes(m: Mesh, z0: float):
             yeniCV.append(m.CV[a] + (m.CV[b] - m.CV[a]) * t)
             yeniNV.append(m.NV[a] + (m.NV[b] - m.NV[a]) * t)
             yeniW.append(m.W[a] + (m.W[b] - m.W[a]) * t)
+            if m.UV is not None:
+                yeniUV.append(m.UV[a] + (m.UV[b] - m.UV[a]) * t)
         return kenar[anahtar]
 
     arka_F, arka_C, on_F, on_C = [], [], [], []
@@ -174,6 +176,7 @@ def _kes(m: Mesh, z0: float):
     CV2 = np.vstack([m.CV, np.asarray(yeniCV).reshape(-1, 3)]).astype(np.float32)
     NV2 = np.vstack([m.NV, np.asarray(yeniNV).reshape(-1, 3)]).astype(np.float32)
     W2 = np.concatenate([m.W, np.asarray(yeniW, np.float32)]).astype(np.float32)
+    UV2 = None if m.UV is None else np.vstack([m.UV, np.asarray(yeniUV).reshape(-1, 2)]).astype(np.float32)
 
     def parca(F_eski, C_eski, F_ek, C_ek):
         F = np.vstack([F_eski, np.asarray(F_ek, np.int64).reshape(-1, 3)])
@@ -184,11 +187,16 @@ def _kes(m: Mesh, z0: float):
         p = Mesh(V2[kullan], yeni[F], C.astype(np.float32), m.material, W=W2[kullan])
         p.NV = NV2[kullan]
         p.CV = CV2[kullan]
+        if UV2 is not None:
+            p.UV = UV2[kullan]
         return p
 
     arka = parca(m.F[tum_arka], m.C[tum_arka], arka_F, arka_C)
     on = parca(m.F[tum_on], m.C[tum_on], on_F, on_C)
     cizgi = np.asarray(yeniV).reshape(-1, 3)[:, :2] if yeniV else np.zeros((0, 2))
+    if UV2 is not None and yeniV:
+        # Kesit yüzünün üst kenarı da ırmak yatağı verisini taşır: (x, y, oyma, ırmak + bölge)
+        cizgi = np.hstack([cizgi, np.asarray(yeniUV).reshape(-1, 2)])
     cizgi = cizgi[np.argsort(cizgi[:, 0])]
     return arka, on, cizgi
 
@@ -275,6 +283,14 @@ def arazi_y(x, z, irmaklar, W_don=False, ova=None, arsa=True):
         h = np.where(d < a + B, np.minimum(h, hedef), h)
         W = np.minimum(W, _ss(a + 0.25 * B, a + 0.9 * B, d))
         kiyi = np.maximum(kiyi, 1 - _ss(a - 0.5, a + 0.5 * B, d))
+    if arsa:
+        # Arsa ve sınırı oyulmaz (K20): ırmak sonradan açılınca arsanın kenarı ve çakıllar
+        # yerinde kalır; su ırmağının arsaya bakan kıyısı bu bölgede dikleşir.
+        h0 = (ova or ova_y)(X[:, 0], X[:, 1])
+        koru = _ss(ARSA_R + 3.0, ARSA_R + 9.0, np.hypot(X[:, 0], X[:, 1]))
+        h = h0 - (h0 - h) * koru
+        W = 1 - (1 - W) * koru
+        kiyi = kiyi * koru
     if not W_don:
         return h
     dx = np.hypot(X[:, 0], X[:, 1])
@@ -283,6 +299,36 @@ def arazi_y(x, z, irmaklar, W_don=False, ova=None, arsa=True):
     arsa = (1 - _ss(ARSA_R - 2.5, ARSA_R + 1.2, dx + kenar)) if arsa else np.zeros_like(W)
     W = np.minimum(W, 1 - arsa)
     return h, W, kiyi, arsa
+
+
+def irmak_oyma(x, z, irmaklar):
+    """Boş başlangıç (K20): ırmak açılana kadar yatak düz çayırdır. Her nokta için
+    oyma (ova_y - arazi_y, m), en yakın ırmağın indeksi (su, süt, bal, şerbet: 0-3) ve
+    ırmak bölgesi (1: yatak ve kıyı, 0: ırmağın etkisi dışı). Zemin shader'ı ırmak
+    kapalıyken noktayı oyma kadar yükseltir ve bölgeyi çimen yapar."""
+    x = np.asarray(x, float).ravel()
+    z = np.asarray(z, float).ravel()
+    oyma = np.maximum(ova_y(x, z) - arazi_y(x, z, irmaklar), 0.0)
+    X = np.stack([x, z], 1)
+    en_iyi = np.full(len(X), 1e9)
+    k = np.zeros(len(X), int)
+    bolge = np.zeros(len(X))
+    for j, ir in enumerate(irmaklar):
+        d, i = ir.uzaklik(X)
+        sinir = ir.a[i] + ir.banka()[i]
+        pay = d - sinir
+        yeni = pay < en_iyi
+        en_iyi = np.where(yeni, pay, en_iyi)
+        k = np.where(yeni, j, k)
+        bolge = np.where(yeni, 1 - _ss(0.0, 2.0, pay), bolge)
+    bolge = np.where(oyma > 1e-3, 1.0, bolge)
+    return oyma, k, bolge
+
+
+def _oyma_uv(x, z, irmaklar):
+    """Köşe UV'si: x = oyma (m), y = ırmak indeksi + bölge * 0,99."""
+    oyma, k, bolge = irmak_oyma(x, z, irmaklar)
+    return np.stack([oyma, k + 0.99 * bolge], 1).astype(np.float32)
 
 
 # --------------------------------------------------------------------------
@@ -352,6 +398,7 @@ def _ova(irmaklar) -> Mesh:
     m = Mesh(V, F, cv[F].mean(1).astype(np.float32), "zemin", W=W.astype(np.float32))
     m.NV = _kose_normalleri(V, F)
     m.CV = cv.astype(np.float32)
+    m.UV = _oyma_uv(P[:, 0], P[:, 1], irmaklar)
     return m
 
 
@@ -369,9 +416,11 @@ def _su_seritleri(irmaklar):
         L = ir.P[idx] + ir.N[idx] * (ir.a[idx] + 0.9)[:, None]
         R = ir.P[idx] - ir.N[idx] * (ir.a[idx] + 0.9)[:, None]
         y = ir.wl[idx]
-        V = []
+        oran = ir.s[idx] / ir.s[-1]
+        V, UV = [], []
         for k in range(len(idx)):
             V += [[L[k, 0], y[k], L[k, 1]], [R[k, 0], y[k], R[k, 1]]]
+            UV += [[0.0, oran[k]], [1.0, oran[k]]]
         F = []
         for k in range(len(idx) - 1):
             a = 2 * k
@@ -382,6 +431,8 @@ def _su_seritleri(irmaklar):
         m.NV = np.tile(np.array([0, 1, 0], np.float32), (len(m.V), 1))
         # İndeksli (kesme düzleminde bölünebilsin); renk ve normal düz olduğu için görünüş aynı
         m.CV = np.tile(np.array(renk(ir.ad), np.float32), (len(m.V), 1))
+        # UV: x enine (0-1), y kaynaktan yay uzunluğu oranı (ırmak açılırken su akarak dolar)
+        m.UV = np.array(UV, np.float32)
         out.append(m)
     return out
 
@@ -402,9 +453,12 @@ def dunya_cennet() -> Node:
     k = ilk_kat_kesimi()
     root = Node("ZB_dunya_cennet")
     # "_on" düğümleri kesme düzleminin önündedir (z > KESME_Z): kesit ve yakınlaşmada gizlenir
-    root.add(Node("arazi", [k["arazi"][0]]), Node("arazi_on", [k["arazi"][1]]),
-             Node("irmaklar", [a for a, _ in k["irmaklar"]]),
-             Node("irmaklar_on", [o for _, o in k["irmaklar"] if len(o.F)]))
+    root.add(Node("arazi", [k["arazi"][0]]), Node("arazi_on", [k["arazi"][1]]))
+    # Irmak başına düğüm (K20): her ırmak zikirle ayrı açılır
+    for ir, (a, o) in zip(IRMAKLAR, k["irmaklar"]):
+        root.add(Node("irmak_" + ir["ad"], [a]))
+        if len(o.F):
+            root.add(Node("irmak_%s_on" % ir["ad"], [o]))
     return root
 
 
@@ -471,7 +525,9 @@ def dunya_selaleler() -> Node:
         ana.append(a)
         pus.append(p)
     root = Node("ZB_dunya_selaleler")
-    root.add(merge(*pus), merge(*ana))
+    # Irmak başına düğüm (K20): çağlayan ırmağıyla birlikte iner
+    for ir, a, p in zip(irmaklar, ana, pus):
+        root.add(Node("selale_" + ir.ad, [p, a]))
     return root
 
 
@@ -642,6 +698,11 @@ def yerlesim() -> dict:
         if bos_mu(x, z, 6.0, yapilar):
             uzak.append(yer(x, z, olcek=rng.uniform(1.9, 3.2), dy=-0.3))
     d["uzak_agac"] = uzak
+    d["uzak_koru"] = _uzak_koru(irmaklar, rng)
+    # Açılış eşiği (K20, "on misli yankı"): ağaçlar arsadan ovaya dalga dalga yeşerir; sıra
+    # arsaya uzaklık ve biraz gürültüyle (korular küme küme açılsın). 6. değer 0-1.
+    for ad in ("koru", "uzak_agac", "uzak_koru"):
+        _acilis_sirasi(d[ad])
 
     # --- Gökten inen çağlayanlar: tepe bulutu ve dip sisi
     d["gok_selale"] = [[round(float(ir.P[0][0]), 1), SELALE_UST + 30 * k, round(float(ir.P[0][1]), 1), ir.gen * 4.0]
@@ -682,6 +743,68 @@ def yerlesim() -> dict:
                    "fov": 55.0},
     }
     return d
+
+
+def _koru_alani(x, z):
+    """Koru alanı (kesit.py'deki 2. kat dili; 1. katın tohumuyla): 200-600 m'lik koruluklar."""
+    n = _noise2(np.asarray(x) * 0.28, np.asarray(z) * 0.28, 520, 3) / 1.6
+    n += 0.35 * _noise2(np.asarray(x) * 0.9, np.asarray(z) * 0.9, 530, 2) / 1.5
+    return n
+
+
+def _uzak_koru(irmaklar, rng):
+    """1. kata uzak korular (K20, kullanıcı onayı): kesme düzleminden 700-2200 m derinlikte,
+    |x| < 2900 m (kesit penceresi ve perde payı) ve iç kameraların kuzey kamasında (-z'nin
+    ±25°'si) 2,2-4 km arasında. 2. katın koru dili: koruluklarda sık, arada seyrek; mevcut uzak
+    ağaçlarla birlikte 2. kat yoğunluğuna oturur. Model ufuk ağacıdır (100 üçgen)."""
+    out = []
+
+    def bos(x, z):
+        X = np.array([[x, z]])
+        for ir in irmaklar:
+            dd, i = ir.uzaklik(X)
+            if dd[0] < ir.a[i[0]] + ir.banka()[i[0]] + 22.0:
+                return False
+        return True
+
+    def ekle(x, z):
+        if bos(x, z):
+            out.append([round(float(x), 2), round(_yerde(x, z, irmaklar) - 0.3, 2), round(float(z), 2),
+                        round(float(rng.uniform(0, 360)), 1), round(float(rng.uniform(1.9, 3.2)), 2)])
+
+    z = KESME_Z - 700.0
+    while KESME_Z - z < 2200.0:
+        derin = KESME_Z - z
+        adim = 26.0 + derin * 0.012
+        xs = np.arange(-2900.0, 2900.0, adim) + rng.uniform(-0.45, 0.45, int(math.ceil(5800 / adim))) * adim
+        zs = z + rng.uniform(-0.45, 0.45, len(xs)) * adim
+        p = np.where(_koru_alani(xs, zs) > 0.1, 0.92, 0.12) * 0.75          # dörtte biri seyreltilir
+        sec = rng.uniform(0, 1, len(xs)) < p
+        for x, zz in zip(xs[sec], zs[sec]):
+            ekle(x, zz)
+        z -= adim
+    # Kuzey kaması: ufuk ve arsa kameralarının baktığı yön
+    for _ in range(4000):
+        a = math.radians(rng.uniform(-25.0, 25.0))
+        r = rng.uniform(2200.0, 4000.0)
+        x, zz = r * math.sin(a), -r * math.cos(a)
+        if _koru_alani(np.array([x]), np.array([zz]))[0] > 0.1 and rng.uniform() < 0.3:
+            ekle(x, zz)
+        if len(out) > 2400:
+            break
+    return out
+
+
+def _acilis_sirasi(liste):
+    """Her örneğe açılış eşiği (0-1) ekler: arsaya uzaklık + 250 m'lik gürültü sırasıyla."""
+    if not liste:
+        return
+    P = np.array([[t[0], t[2]] for t in liste])
+    anahtar = np.hypot(P[:, 0], P[:, 1]) + 250.0 * _noise2(P[:, 0] * 2.0, P[:, 1] * 2.0, 611)
+    sira = np.empty(len(liste), int)
+    sira[np.argsort(anahtar)] = np.arange(len(liste))
+    for t, s in zip(liste, sira):
+        t.append(round(float(s) / max(len(liste) - 1, 1), 4))
 
 
 def yerlesim_yaz(root: Path) -> Path:
