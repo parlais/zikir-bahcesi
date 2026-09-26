@@ -6,10 +6,12 @@
 # Örnek:  tools/render/cek.sh nur ufuk 800x450 16 /tmp/nur_ufuk.png
 #         tools/render/cek.sh nur_ori ufuk 800x450 16 /tmp/gecis_05.png --zb-isik=0.5
 # Süre: 640x360 8 kare ~1,5 dk; 800x450 16 kare ~5 dk (üç çekim paralel çalışabilir).
+# ZB_SABIT=1: sabit zaman adımı (--fixed-fps 30). Rüzgâr, su ve parçacıklar her çekimde aynı
+#   karede durur; iki çekim pano.py fark ile piksel piksel karşılaştırılabilir.
 KOK="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$KOK" || exit 1
 VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.json xvfb-run -a -s "-screen 0 1920x1080x24" \
-  godot --audio-driver Dummy --path game --rendering-method forward_plus --rendering-driver vulkan \
+  godot --audio-driver Dummy ${ZB_SABIT:+--fixed-fps 30} --path game --rendering-method forward_plus --rendering-driver vulkan \
   --resolution "$3" res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim="$1" --zb-kamera="$2" \
   --zb-ekran="$5" --zb-kare="$4" "${@:6}" > "${5%.png}.log" 2>&1
 grep -iE "SCRIPT ERROR|SHADER ERROR|Parse Error" "${5%.png}.log" | head -5

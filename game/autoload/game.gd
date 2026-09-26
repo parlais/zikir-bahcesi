@@ -176,4 +176,10 @@ func _gelistirici_calistir(d: Dictionary) -> void:
 		var img := get_viewport().get_texture().get_image()
 		var err := img.save_png(d["ekran"])
 		print("Ekran görüntüsü: %s (%s)" % [d["ekran"], error_string(err)])
+		if d.has("olcum"):
+			# --zb-olcum=1: son karenin çizim bütçesi (telefon bütçesiyle karşılaştırmak için)
+			print("Ölçüm: %d üçgen, %d çizim çağrısı, %d nesne" % [
+				RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME),
+				RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
+				RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME)])
 		get_tree().quit()

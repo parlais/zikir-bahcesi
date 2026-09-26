@@ -602,6 +602,8 @@ func _kamera_kur() -> void:
 		_model_kamerasi(kam)
 	kam.near = 0.15
 	kam.far = 40000.0 if kamera_modu == "kesit" else 12000.0
+	if _arg.has("kam"):
+		kam.far = 120000.0
 	var ayar := CameraAttributesPractical.new()
 	if kamera_modu == "arsa":
 		ayar.dof_blur_far_enabled = true

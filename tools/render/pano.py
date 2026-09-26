@@ -9,6 +9,11 @@ Animasyon: kare dizisinden GIF; --gidis-donus ile sona varınca geri oynar.
 
 Şerit: dizinin birkaç karesi yan yana, üstlerinde t değeri (tek satırlık pano).
     python3 tools/render/pano.py serit cikti.jpg --adet 5 dizi_*.png
+
+Fark: iki çekimin piksel farkı (ortalama, en büyük, %99'luk) ve ısı haritası. Bir
+değişikliğin onaylı görünüşü bozmadığını denetlemek için; aynı çekimin iki kez
+alınmasıyla bulunan lavapipe gürültüsüyle karşılaştırılır.
+    python3 tools/render/pano.py fark eski.png yeni.png fark.png
 """
 import argparse
 from pathlib import Path
@@ -81,6 +86,22 @@ def serit(cikti, dosyalar, adet, genislik=None):
     pano(cikti, secilen, adet, basliklar, genislik)
 
 
+def fark(eski, yeni, cikti=None):
+    import numpy as np
+    a = np.asarray(Image.open(eski).convert("RGB"), dtype=np.float32)
+    b = np.asarray(Image.open(yeni).convert("RGB"), dtype=np.float32)
+    d = np.abs(a - b).max(axis=2)
+    print("fark: ortalama %.3f, %%99 %.1f, en büyük %.0f (/255); 8'den büyük piksel %%%.2f"
+          % (d.mean(), np.percentile(d, 99), d.max(), (d > 8).mean() * 100))
+    if cikti:
+        # Isı haritası: farkın 8 katı, kırmızı; altında soluk eski görüntü
+        soluk = a.mean(axis=2, keepdims=True) * 0.35
+        isi = np.clip(d * 8, 0, 255)[..., None]
+        r = np.concatenate([np.maximum(soluk, isi), soluk, soluk], axis=2)
+        Image.fromarray(r.astype(np.uint8)).save(cikti)
+        print(cikti)
+
+
 def main():
     a = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     alt = a.add_subparsers(dest="is_", required=True)
@@ -102,11 +123,17 @@ def main():
     s.add_argument("dosyalar", nargs="+")
     s.add_argument("--adet", type=int, default=5)
     s.add_argument("--genislik", type=int)
+    f = alt.add_parser("fark")
+    f.add_argument("eski")
+    f.add_argument("yeni")
+    f.add_argument("cikti", nargs="?")
     x = a.parse_args()
     if x.is_ == "pano":
         pano(x.cikti, x.dosyalar, x.sutun, [b for b in x.baslik.split("|") if b], x.genislik)
     elif x.is_ == "gif":
         gif(x.cikti, sorted(x.dosyalar), x.sure, x.bekle, x.gidis_donus, x.genislik)
+    elif x.is_ == "fark":
+        fark(x.eski, x.yeni, x.cikti)
     else:
         serit(x.cikti, sorted(x.dosyalar), x.adet, x.genislik)
 
