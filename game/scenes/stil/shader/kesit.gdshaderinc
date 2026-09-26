@@ -16,6 +16,15 @@ global uniform vec3 zb_pus_nur : source_color;
 global uniform vec4 zb_pus_aralik;
 global uniform vec4 zb_kesit_kamera;   // kesit kamerasının (y, z), pencere_m: katın pencere derinliği için
 global uniform float zb_agac_buyut;    // kesitte uzak ağaçların en çok büyütmesi (K20)
+// Boş başlangıç (K20): ilk katta açılan ırmaklar (su, süt, bal, şerbet; 0 kapalı, 1 açık) ve
+// kır çiçekleri (x miktar, y arsadan yarıçap, m). Vitrinde hepsi açıktır.
+global uniform vec4 zb_irmak_dolu;
+global uniform vec2 zb_ova_cicek;
+
+float zb_irmak_acik(float zb_k) {
+	vec4 zb_s = vec4(1.0) - min(abs(vec4(zb_k) - vec4(0.0, 1.0, 2.0, 3.0)), vec4(1.0));
+	return dot(zb_irmak_dolu, zb_s);
+}
 
 // Uzak ağaç büyütmesi (K20): dışarıdan bakınca uzak ağaçlar hafifçe büyür (gerçek boyda
 // dikey ekranda 2-4 piksel kalıyorlardı), yaklaştıkça gerçek boya döner. İçeride (zb_kesit

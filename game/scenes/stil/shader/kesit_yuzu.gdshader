@@ -18,6 +18,12 @@ uniform vec3 damar_renk : source_color = vec3(1.0, 0.92, 0.7);
 varying vec3 dunya;
 
 void vertex() {
+	// Boş başlangıç (K20): ilk katta kapalı ırmağın çentiği düzleşir (COLOR.g = oyma / 16 *
+	// (1 - derinlik oranı), COLOR.b = (ırmak + 1) / 8; 0 ırmak yok)
+	float zb_irmak = floor(COLOR.b * 8.0 + 0.5) - 1.0;
+	if (zb_irmak >= 0.0) {
+		VERTEX.y += COLOR.g * 16.0 * (1.0 - zb_irmak_acik(zb_irmak));
+	}
 	dunya = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 

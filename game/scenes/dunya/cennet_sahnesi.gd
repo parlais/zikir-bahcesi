@@ -5,6 +5,9 @@ extends Node3D
 ##   godot --path game res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur_ori --zb-kamera=ufuk
 ##   --zb-anim:   nur_ori (varsayılan: Nur ↔ Ori ışık geçişi, K12-K13) | nur | sky | pixar | yagli_boya
 ##   --zb-kamera: ufuk | arsa | kesit | yakinlasma | model
+##   --zb-durum=vitrin | bos | ilk (K20): vitrin dolu bahçe (varsayılan; çekimler), bos yeni oyuncunun
+##     gördüğü: yalnız çerçeve (ışık, gök, bulutlar, nur zerreleri, ova, arsanın çimeni,
+##     süzülen Tûbâ çekirdeği). --zb-irmak=1,0,0,0 ırmakları (su, süt, bal, şerbet) tek tek açar.
 ##   yakinlasma (K18): kesitten arsaya kesintisiz iniş (aynı mekân). --zb-yakin=0.4 tek bir an;
 ##     --zb-yakin-sure=8 (sn, oynatma); filmde --zb-yakin-bas=0 --zb-yakin-son=1 (film.sh ile)
 ##   model: tek bir modeli arsanın ortasında inceleme (K15). --zb-model=ZB_bitki_koru_agac
@@ -67,6 +70,14 @@ var _u := 0.0
 var _dis := 1.0
 var _kam: Camera3D
 var _on_dugumleri: Array[Node] = []
+## Boş başlangıç (K20): dünyanın hâli. Anahtarlar DunyaDurumu ile aynıdır (vitrin, tuba,
+## kapi, cakil, irmak [su, süt, bal, şerbet], merdiven, yansima {cevre, ova, ufuk, cicek, cimen}).
+var durum: Dictionary = {}
+const IRMAK_ADLARI := ["su", "sut", "bal", "serbet"]
+const ARSA_R := 13.0
+## Kapalı ırmak ve çağlayan düğümleri gizli bir tutucuya taşınır (kesitin ve yakınlaşmanın
+## görünürlük ayarları onlara dokunmaz)
+var _kapali: Node3D
 
 
 func _ready() -> void:
@@ -91,6 +102,7 @@ func _ready() -> void:
 			gecis.zorla(float(_arg["isik"]))
 		Game.olay.connect(gecis.olay)
 	yer = JSON.parse_string(FileAccess.get_file_as_string(YERLESIM))
+	durum = _durum_kur(_arg.get("durum", "vitrin"))
 	if _yakin:
 		# Ortamın yapısı (SDFGI, SSR, hacim sisi) içeridekidir; kesit ucu yalnız sürekli değerleri verir
 		_dis = 0.0
@@ -103,7 +115,9 @@ func _ready() -> void:
 	_vp = _filtre_kur() if profil.has("filtre") else get_viewport()
 	k.goruntu_kalitesi(_vp)
 	k.ortam_kur(GOK)
+	_durum_globalleri()
 	if _kesit:
+		k.agac_payi = 25.0
 		_kesit_kur()
 	else:
 		_kat_kur()
@@ -240,22 +254,46 @@ func _filtre_kur() -> Viewport:
 # --------------------------------------------------------------------------
 
 func _kat_kur() -> void:
-	k.ornek("ZB_dunya_cennet", [0, 0, 0, 0, 1])
-	k.ornek("ZB_dunya_selaleler", [0, 0, 0, 0, 1])
-	for t in yer["su_kosku"]:
-		k.ornek("ZB_yapi_su_kosku", t)
-	for t in yer["inci_cadir"]:
-		k.ornek("ZB_yapi_inci_cadir", t)
-	for t in yer["sedir_kosesi"]:
-		k.ornek("ZB_yapi_sedir_kosesi", t)
-	for t in yer["selsebil"]:
-		k.ornek("ZB_yapi_selsebil_cesmesi", t)
-	for t in yer["pinar"]:
-		var p := k.ornek("ZB_yapi_ab_i_hayat_pinari", t)
-		for isaret in p.find_children("fiskiye_*", "", true, false):
-			_fiskiye((isaret as Node3D).global_position)
-	for t in yer["merdiven"]:
-		k.ornek("ZB_yapi_kat_merdiveni", t)
+	_kapali = Node3D.new()
+	_kapali.name = "kapali"
+	_kapali.visible = false
+	add_child(_kapali)
+	var dunya := k.ornek("ZB_dunya_cennet", [0, 0, 0, 0, 1])
+	# Arazi ırmak yatağı verisini taşır: kapalı ırmağın yatağı düz çayırdır (zemin shader'ı)
+	for ad in ["arazi", "arazi_on"]:
+		for g in _dugumler(dunya, ad):
+			(g as GeometryInstance3D).set_instance_shader_parameter("irmak_yatagi", 1.0)
+			# Ova kendi üstüne gölge düşürmez: alçak güneşte küçük tümsekler geniş koyu lekeler
+			# bırakıyor, gölge mesafesinin bittiği yerde sert bir sınır çiziyordu (boş ovada
+			# belirgin). Ağaçlar ve yapılar zemine gölge düşürmeye devam eder.
+			(g as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var selaleler := k.ornek("ZB_dunya_selaleler", [0, 0, 0, 0, 1])
+	for i in IRMAK_ADLARI.size():
+		if _irmak_acik(i):
+			continue
+		var ad: String = IRMAK_ADLARI[i]
+		for n in [dunya.find_child("irmak_" + ad, true, false), dunya.find_child("irmak_%s_on" % ad, true, false),
+				selaleler.find_child("selale_" + ad, true, false)]:
+			if n:
+				(n as Node).reparent(_kapali)
+	# Yapılar (su köşkü, inci çadır, sedir köşesi, selsebil, pınar) nimettir: yalnız vitrinde
+	if durum["vitrin"]:
+		for t in yer["su_kosku"]:
+			k.ornek("ZB_yapi_su_kosku", t)
+		for t in yer["inci_cadir"]:
+			k.ornek("ZB_yapi_inci_cadir", t)
+		for t in yer["sedir_kosesi"]:
+			k.ornek("ZB_yapi_sedir_kosesi", t)
+		for t in yer["selsebil"]:
+			k.ornek("ZB_yapi_selsebil_cesmesi", t)
+		for t in yer["pinar"]:
+			var p := k.ornek("ZB_yapi_ab_i_hayat_pinari", t)
+			for isaret in p.find_children("fiskiye_*", "", true, false):
+				_fiskiye((isaret as Node3D).global_position)
+	# Merdiven kat değiştirme mekaniğiyle gelir; ucundaki bulut çerçevedir
+	if durum["merdiven"]:
+		for t in yer["merdiven"]:
+			k.ornek("ZB_yapi_kat_merdiveni", t)
 	if kamera_modu == "model":
 		_inceleme_modeli = k.ornek(_arg.get("model", "ZB_bitki_koru_agac"), [0, 0, 0, 0, 1])
 		_nur_isaretleri(_inceleme_modeli)
@@ -271,10 +309,20 @@ func _kat_kur() -> void:
 func _arsa_kur() -> void:
 	var a: Dictionary = yer["arsa"]
 	var nur_renk := k.yol("parcacik/nur_renk")
-	var tuba := k.ornek("ZB_agac_tuba_a%d" % clampi(int(_arg.get("tuba", "1")), 1, 5), a["tuba"])
-	k.agac_isaretle(tuba)
-	_nur_isaretleri(tuba)
-	k.coklu("ZB_obje_inci_cakil", yer["inci_cakil"], false)
+	if int(durum["tuba"]) == 0:
+		_suzulen_cekirdek(Vector3(a["tuba"][0], a["tuba"][1], a["tuba"][2]))
+	else:
+		var tuba := k.ornek("ZB_agac_tuba_a%d" % clampi(int(durum["tuba"]), 1, 5), a["tuba"])
+		k.agac_isaretle(tuba)
+		_nur_isaretleri(tuba)
+	# İnci ve yakut çakıllı sınır ilk Bismillah'la gelir (bahçe kapısıyla)
+	if durum["cakil"]:
+		k.coklu("ZB_obje_inci_cakil", yer["inci_cakil"], false)
+	if not durum["vitrin"]:
+		# Bahçe kapısı (Bismillah) arsanın doğu kenarında; yolu arsaya dik (yuva tablosu gelince oradan)
+		if durum["kapi"]:
+			k.ornek("ZB_yapi_bahce_kapisi", [ARSA_R, 0.0, 0.0, 90.0, 1.0])
+		return
 	for f in a["fidan"]:
 		k.agac_isaretle(k.ornek(f[5], f.slice(0, 5)))
 	for c in a["cicek"]:
@@ -285,6 +333,10 @@ func _arsa_kur() -> void:
 
 
 func _bitkiler_kur() -> void:
+	if not durum["vitrin"]:
+		# Boş başlangıç: ağaç, koru ve çiçek yok; arsanın çevresinde seyrek, kısa çimen tutamları
+		k.coklu("ZB_bitki_cimen", _cimen_konumlari(0.35, 0.55, 0.75), false)
+		return
 	k.coklu("ZB_agac_sidr_a4", yer["sidr"], true, 0.0, true)
 	k.coklu("ZB_agac_uzum_a4", yer["uzum"], true, 0.0, true)
 	k.coklu("ZB_agac_hurma_a4", yer["hurma"], true, 0.0, true)
@@ -300,7 +352,9 @@ func _bitkiler_kur() -> void:
 	for t in yer["uzak_agac"]:
 		(yakin_uzak if Vector2(t[0], t[2]).length() < UFUK_AGACI_MESAFE else ufuk).append(t)
 	k.coklu("ZB_bitki_uzak_agac", yakin_uzak, false, 250.0, true)
-	k.coklu("ZB_bitki_ufuk_agaci", ufuk, false, 500.0, true)
+	k.coklu("ZB_bitki_ufuk_agaci", ufuk, false, 1000.0, true)
+	# 1. katın uzak koruları (K20): kesit penceresinde 700-2200 m, kuzey kamasında 2,2-4 km
+	k.coklu("ZB_bitki_ufuk_agaci", yer.get("uzak_koru", []), false, 0.0, true)
 	k.coklu("ZB_bitki_cimen", _cimen_konumlari(), false)
 
 
@@ -344,12 +398,15 @@ func _gok_kur() -> void:
 		var g: float = s[3]
 		# Perdenin başı bulutun içinden çıksın: bulutun altı perdenin tepesini örter
 		_bulut_kumesi(Vector3(s[0], s[1] + 15.0, s[2]), g * 6.0, 46, 50 + i, 2.2)
-		_hale(Vector3(s[0], s[1] - 10.0, s[2]), g * 5.0, nur_renk, 0.5)
+		# Bulut çerçevedir; ışığı çağlayanla (ırmakla) birlikte gelir
+		if _irmak_acik(i):
+			_hale(Vector3(s[0], s[1] - 10.0, s[2]), g * 5.0, nur_renk, 0.5)
 		i += 1
 	var u: Array = yer["merdiven_ust"]
 	var ust := Vector3(u[0], u[1], u[2])
 	_bulut_kumesi(ust + Vector3(0, 18, 0), 220.0, 40, 90)
-	_hale(ust + Vector3(0, 25, 0), 260.0, nur_renk, 1.0)
+	if durum["merdiven"]:
+		_hale(ust + Vector3(0, 25, 0), 260.0, nur_renk, 1.0)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
 	for j in 9:
@@ -361,7 +418,7 @@ func _gok_kur() -> void:
 
 ## Çimen tutamları: model fabrikasının yazdığı 1 m'lik ızgaradan (yükseklik ve
 ## çimen ağırlığı). Yoğunluk arsa çevresinde yüksek, uzaklaştıkça azalır.
-func _cimen_konumlari() -> Array:
+func _cimen_konumlari(oran := 1.0, olcek_min := 0.55, olcek_max := 1.0) -> Array:
 	var iz: Dictionary = yer["izgara"]
 	var nx: int = iz["nx"]
 	var nz: int = iz["nz"]
@@ -383,7 +440,7 @@ func _cimen_konumlari() -> Array:
 			var yog := lerpf(7.0, 1.2, clampf((d - 18.0) / 30.0, 0.0, 1.0))
 			if d > 55.0:
 				yog = 0.3
-			var n := int(yog * w + rng.randf())
+			var n := int(yog * w * oran + rng.randf())
 			for s in n:
 				var fx := rng.randf()
 				var fz := rng.randf()
@@ -392,7 +449,7 @@ func _cimen_konumlari() -> Array:
 				var y01: float = ys[(j + 1) * nx + i]
 				var y11: float = ys[(j + 1) * nx + i + 1]
 				var y := lerpf(lerpf(y00, y10, fx), lerpf(y01, y11, fx), fz) / 100.0
-				out.append([x0 + i + fx, y - 0.03, z0 + j + fz, rng.randf_range(0, 360), rng.randf_range(0.55, 1.0)])
+				out.append([x0 + i + fx, y - 0.03, z0 + j + fz, rng.randf_range(0, 360), rng.randf_range(olcek_min, olcek_max)])
 	return out
 
 
@@ -417,12 +474,15 @@ func _parcaciklar_kur() -> void:
 	# sisi (bulut dokulu). Perdenin çevresindeki serpintiyi selale_pus zarfı verir.
 	var sis_renk := func(p: Dictionary) -> Color:
 		return p["parcacik"].get("selale_sis", p["parcacik"]["sis_renk"])
-	for s in yer["selale_dip"]:
+	for i in yer["selale_dip"].size():
+		if not _irmak_acik(i):
+			continue
+		var s: Array = yer["selale_dip"][i]
 		var g: float = s[3]
 		k.parcacik(45, Vector3(s[0], s[1] + g * 0.8, s[2]), Vector3(g * 1.2, g * 0.6, g * 0.8), g * 1.6, sis_renk,
 			0.0, Vector3(0, 0.7, 0), 1.2, 16.0, BaseMaterial3D.BILLBOARD_ENABLED, _bulut_doku())
 	# Selsebil levhasının dibinde ince serpinti
-	for t in yer["selsebil"]:
+	for t in (yer["selsebil"] if durum["vitrin"] else []):
 		var y := Vector3(t[0], t[1] + 0.6, t[2])
 		k.parcacik(30, y + Basis(Vector3.UP, deg_to_rad(t[3])) * Vector3(0, 0, 1.2), Vector3(0.5, 0.05, 0.2), 0.03,
 			Color(0.9, 0.97, 1.0), 0.4, Vector3(0, -1.0, 0), 0.3, 1.2)
@@ -432,6 +492,80 @@ func _en_cok_zerre() -> int:
 	if anim != "nur_ori":
 		return int(profil["parcacik"]["nur"])
 	return maxi(int(_uclar[0]["parcacik"]["nur"]), int(_uclar[1]["parcacik"]["nur"]))
+
+
+# --------------------------------------------------------------------------
+# Boş başlangıç (K20): dünyanın hâli
+# --------------------------------------------------------------------------
+
+## vitrin: dolu bahçe (çekimler, tanıtım). bos: hiç zikir söylenmemiş; yalnız çerçeve.
+## (Oyun kipi DunyaDurumu.hesapla ile gelecek; anahtarlar aynıdır.)
+func _durum_kur(ad: String) -> Dictionary:
+	var d := {"vitrin": true, "tuba": clampi(int(_arg.get("tuba", "1")), 1, 5), "kapi": true, "cakil": true,
+		"irmak": [1.0, 1.0, 1.0, 1.0], "merdiven": true,
+		"yansima": {"cevre": 1.0, "ova": 1.0, "ufuk": 1.0, "cicek": 1.0, "cimen": 1.0}}
+	if ad == "bos" or ad == "ilk":
+		d = {"vitrin": false, "tuba": 0, "kapi": false, "cakil": false, "irmak": [0.0, 0.0, 0.0, 0.0],
+			"merdiven": false, "yansima": {"cevre": 0.0, "ova": 0.0, "ufuk": 0.0, "cicek": 0.0, "cimen": 0.0}}
+	# ilk: açılıştaki ilk Bismillah'tan sonra (nur izi arsayı dolaşır, çakıl sınırı ve kapı gelir)
+	if ad == "ilk":
+		d["kapi"] = true
+		d["cakil"] = true
+	if _arg.has("irmak"):
+		var v := str(_arg["irmak"]).split_floats(",")
+		for i in mini(v.size(), 4):
+			d["irmak"][i] = clampf(v[i], 0.0, 1.0)
+	return d
+
+
+func _irmak_acik(i: int) -> bool:
+	return float(durum["irmak"][i]) > 0.0
+
+
+## Durumun shader'a giden değerleri: açık ırmaklar ve kır çiçeklerinin yayıldığı yarıçap
+func _durum_globalleri() -> void:
+	var ir: Array = durum["irmak"]
+	RenderingServer.global_shader_parameter_set("zb_irmak_dolu", Vector4(ir[0], ir[1], ir[2], ir[3]))
+	var c: float = durum["yansima"]["cicek"]
+	RenderingServer.global_shader_parameter_set("zb_ova_cicek", Vector2(c, 1e5) if c >= 1.0 else Vector2(c, 16.0 + c * 400.0))
+
+
+## Model içindeki bir düğüm (ve alt düğümleri): GeometryInstance3D listesi
+func _dugumler(kok: Node, ad: String) -> Array:
+	var n := kok.find_child(ad, true, false)
+	if n == null:
+		return []
+	var out: Array = [n] if n is GeometryInstance3D else []
+	out.append_array(n.find_children("*", "GeometryInstance3D", true, false))
+	return out
+
+
+## Tûbâ çekirdeği, zikirden önce (K20): arsanın ortasında diz boyunda süzülen bir nur. Toprak
+## ve model yok; küçük bir ışık, hale ve zerreler, nefes alır gibi yavaşça parlar. İlk
+## tevhidde toprağa iner ve a1 olur (Küllî Kaideler 1: iman çekirdeği).
+func _suzulen_cekirdek(taban: Vector3) -> void:
+	var nur_renk := k.yol("parcacik/nur_renk")
+	var pos := taban + Vector3(0, 0.55, 0)
+	var l := OmniLight3D.new()
+	k.bagla(l, "light_color", nur_renk)
+	l.light_energy = 1.6
+	l.omni_range = 4.0
+	l.omni_attenuation = 1.6
+	l.shadow_enabled = false
+	l.position = pos
+	add_child(l)
+	var ic := _hale(pos, 0.5, nur_renk, 1.6)
+	var dis := _hale(pos, 2.4, nur_renk, 0.7, true)
+	k.parcacik(36, pos, Vector3(0.35, 0.3, 0.35), 0.04, nur_renk, 3.0, Vector3(0, 0.1, 0), 0.08, 4.0)
+	# Nefes: 4 sn'lik yavaş parıltı
+	var tw := create_tween().set_loops()
+	tw.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(dis, "scale", Vector3.ONE * 1.12, 2.0)
+	tw.parallel().tween_property(ic, "scale", Vector3.ONE * 1.15, 2.0)
+	tw.parallel().tween_property(l, "light_energy", 2.1, 2.0)
+	tw.tween_property(dis, "scale", Vector3.ONE * 0.9, 2.0)
+	tw.parallel().tween_property(ic, "scale", Vector3.ONE * 0.9, 2.0)
+	tw.parallel().tween_property(l, "light_energy", 1.3, 2.0)
 
 
 # --------------------------------------------------------------------------
@@ -591,7 +725,7 @@ func _isik_doku() -> Texture2D:
 
 
 ## Işık halesi: her yöne bakan yumuşak, eklemeli parıltı. renk: Color ya da k.yol(...).
-func _hale(pos: Vector3, boy: float, renk: Variant, guc: float, yumusak := false) -> void:
+func _hale(pos: Vector3, boy: float, renk: Variant, guc: float, yumusak := false) -> MeshInstance3D:
 	var q := QuadMesh.new()
 	q.size = Vector2(boy, boy)
 	var m := StandardMaterial3D.new()
@@ -608,6 +742,7 @@ func _hale(pos: Vector3, boy: float, renk: Variant, guc: float, yumusak := false
 	mi.position = pos
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(mi)
+	return mi
 
 
 ## Göğe uzanan dikey ışık hüzmesi (Arş tasvir edilmez; ışık yukarıda söner).

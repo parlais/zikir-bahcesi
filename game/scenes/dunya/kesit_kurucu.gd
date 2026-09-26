@@ -50,6 +50,11 @@ func kur() -> void:
 		# Bütün tabakalar aynı ışığı alır: üstteki alttakine gölge düşürmez
 		for mi in n.find_children("*", "GeometryInstance3D", true, false):
 			(mi as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		# İlk katın merdiven şeridi, içerideki merdivenle birlikte gelir (K20)
+		if m == "ZB_kesit_kat1" and not (sahne.get("durum") as Dictionary).get("merdiven", true):
+			var ms := n.find_child("merdiven", true, false)
+			if ms:
+				(ms as Node3D).visible = false
 	# Katların göğü: içeriden görülen göğün aynısı (profilin kat_gok alanı, Nur <-> Ori)
 	for ad in ["kat_gogu", "kat_gogu_ilk", "kat_tavani"]:
 		var km := k.malzeme(ad) as ShaderMaterial

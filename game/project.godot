@@ -70,3 +70,11 @@ zb_agac_buyut={
 "type": "float",
 "value": 1.8
 }
+zb_irmak_dolu={
+"type": "vec4",
+"value": Vector4(1, 1, 1, 1)
+}
+zb_ova_cicek={
+"type": "vec2",
+"value": Vector2(1, 100000)
+}

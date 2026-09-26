@@ -31,7 +31,9 @@ const MALZEME_TABLOSU := {
 	"kursun": ["yuzey", {"puruz": 0.45, "metal": 0.6, "detay": 0.05}, ""],
 	"inci": ["yuzey", {"puruz": 0.25, "detay": 0.0}, "inci"],
 	"uzak": ["yuzey", {"puruz": 1.0, "detay": 0.1, "detay_olcek": 0.02}, "uzak"],
-	"zemin": ["zemin", {"spek": 0.03}, "zemin"],
+	# Çayır (K20): lekeler yumuşak, tümsek ışığı sakin, rüzgâr dalgası ve kadife parıltısı
+	"zemin": ["zemin", {"spek": 0.03, "leke_kontrast": 0.55, "normal_yumusak": 0.6, "ruzgar_dalga": 0.8,
+		"kadife": 0.35}, "zemin"],
 	"yaprak": ["yaprak", {"spek": 0.03}, "yaprak"],
 	"cimen_ot": ["cimen", {"spek": 0.03}, "cimen"],
 	"cicek": ["cicek", {}, "cicek"],
@@ -446,6 +448,12 @@ func coklu(model: String, konumlar: Array, golge := true, parca := 0.0, agac := 
 	return hucreler
 
 
+## Büyüyen ağacın tepesi sınır kutusundan taşar; kırpma payı yalnız dışarıdan bakılan
+## sahnelerde (kesit, yakınlaşma) verilir. İçeride büyütme yoktur; pay kadraj ve gölge
+## kademelerinin kenarındaki hücreleri de çizdiriyordu (+45 çizim çağrısı).
+var agac_payi := 0.0
+
+
 ## Ağaç örneği: kesitte uzakta hafifçe büyür (K20). Yalnız ağaçlara verilir; merdivenin
 ## sarmaşığı, köşkün ahşabı gibi aynı malzemeyi kullanan yapılar gerçek boyda kalır.
 func agac_isaretle(n: Node) -> void:
@@ -453,7 +461,7 @@ func agac_isaretle(n: Node) -> void:
 	liste.append_array(n.find_children("*", "GeometryInstance3D", true, false))
 	for g in liste:
 		(g as GeometryInstance3D).set_instance_shader_parameter("agac_buyut", 1.0)
-		(g as GeometryInstance3D).extra_cull_margin = 25.0
+		(g as GeometryInstance3D).extra_cull_margin = agac_payi
 
 
 # --------------------------------------------------------------------------
