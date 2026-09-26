@@ -4,7 +4,9 @@ extends Node3D
 ##
 ##   godot --path game res://scenes/dunya/cennet_sahnesi.tscn -- --zb-anim=nur_ori --zb-kamera=ufuk
 ##   --zb-anim:   nur_ori (varsayılan: Nur ↔ Ori ışık geçişi, K12-K13) | nur | sky | pixar | yagli_boya
-##   --zb-kamera: ufuk | arsa | kesit | model
+##   --zb-kamera: ufuk | arsa | kesit | yakinlasma | model
+##   yakinlasma (K18): kesitten arsaya kesintisiz iniş (aynı mekân). --zb-yakin=0.4 tek bir an;
+##     --zb-yakin-sure=8 (sn, oynatma); filmde --zb-yakin-bas=0 --zb-yakin-son=1 (film.sh ile)
 ##   model: tek bir modeli arsanın ortasında inceleme (K15). --zb-model=ZB_bitki_koru_agac
 ##     --zb-model-aci=30 (bakış yönü, derece) --zb-model-yukseklik=6 (kamera yükseltisi, derece)
 ##     --zb-model-doluluk=0.85 (modelin kadrajı doldurma oranı)
@@ -57,6 +59,14 @@ var _ayarlar: Array = []
 var _arg := {}
 ## --zb-kamera=model: incelenen model
 var _inceleme_modeli: Node3D
+## Yakınlaşma (K18): iç profilin uçları [Nur, Ori], yoldaki konum (0 kesit, 1 arsa) ve
+## dışarılık d (1 kesit, 0 içeride; kameranın arsaya uzaklığından)
+var _uclar_ic: Array = []
+var _yakin := false
+var _u := 0.0
+var _dis := 1.0
+var _kam: Camera3D
+var _on_dugumleri: Array[Node] = []
 
 
 func _ready() -> void:
@@ -67,17 +77,28 @@ func _ready() -> void:
 	kamera_modu = _arg.get("kamera", kamera_modu)
 	if kamera_modu == "derece":
 		kamera_modu = "kesit"
-	_kesit = kamera_modu == "kesit"
+	_yakin = kamera_modu == "yakinlasma"
+	_kesit = kamera_modu == "kesit" or _yakin
 	_ayar_coz(_arg.get("ayar", ""))
+	if _yakin:
+		_u = clampf(float(_arg.get("yakin", _arg.get("yakin-bas", "0"))), 0.0, 1.0)
 	if anim == "nur_ori":
 		_uclar = [AnimasyonStilleri.al(IsikKaristirici.UC_NUR, _kesit), AnimasyonStilleri.al(IsikKaristirici.UC_ORI, _kesit)]
+		if _yakin:
+			_uclar_ic = [AnimasyonStilleri.al(IsikKaristirici.UC_NUR), AnimasyonStilleri.al(IsikKaristirici.UC_ORI)]
 		gecis = IsikGecisi.new()
 		if _arg.has("isik"):
 			gecis.zorla(float(_arg["isik"]))
 		Game.olay.connect(gecis.olay)
-	profil = _profil_hesapla(gecis.t if gecis else 0.0)
-	_son_t = gecis.t if gecis else 0.0
 	yer = JSON.parse_string(FileAccess.get_file_as_string(YERLESIM))
+	if _yakin:
+		# Ortamın yapısı (SDFGI, SSR, hacim sisi) içeridekidir; kesit ucu yalnız sürekli değerleri verir
+		_dis = 0.0
+		profil = _profil_hesapla(gecis.t if gecis else 0.0)
+		_dis = _dis_hesapla(_yakin_kamera(_u)[0])
+	else:
+		profil = _profil_hesapla(gecis.t if gecis else 0.0)
+	_son_t = gecis.t if gecis else 0.0
 	k = SahneKurucu.new(self, profil)
 	_vp = _filtre_kur() if profil.has("filtre") else get_viewport()
 	k.goruntu_kalitesi(_vp)
@@ -87,6 +108,8 @@ func _ready() -> void:
 	else:
 		_kat_kur()
 	_kamera_kur()
+	if _yakin:
+		_yakin_uygula(_u, true)
 	if gecis and _arg.has("dizi"):
 		_dizi_cek.call_deferred(_arg["dizi"])
 	elif _arg.has("film"):
@@ -99,12 +122,17 @@ func _ready() -> void:
 
 func _profil_hesapla(t: float) -> Dictionary:
 	var p := IsikKaristirici.karistir(_uclar[0], _uclar[1], t) if anim == "nur_ori" else AnimasyonStilleri.al(anim, _kesit)
+	if _yakin:
+		var ic := IsikKaristirici.karistir(_uclar_ic[0], _uclar_ic[1], t) if anim == "nur_ori" else AnimasyonStilleri.al(anim)
+		p = IsikKaristirici.dis_karistir(ic, p, _dis)
 	for a in _ayarlar:
 		IsikKaristirici.yaz(p, a[0], a[1])
 	return p
 
 
 func _process(dt: float) -> void:
+	if _yakin and not _arg.has("yakin") and not _arg.has("film"):
+		_yakin_uygula(minf(_u + dt / float(_arg.get("yakin-sure", "8")), 1.0))
 	if gecis == null:
 		return
 	gecis.ilerle(dt)
@@ -167,9 +195,14 @@ func _dizi_cek(onek: String) -> void:
 ## Geliştirici: ısınmadan sonra her kareyi kaydeder. Motor --fixed-fps ile çalıştırılırsa
 ## kareler eşit zaman adımıyla ilerler (su, parçacık, rüzgâr doğru hızda akar).
 func _film_cek(onek: String) -> void:
+	var n := int(_arg.get("film-kare", "48"))
+	var bas := float(_arg.get("yakin-bas", "0"))
+	var son := float(_arg.get("yakin-son", "1"))
 	for i in int(_arg.get("isinma", "16")):
 		await get_tree().process_frame
-	for i in int(_arg.get("film-kare", "48")):
+	for i in n:
+		if _yakin:
+			_yakin_uygula(lerpf(bas, son, float(i) / float(maxi(n - 1, 1))))
 		await get_tree().process_frame
 		var yol := "%s_%03d.png" % [onek, i]
 		var err := _vp.get_texture().get_image().save_png(yol)
@@ -614,13 +647,97 @@ func _renk_bagla(m: BaseMaterial3D, renk: Variant, guc: float) -> void:
 # Kamera
 # --------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------
+# Yakınlaşma (K18): kesitten arsaya kesintisiz; aynı mekân
+# --------------------------------------------------------------------------
+
+## Yakınlaşmanın hedefi (arsa) ve dışarılığın ölçüldüğü nokta
+const YAKIN_MERKEZ := Vector3(0, 5, 0)
+
+
+## Yoldaki u (0 kesit, 1 arsa) için [konum, hedef, fov]. Anahtar kareler yerleşimdedir.
+## Kamera, arsaya uzaklığının logaritmasıyla ilerler (ekranda sabit algılanan hız); yön ve
+## uzaklık ayrı ayrı yumuşak eğrilerle karışır. Uçlar anahtar karelerin kendisidir.
+func _yakin_kamera(u: float) -> Array:
+	var kler: Array = yer["kameralar"]["yakinlasma"]
+	var n := kler.size()
+	var L: Array = []
+	var Y: Array = []
+	var H: Array = []
+	var F: Array = []
+	for kr in kler:
+		var p := Vector3(kr["konum"][0], kr["konum"][1], kr["konum"][2]) - YAKIN_MERKEZ
+		L.append(log(p.length()))
+		Y.append(p.normalized())
+		H.append(Vector3(kr["hedef"][0], kr["hedef"][1], kr["hedef"][2]))
+		F.append(log(tan(deg_to_rad(float(kr["fov"])) * 0.5)))
+	# u -> log uzaklık (uçlarda yumuşak giriş ve çıkış)
+	var e := u * u * u * (u * (u * 6.0 - 15.0) + 10.0)
+	var l := lerpf(L[0], L[n - 1], e)
+	var i := 0
+	while i < n - 2 and l < L[i + 1]:
+		i += 1
+	var t := clampf((L[i] - l) / (L[i] - L[i + 1]), 0.0, 1.0)
+	var i0 := maxi(i - 1, 0)
+	var i3 := mini(i + 2, n - 1)
+	var yon: Vector3 = _cr(Y[i0], Y[i], Y[i + 1], Y[i3], t).normalized()
+	var hedef: Vector3 = _cr(H[i0], H[i], H[i + 1], H[i3], t)
+	var fov := rad_to_deg(2.0 * atan(exp(lerpf(F[i], F[i + 1], t * t * (3.0 - 2.0 * t)))))
+	return [YAKIN_MERKEZ + yon * exp(l), hedef, fov]
+
+
+static func _cr(p0: Vector3, p1: Vector3, p2: Vector3, p3: Vector3, t: float) -> Vector3:
+	var t2 := t * t
+	var t3 := t2 * t
+	return 0.5 * ((2.0 * p1) + (-p0 + p2) * t + (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3) * t2 + (-p0 + 3.0 * p1 - 3.0 * p2 + p3) * t3)
+
+
+## Dışarılık: 1 uzakta (kesit), 0 arsaya ~80 m kala (içeride). Kameranın konumundan
+## hesaplanır: ileride oyuncu elle yakınlaştırsa da aynı çalışır. İç sis ancak yere
+## yaklaşınca tamamlanır; yüksekten bakınca ova süt beyazına boğulmaz.
+func _dis_hesapla(konum: Vector3) -> float:
+	var x := clampf((log(konum.distance_to(YAKIN_MERKEZ)) - log(80.0)) / (log(6000.0) - log(80.0)), 0.0, 1.0)
+	return x * x * (3.0 - 2.0 * x)
+
+
+func _yakin_uygula(u: float, ilk := false) -> void:
+	_u = u
+	var kr := _yakin_kamera(u)
+	var konum: Vector3 = kr[0]
+	_kam.position = konum
+	_kam.look_at(kr[1])
+	_kam.fov = kr[2]
+	var uz := konum.distance_to(YAKIN_MERKEZ)
+	_kam.near = clampf(uz * 0.0008, 0.15, 40.0)
+	# Arsa kamerasının uzak bulanıklığı son anda gelir
+	var ayar := _kam.attributes as CameraAttributesPractical
+	ayar.dof_blur_far_enabled = true
+	ayar.dof_blur_far_distance = 140.0
+	ayar.dof_blur_far_transition = 300.0
+	ayar.dof_blur_amount = 0.025 * smoothstep(0.93, 1.0, u)
+	var d := _dis_hesapla(konum)
+	# Kesme düzleminin önündekiler, kamera düzlemi geçince görünür (o an kameranın arkasındadır)
+	var onde := konum.z > k.kesme_z
+	if _on_dugumleri.is_empty():
+		_on_dugumleri = find_children("*_on", "Node3D", true, false)
+		_on_dugumleri.append(get_node("kesme_onu"))
+	for n in _on_dugumleri:
+		(n as Node3D).visible = not onde
+	kesit.uygula(d, konum)
+	if ilk or absf(d - _dis) >= ISIK_ADIM:
+		_dis = d
+		k.kesit_dislik = d
+		_isik_uygula(gecis.t if gecis else 0.0)
+
+
 func _kamera_kur() -> void:
-	var tanim: Dictionary = yer["kameralar"].get(kamera_modu, yer["kameralar"]["ufuk"])
+	var tanim: Dictionary = yer["kameralar"]["kesit"] if _yakin else yer["kameralar"].get(kamera_modu, yer["kameralar"]["ufuk"])
 	var kam := Camera3D.new()
 	if _vp is SubViewport:
 		_vp.add_child(kam)
 	else:
 		add_child(kam)
+	_kam = kam
 	var kn: Array = tanim["konum"]
 	var hd: Array = tanim["hedef"]
 	kam.position = Vector3(kn[0], kn[1], kn[2])
@@ -637,7 +754,7 @@ func _kamera_kur() -> void:
 	if _inceleme_modeli:
 		_model_kamerasi(kam)
 	kam.near = 0.15
-	kam.far = 90000.0 if kamera_modu == "kesit" else 12000.0
+	kam.far = 90000.0 if _kesit else 12000.0
 	if _arg.has("kam"):
 		kam.far = 120000.0
 	var ayar := CameraAttributesPractical.new()

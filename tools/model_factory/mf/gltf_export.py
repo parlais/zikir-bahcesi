@@ -52,6 +52,8 @@ MATERIALS = {
     "zemin_kesit": dict(roughness=1.0, metallic=0.0),
     "kesit_yuzu": dict(roughness=1.0, metallic=0.0, doku="kesit_toprak.png"),
     "kat_gogu": dict(roughness=1.0, metallic=0.0, emissive=(0.8, 0.85, 0.95)),
+    "kat_gogu_ilk": dict(roughness=1.0, metallic=0.0, emissive=(0.8, 0.85, 0.95)),
+    "kat_tavani": dict(roughness=1.0, metallic=0.0, emissive=(0.8, 0.85, 0.95)),
     "kesit_serit": dict(roughness=0.6, metallic=0.0, emissive=(0.9, 0.85, 0.75)),
 }
 DOKU_KLASORU = "../dokular/"

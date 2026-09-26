@@ -61,13 +61,38 @@ static func karistir(a: Dictionary, b: Dictionary, t: float) -> Dictionary:
 	return p
 
 
-static func _karistir(x: Variant, y: Variant, t: float) -> Variant:
+## Kesit (K18): iç profili (d = 0) kesit profiliyle (d = 1) karıştırır. Yakınlaşmada d,
+## kameranın arsaya uzaklığından gelir. Işığın yönü iki uçta aynıdır (kesit güneşi ezmez);
+## sis yoğunluğu logaritmik karışır: doğrusal karışım yolun ortasında, kilometrelerce
+## uzaktaki katları sise boğardı. Katların göğü (kat_gok) yalnız kesit ucunda vardır.
+## Kesikli değerler (SDFGI, SSR, parıltı kipi...) hep içeriden alınır: ortamın yapısı
+## yol boyunca değişmez, yarıda ışık sıçramaz.
+static func dis_karistir(ic: Dictionary, dis: Dictionary, d: float) -> Dictionary:
+	d = clampf(d, 0.0, 1.0)
+	var p := {}
+	for k in ic:
+		p[k] = ic[k] if k in ATLA or not dis.has(k) else _karistir(ic[k], dis[k], d, true)
+	for k in dis:
+		if not p.has(k):
+			p[k] = dis[k]
+	p = p.duplicate(true)
+	var a := maxf(float(ic["ortam"]["sis"][0]), 1e-7)
+	var b := maxf(float(dis["ortam"]["sis"][0]), 1e-7)
+	p["ortam"]["sis"][0] = exp(lerpf(log(a), log(b), d))
+	for yol in SABIT:
+		yaz(p, yol, oku(ic, yol))
+	return p
+
+
+## ic_kesikli: kesikli değerler (metin, bool, farklı uzunlukta dizi) hep x'ten alınır.
+static func _karistir(x: Variant, y: Variant, t: float, ic_kesikli := false) -> Variant:
 	var tx := typeof(x)
 	var ty := typeof(y)
+	var yari := 1.0 if ic_kesikli else 0.5
 	if tx != ty:
 		if (tx == TYPE_INT or tx == TYPE_FLOAT) and (ty == TYPE_INT or ty == TYPE_FLOAT):
 			return lerpf(float(x), float(y), t)
-		return x if t < 0.5 else y
+		return x if t < yari else y
 	match tx:
 		TYPE_FLOAT:
 			return lerpf(x, y, t)
@@ -83,22 +108,22 @@ static func _karistir(x: Variant, y: Variant, t: float) -> Variant:
 			var xa: Array = x
 			var ya: Array = y
 			if xa.size() != ya.size():
-				return x if t < 0.5 else y
+				return x if t < yari else y
 			var out: Array = []
 			for i in xa.size():
-				out.append(_karistir(xa[i], ya[i], t))
+				out.append(_karistir(xa[i], ya[i], t, ic_kesikli))
 			return out
 		TYPE_DICTIONARY:
 			var xd: Dictionary = x
 			var yd: Dictionary = y
 			var out := {}
 			for k in xd:
-				out[k] = _karistir(xd[k], yd[k], t) if yd.has(k) else xd[k]
+				out[k] = _karistir(xd[k], yd[k], t, ic_kesikli) if yd.has(k) else xd[k]
 			for k in yd:
 				if not out.has(k):
 					out[k] = yd[k]
 			return out
-	return x if t < 0.5 else y
+	return x if t < yari else y
 
 
 ## İki profilin karışmaya uymayan yerleri: yalnız bir uçta olan anahtarlar ve

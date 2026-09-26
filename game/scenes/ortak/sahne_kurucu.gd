@@ -61,6 +61,9 @@ const MALZEME_TABLOSU := {
 	"kesit_yuzu": ["kesit_yuzu", {"doku": DOKULAR + "kesit_toprak.png", "doku_n": DOKULAR + "kesit_toprak_n.png"},
 		"kesit_yuzu"],
 	"kat_gogu": ["kat_gogu", {}, "kat_gogu"],
+	# İlk katın perdesi (yakınlaşmada erir) ve katların tavanı (gerçek bakış yönüyle göğün aynısı)
+	"kat_gogu_ilk": ["kat_gogu", {}, "kat_gogu"],
+	"kat_tavani": ["kat_gogu", {}, "kat_gogu"],
 	"kesit_serit": ["kesit_serit", {}, "kesit_serit"],
 	"kesit_agac": ["kesit_agac", {"atlas": DOKULAR + "kesit_siluet.png", "golge_alma": 0.5, "spek": 0.05}, "yaprak"],
 }

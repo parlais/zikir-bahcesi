@@ -667,6 +667,16 @@ def yerlesim() -> dict:
         "arsa": {"konum": [9.0, 5.8, 21.0], "hedef": [-2.0, 4.0, -40.0], "fov": 55.0},
         # Kesit (K18): 8 kat dikey kadraja sığar; önden, 4,6° yukarıdan, tele (şimdiki kompozisyon)
         "kesit": KESIT_KAMERA,
+        # Yakınlaşma (K18): kesitten arsaya kesintisiz iniş; aynı mekân. Anahtar kareler;
+        # kamera logaritmik uzaklıkla ilerler (yol cennet_sahnesi.gd _yakin_kamera).
+        "yakinlasma": [
+            KESIT_KAMERA,
+            {"konum": [0.0, 3000.0, 16000.0], "hedef": [0.0, 900.0, -500.0], "fov": 12.0},
+            {"konum": [0.0, 900.0, 5200.0], "hedef": [0.0, 250.0, -900.0], "fov": 18.0},
+            {"konum": [15.0, 330.0, 1500.0], "hedef": [0.0, 120.0, -800.0], "fov": 32.0},
+            {"konum": [14.0, 70.0, 230.0], "hedef": [0.0, 20.0, -300.0], "fov": 48.0},
+            {"konum": [9.0, 5.8, 21.0], "hedef": [-2.0, 4.0, -40.0], "fov": 55.0},
+        ],
         # Geliştirme: gökten inen su çağlayanına 360 m'den yakın bakış (kalite incelemesi)
         "selale": {"konum": [-250.0, _yerde(-250, -900, irmaklar) + 60.0, -900.0], "hedef": [-330.0, 170.0, -1250.0],
                    "fov": 55.0},

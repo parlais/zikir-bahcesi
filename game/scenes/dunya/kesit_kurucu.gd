@@ -21,6 +21,7 @@ var k: SahneKurucu
 var veri: Dictionary
 ## Kesit katmanı: yakınlaşmada kamera içeri girince gizlenir.
 var kok: Node3D
+var _arsa_mat: StandardMaterial3D
 
 
 func _init(s: Node3D, kurucu: SahneKurucu) -> void:
@@ -50,10 +51,11 @@ func kur() -> void:
 		for mi in n.find_children("*", "GeometryInstance3D", true, false):
 			(mi as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	# Katların göğü: içeriden görülen göğün aynısı (profilin kat_gok alanı, Nur <-> Ori)
-	var km := k.malzeme("kat_gogu") as ShaderMaterial
-	if k.profil.has("kat_gok"):
-		for a in k.profil["kat_gok"]:
-			k.bagla(km, "shader_parameter/" + a, k.yol("kat_gok/" + a))
+	for ad in ["kat_gogu", "kat_gogu_ilk", "kat_tavani"]:
+		var km := k.malzeme(ad) as ShaderMaterial
+		if k.profil.has("kat_gok"):
+			for a in k.profil["kat_gok"]:
+				k.bagla(km, "shader_parameter/" + a, k.yol("kat_gok/" + a))
 	_siluetler()
 	_bulutlar()
 	_firdevs()
@@ -167,6 +169,7 @@ func _arsa_isareti() -> void:
 	m.no_depth_test = false
 	m.albedo_texture = sahne._isik_doku()
 	k.bagla(m, "albedo_color", func(p: Dictionary) -> Color: return (p["parcacik"]["nur_renk"] as Color) * 2.2)
+	_arsa_mat = m
 	m.disable_fog = true
 	q.material = m
 	var mi := MeshInstance3D.new()
@@ -174,3 +177,22 @@ func _arsa_isareti() -> void:
 	mi.position = Vector3(0, 6, 0)
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	kok.add_child(mi)
+
+
+## Yakınlaşma (K18): d dışarılık (1 kesit, 0 içeride), kam kameranın konumu.
+## Kamera ilk katın havasına girince (kesme düzleminin arkasında, tavanın altında) kesit
+## katmanı gizlenir: o an üst katlar tavanın ardındadır, tavan göğün aynısıdır, ilk katın
+## perdesi erimiştir; içeriden üst tabaka görünmez (K10).
+func uygula(d: float, kam: Vector3) -> void:
+	var o: Dictionary = veri["olcu"]
+	var ic := kam.z < float(o["kesme_z"]) - 1.0 and kam.y < float(o["hava"]) - 20.0
+	kok.visible = not ic
+	# İlk katın perdesi ve tavanlar: yaklaştıkça sanal gözün göğü gerçek bakış yönüne döner
+	# (içeriden görülen gök), sonra perde erir; ardında içerideki gök ve ova vardır.
+	var bant := smoothstep(0.3, 1.0, d)
+	var pm := k.malzeme("kat_gogu_ilk") as ShaderMaterial
+	pm.set_shader_parameter("bant", bant)
+	pm.set_shader_parameter("opaklik", smoothstep(0.25, 0.7, d))
+	(k.malzeme("kat_tavani") as ShaderMaterial).set_shader_parameter("bant", bant)
+	if _arsa_mat:
+		_arsa_mat.albedo_color.a = smoothstep(0.3, 0.8, d)

@@ -445,13 +445,13 @@ def _duz(y, z0, z1, x0, x1, malzeme, yon, n=8) -> Mesh:
     return m
 
 
-def _perde(k: int) -> Mesh:
+def _perde(k: int, malzeme: str = "kat_gogu") -> Mesh:
     """Katın göğü (kesme düzleminden PERDE_DERIN geride): ufukta sıcak, yukarıda gök."""
     xs = np.linspace(-KABUK_X - 2000, KABUK_X + 2000, 9)
     ys = np.linspace(G(k) - 60.0, G(k) + KAT_HAVA + 5.0, 5)
     X, Y = np.meshgrid(xs, ys)
     V = np.stack([X.ravel(), Y.ravel(), np.full(X.size, KESME_Z - pencere(k))], 1)
-    m = _izgara(V, len(xs) - 1, len(ys) - 1, np.ones((len(V), 3)), "kat_gogu")
+    m = _izgara(V, len(xs) - 1, len(ys) - 1, np.ones((len(V), 3)), malzeme)
     m = _yuz_yonu(m, (0, 0, 1))
     m.NV = np.tile(np.array([0, 0, 1], np.float32), (len(m.V), 1))
     return m
@@ -522,7 +522,7 @@ def _kat_modeli(k: int) -> Node:
     cizgi = np.stack([xs, kd.zemin_y(xs, np.full_like(xs, KESME_Z))], 1)
     root.add(Node("zemin", [zemin]), Node("yuz", [_kesit_yuzu(cizgi, G(k) - KAT_T, k)]))
     # Alttaki katın tavanı: bu dilimin altı (içeriden gök gibi görünür; dışarıdan hiç)
-    root.add(Node("taban", [_duz(G(k) - KAT_T, KESME_Z, ARKA_Z, -KABUK_X, KABUK_X, "kat_gogu", (0, -1, 0))]))
+    root.add(Node("taban", [_duz(G(k) - KAT_T, KESME_Z, ARKA_Z, -KABUK_X, KABUK_X, "kat_tavani", (0, -1, 0))]))
     if k < KAT - 1:
         root.add(Node("perde", [_perde(k)]))
     root.add(Node("irmaklar", _kat_irmaklari(kd)))
@@ -548,7 +548,8 @@ def kesit_kat1() -> Node:
     root.add(Node("yuz", [_kesit_yuzu(cizgi, -KAT_T, 0)]))
     mx, mz, mr = MERDIVEN_ILK
     root.add(Node("merdiven", [_merdiven_seridi(mx, mz, mr, -0.3, 0.0, MERDIVEN_T_UST)]))
-    root.add(Node("perde", [_perde(0)]))
+    # İlk katın perdesi yakınlaşmada erir: ardındaki gerçek ova ve gök açılır
+    root.add(Node("perde", [_perde(0, "kat_gogu_ilk")]))
     return root
 
 
