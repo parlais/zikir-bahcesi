@@ -8,3 +8,6 @@ __pycache__/
 *.pyc
 tools/preview/out/
 tools/preview/package-lock.json
+
+# Ajan çalışma ağaçları (paralel ajanlar)
+.claude/worktrees/

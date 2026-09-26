@@ -35,7 +35,7 @@ Aşağıdaki özet ilk kurguyu (koni-dağ) anlatır; K10 bunun yerini aldı:
 | Dayanak | Mekân öğesi |
 | --- | --- |
 | Âl-i İmrân 133 (genişliği göklerle yer kadar) | Ufuk sonsuz: teraslar ışıklı pusa, aşağısı bulut denizine karışır |
-| Tirmizî 3462 | Ön planda oyuncunun verimli, boş arsası: yumuşak toprak, tek bir genç fidan, ilk çiçekler |
+| Tirmizî 3462 | Ön planda oyuncunun verimli, boş arsası: kadife çimen ve ortada Tûbâ çekirdeği; fidan ve çiçek zikirle gelir (K20) |
 | Bakara 25 ve diğerleri (altlarından ırmaklar akan) | Ana ırmak tepeden iner, ovada kıvrılarak akar |
 | Zümer 20 (üst üste bina edilmiş köşkler, altlarından ırmaklar) | Suyun üstünde, ayaklar üzerine kurulu, iki üç katlı köşkler; teraslar dereceler halinde yükselir |
 | Muhammed 15 (dört ırmak) | Su (turkuaz), süt (inci beyazı), bal (kehribar) ve Ali Ünal'ın açıklamasına göre sarhoşluk vermeyen tertemiz içecek, yani yakut renkli bir şerbet ırmağı (adı ve temsili danışma kuruluyla kesinleşir) |
@@ -116,6 +116,9 @@ Metin (web arama özetlerinden; basılı Sözler ile teyit edilecek):
 - Firdevs'in yeri: "evsatu'l-cenne" ifadesini "en seçkin" olarak okuyup Firdevs'i en üst tabakaya, dört ırmağın kaynağını da onun ortasına koymak doğru mu? İlgili Tirmizî rivayeti teyit edilecek.
 - K19: Katların karakterini Rahmân 46-76'ya göre ayırmak (alttaki iki cennet koyu ve yabani korulu, üstteki iki cennet açık ve düzenli bahçeli) uygun bir okuma mı? Âyetlerdeki "iki cennet" ile 8 tabaka arasındaki eşleme bir temsildir.
 - K19: Kesit yüzünde toprak katmanları za'ferân, misk, inci ve yakut olarak çizildi (et-Tâc 5/402: misk harç, inci ve yakut). "Toprağı za'ferân" ifadesinin geçtiği rivayet (Tirmizî, Sıfatu'l-Cenne) teyit edilecek.
+- K20: Açılış kesitinde oyuncunun katı boş, üstteki yedi kat dolu görünür ("cennet hazırlanmıştır", Âl-i İmrân 133; "ayrıntısı saklıdır", Secde 17). Numara ve kilit yok. Bu gösterim derece sıralaması ya da riya gibi okunur mu (K3)?
+- K20: Olgunlaşan her ağacın ovada on ağaç açması En'âm 160'ın ("kim bir iyilik getirirse ona on katı vardır") bir temsili olarak uygun mu?
+- K20: Tûbâ çekirdeğinin (iman) hiç zikir söylenmeden arsada süzülen bir nur olarak durması uygun mu (Küllî Kaideler 1)?
 - K19: Firdevs'in "nurlu bahçe" olarak (ışıktan ağaçlar, ortada ışıyan kaynak, mavi olmayan ışıktan gök) gösterilmesi uygun mu? Arş tasvir edilmiyor; gökte tek bir ışık noktası konmadı.
 - Ufukta, üst derecelerin üstünde yükselen dev bir Tûbâ ağacı gösterilebilir mi? Oyuncunun kendi Tûbâ'sı arsasında çekirdekten büyür.
 - Asset listesi I bölümündeki maddeler (hafızadan yazılmış dayanaklar, zayıf rivayetler, ebced gibi) hâlâ geçerli.

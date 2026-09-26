@@ -70,7 +70,7 @@ Teyit edilecek dayanaklar `docs/mekan-kurgusu.md` dosyasına tablo olarak yazıl
 | Dayanak | Mekân öğesi |
 | --- | --- |
 | Âl-i İmrân 133 (genişliği göklerle yer kadar) | Ufuk sonsuz: teraslar ışıklı pusa, aşağısı bulut denizine karışır |
-| Tirmizî 3462 | Ön planda oyuncunun verimli, boş arsası: yumuşak toprak, tek bir genç fidan, ilk çiçekler |
+| Tirmizî 3462 | Ön planda oyuncunun verimli, boş arsası: kadife çimen ve ortada Tûbâ çekirdeği; fidan ve çiçek zikirle gelir (K20) |
 | Bakara 25 ve diğerleri (altlarından ırmaklar akan) | Ana ırmak tepeden iner, ovada kıvrılarak akar |
 | Zümer 20 (üst üste bina edilmiş köşkler, altlarından ırmaklar) | Suyun üstünde, ayaklar üzerine kurulu, iki üç katlı köşkler; teraslar dereceler halinde yükselir |
 | Muhammed 15 (dört ırmak) | Su (turkuaz), süt (inci beyazı), bal (kehribar) ve Ali Ünal'ın açıklamasına göre sarhoşluk vermeyen tertemiz içecek, yani yakut renkli bir şerbet ırmağı (adı ve temsili danışma kuruluyla kesinleşir) |

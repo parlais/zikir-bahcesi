@@ -10,7 +10,7 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
 - Kullanıcı görsel olarak çok titiz; "ultra kaliteli", etkileyici bir sonuç istiyor. Dini hassasiyetler önemli: dayanak, temsil dili ve danışma kurulu teyidi.
 
 ## Okunacak belgeler (sırayla)
-1. `docs/kararlar.md`: bütün kararlar (K1-K19). Özellikle şunlar:
+1. `docs/kararlar.md`: bütün kararlar (K1-K20). Özellikle şunlar:
    - K10 (mekân), K11 (stil), K12 (ışık)
    - K13 (ışık geçişinin tetikleyicisi, sıra, canlılar)
    - K14 (son geri bildirim: "her şey daha detaylı ve gerçekçi")
@@ -18,19 +18,20 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
    - K17 (önce MVP ağaçları; Tûbâ tanıdık ama nurlu, ulu hâli arsayı gölgeler)
    - K18 (Tûbâ ve büyüme aşamaları beğenildi; sıradaki iş kesit)
    - K19 (kesit aynı mekânın dıştan görünüşü; katlar Rahmân suresindeki gibi; Firdevs nurlu bahçe)
-2. `docs/plan-faz2b.md`: **sıradaki işlerin planı** (K13'te onaylandı). Işık geçişi, çağlayanlar, ağaçlar, büyüme aşamaları ve kesit yapıldı. Kesitin tasarımı, kodun yerleri ve öğrenilenler plandaki "Kesit (dış görünüm)" bölümünde.
+   - K20 (boş başlangıç: nimetler zikirle açılır; üst katlar kesitte dolu, ova "on misli yankı", ırmaklar istiğfarla)
+2. `docs/plan-faz2b.md`: **sıradaki işlerin planı** (K13'te onaylandı). Işık geçişi, çağlayanlar, ağaçlar, büyüme aşamaları ve kesit yapıldı. Kesitin tasarımı "Kesit (dış görünüm)" bölümünde; boş başlangıcın tasarımı, yapılanlar ve sıradaki adımlar §3'teki "Boş başlangıç ve açılma (K20)" bölümünde.
 3. `docs/mekan-kurgusu.md`: cennet mekânının dayanakları (ayet, hadis, Risale-i Nur, Ali Ünal), 28. Söz'deki koni misalinin metni, danışma kurulu soruları.
 4. `docs/plan-faz2a.md`: geçmiş kaydı. En üstteki "Revizyon 2" bölümü, Faz 2a'nın son hâlini anlatır.
-5. `docs/asset-listesi.md`: içeriğin tek kaynağı (157 asset, 99+2 esma, tarifler). `docs/rapor.md`: fizibilite raporu. `docs/stil-karsilastirmasi.md`: ilk (çarbağ) stil karşılaştırması.
+5. `docs/asset-listesi.md`: içeriğin tek kaynağı (161 asset, 99+2 esma, tarifler). `docs/rapor.md`: fizibilite raporu. `docs/stil-karsilastirmasi.md`: ilk (çarbağ) stil karşılaştırması.
 
 ## Dallar
-- **En güncel iş kesit ve yakınlaşmadır** (K19, 2026-09-26). Bu iş `claude/eloquent-curie-ai1rcu` dalında yapıldı; kullanıcıya gösterildi, geri bildirim bekleniyor.
+- **En güncel iş kesit, yakınlaşma ve boş başlangıçtır** (K19, K20, 2026-09-26). Bu iş `claude/eloquent-curie-ai1rcu` dalında yapıldı. Kesit gösterildi ve onaylandı; boş başlangıcın çerçevesi gösterildi, geri bildirim bekleniyor.
 - Ondan önceki iş (ağaçlar, büyüme aşamaları, Tûbâ; K15-K18) `claude/optimistic-fermi-u1sscb` dalındadır.
 - Varsayılan dal `claude/busy-allen-p76wgo`, 2026-09-25'te kullanıcının onayıyla bu dalın son hâline ileri sarıldı (K18). İki dal aynı noktadadır.
 - Işık geçişi ve çağlayanlar daha önce `claude/confident-volta-gmupfz` dalında yapılmıştı.
 - Varsayılan dal yalnızca kullanıcı onaylarsa ilerletilir.
 - Yeni oturum kendi dalında çalışır ve commit'lerini oraya gönderir.
-- Başlarken `git log --oneline -3` çalıştır. Son commit "Kesit ve yakınlaşma: belgeler ve çekimler (K19)" ya da daha yeni değilse şunu yap: `git fetch origin claude/eloquent-curie-ai1rcu && git merge FETCH_HEAD`.
+- Başlarken `git log --oneline -3` çalıştır. Son commit "Boş başlangıç: belgeler ve çekimler (K20)" ya da daha yeni değilse şunu yap: `git fetch origin claude/eloquent-curie-ai1rcu && git merge FETCH_HEAD`.
 
 ## Şu anki durum (2026-09-26)
 **Onaylanmış yön:**
@@ -40,7 +41,11 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - Irmaklar uzakta bulutların içinden inen çağlayanlarla başlar.
   - Katlar arası çiçekli taş merdivenler bulutlara yükselir. Kullanıcının referansı: çiçek ve sarmaşıkla kaplı, göğe kıvrılan taş merdiven.
   - Dışarıdan (açılış, geçiş): tabakaların kesiti, Dünya'nın katman resimleri gibi.
-- **Arsa:** Kadife çimenli boş çayır, inci ve yakut çakıl sınırı, ortada ışıklı Tûbâ çekirdeği. Dev Tûbâ yok.
+- **Arsa:** Kadife çimenli boş çayır, ortada süzülen, ışıklı Tûbâ çekirdeği. İnci ve yakut çakıl sınırı ile kapı açılıştaki ilk Bismillah'la gelir. Dev Tûbâ yok.
+- **Boş başlangıç (K20):** Başlangıçta ağaç, ırmak, çiçek, kelebek, hayvan ve nimet yoktur; oynadıkça açılır. Çerçeve (ışık, gök, bulutlar, nur zerreleri, ova, arsanın çimeni, Tûbâ çekirdeği) hep vardır.
+  - Açılış kesitinde üst katlar dolu kalır; oyuncunun katı boş bir bant ve tek bir "buradasın" nurudur.
+  - Ova "on misli yankı" ile dolar: olgunlaşan her ağaç ovada on ağaç açar; uzak korular ve ufuk Tûbâ olgunlaşınca (1000 tevhid).
+  - Dört ırmak istiğfarla gelir (100 su, 300 süt, 700 bal, 1000 şerbet; her biri bir kez). Irmak gelene kadar yatağı düz çayırdır.
 - **Her şey zikirle oluşur (K16):** Mekândaki ağaç, ırmak, yapı gibi her öğe bir asset'tir ve oyunda zikirle oluşur. Cennet sahnesindeki dolu görünüm bir vitrindir. Bitkilerin bütün aşamaları aynı kalitede olmalı.
 - **Stil ve ışık (K11, K12):**
   - Filtresiz 3D.
@@ -48,14 +53,15 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - Geçiş zikre ve olaylara bağlıdır (K13). Zemin Nur'dur. Zikir, dua, sure ya da esma tamamlanınca ışık Ori'ye geçer, bir süre kalır, Nur'a döner. Tûbâ aşaması, kat değiştirme, ziyaret ve açılış da geçişi başlatır. Gerçek saate bağlanmaz.
   - Gece yok, güneş diski yok (K5).
   - Pixar ve yağlı boya beğenilmedi; kodu duruyor, kullanılmıyor.
-- **Geri bildirimler (K14, K16, K18):**
+- **Geri bildirimler (K14, K16, K18, K20):**
   - K14: "Şu anki durum fena olmamış." Işık geçişinin süreleri onaylandı; çağlayanlar kabul edildi.
   - K14, genel yön: **"Her şeyin daha detaylı ve gerçekçi olmasını istiyorum."**
   - K16: Yeni ağaçlar "çok beğenildi".
   - K18: Tûbâ ve büyüme aşamaları: "Güzel olmuş, sıradaki aşamaya geçebiliriz."
+  - K20: Yeni kesit onaylandı; uzak ağaç büyütmesi ve 1. kata uzak korular onaylandı.
 
 **Yapılanlar:**
-- **Faz 1:** İçerik veri katmanı, oyun çekirdeği (`game/core`, 34 test), model fabrikası, küçük adada oynanabilir ilk dilim (`game/scenes/main.tscn`).
+- **Faz 1:** İçerik veri katmanı, oyun çekirdeği (`game/core`; bugün 79 test), model fabrikası, küçük adada oynanabilir ilk dilim (`game/scenes/main.tscn`).
 - **İlk stil karşılaştırması:** Çarbağ sahnesi `game/scenes/stil/`, çekimler `docs/goruntuler/stil/`.
 - **Faz 2a, model fabrikası (`tools/model_factory/models/`):**
   - `cennet.py`:
@@ -86,7 +92,12 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - 1. kat içerideki dünyanın gerçek ölçekteki kendisidir (kesme düzlemi z = 60). 2-8. katlar aynı ölçüde, Rahmân 46-76'ya göre karakterli; Firdevs nurlu bahçe.
   - Kat başına pencere ve içerideki gökle aynı gök perdesi, malzeme başına analitik pus, gerçek modellerden siluet atlası, prosedürel kesit toprağı (za'ferân, misk, inci, yakut), bulut denizi.
   - `--zb-kamera=yakinlasma`: kesitten arsaya kesintisiz iniş; son kare arsa kamerasıyla aynı.
-  - Bütçe: kesit 0,45 milyon üçgen, 547 çizim çağrısı. Ayrıntılar `plan-faz2b.md` içinde.
+  - Uzak ağaçlar kesitte ×1,8'e kadar büyür (K20, yalnız ağaçlar; `instance uniform agac_buyut`); 1. kata 2150 ağaçlık uzak korular.
+  - Bütçe: kesit 0,49 milyon üçgen, 439 çizim çağrısı. Ayrıntılar `plan-faz2b.md` içinde.
+- **Boş başlangıç (K20, 2026-09-26):** ayrıntılar `plan-faz2b.md` §3.
+  - Dünya durumu `game/core/dunya_durumu.gd` (GardenState -> hâl; testli), yuvalar `models/dunya_yuvalari.py` ve `game/core/dunya_yuvalari.gd` (arsa 51, çevre 104).
+  - Dört ırmak asset'i (istiğfar toplamı, "toplam" kuralı; 161 asset). Irmak yatağı verisi arazinin UV'sinde; `zb_irmak_dolu` kapalı ırmağın yatağını düzler.
+  - `--zb-durum=vitrin|bos|ilk`: boşta yalnız çerçeve ve süzülen Tûbâ çekirdeği. Çayır: arazi gölge atmaz, kadife parıltısı, rüzgâr bantları, her sayımda sabâ halkası (`cayir.gdshaderinc`).
 - **Son çekimler (`docs/goruntuler/cennet/`):**
   - `gecis_nur_ori_pano.jpg`: ufuk, arsa ve kesit; t = 0, 0,5, 1
   - `gecis_nur_ori.gif` ve `gecis_nur_ori_serit.jpg`: Nur'dan Ori'ye geçiş
@@ -98,6 +109,8 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
   - `kesit_yakinlasma_nur.jpg`, `kesit_yakinlasma_ori.jpg`: yakınlaşmanın anahtar kareleri (dikey)
   - `kesit_firdevs.jpg`: Firdevs (nurlu bahçe), Nur ve Ori
   - `kesit_dikey_simdi.jpg`: eski kesit (K18'deki hâli)
+  - `bos_baslangic_pano.jpg`: boş başlangıç (kesit, yakınlaşma, ufuk, arsa; Nur ve Ori), dikey
+  - `bos_baslangic_saba.gif`: boş arsada rüzgâr bantları ve sabâ halkası
   - Eski taslaklar: `karsilastirma_nur_ori.jpg`, `taslak_*.png`
   - Kavram eskizleri: `eskiz_*.png`
 
@@ -108,11 +121,11 @@ Bu dosya her yeni oturumda otomatik okunur. Önce burayı, sonra "Okunacak belge
    - ~~ağaçlar~~ (yapıldı; kullanıcı çok beğendi).
    - ~~MVP ağaçları ve büyüme aşamaları~~ (K17; Tûbâ, çınar, servi, nar; bütün tohum ve filiz aşamaları).
    - Kesitten sonra: zeytin, incir, Toros sediri, defne (v2).
-   - ~~kesitin derinliği~~ (yapıldı, K19; kullanıcının geri bildirimi bekleniyor). İki soru açık: uzak ağaçların boyu, 1. katın seyrekliği (`plan-faz2b.md`).
+   - ~~kesitin derinliği~~ (yapıldı ve onaylandı, K19, K20).
    - köşk ve çadır: yakın plan ayrıntı eksik
    - kuşlar ve kelebekler (model fabrikasında, K13)
    - K15'teki sıra: ağaçlar, kesit, köşk ve çadır, kuşlar ve kelebekler.
-3. Plandaki mekanikler: nur tohumu ve bahar açılışı, açılış ve katlar arası geçiş (nur izi), merdivenle kat değiştirme, farklı katlardaki arkadaş bahçeleri, Firdevs ve nur katı çekimi.
+3. Plandaki mekanikler: **boş başlangıç ve açılma (K20, sıradaki)**: çerçevenin görsel onayı, sonra açılma katmanları (`dunya_katmanlari.gd`, oyun kipi), bahar açılışı, açılış akışı (nur izi), ırmak açılışı. Ardından merdivenle kat değiştirme, farklı katlardaki arkadaş bahçeleri, Firdevs ve nur katı çekimi. Kuş ve kelebek modellerinin öne alınması önerildi (ilk kuş 33 Sübhanallah'ta gelir).
 4. Arayüz (K7) sonra.
 
 **Gerçekçilik ölçütü (K15):**
@@ -137,7 +150,7 @@ apt-get update -qq && apt-get install -y -qq mesa-vulkan-drivers xvfb
 cd /home/user/zikir-bahcesi/tools/preview && npm install
 ```
 - Render çekimi: `xvfb-run` ile, `VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.json`, `--rendering-method forward_plus --rendering-driver vulkan`. Örnek komutlar `docs/stil-karsilastirmasi.md` dosyasında.
-- Kurulumun hepsi tek komutta, arka planda ~3 dk sürer. Sonra doğrula: `godot --version`, içe aktarım ve testler (47 test).
+- Kurulumun hepsi tek komutta, arka planda ~3 dk sürer. Sonra doğrula: `godot --version`, içe aktarım ve testler (79 test).
 - lavapipe yavaş. Önce düşük çözünürlükte dene; uzun çekimleri arka planda çalıştır (komut süre sınırı var). Yaklaşık süreler:
   - 640×360, 8 kare: ~1,5 dk
   - 800×450, 16 kare: ~5 dk
@@ -163,6 +176,9 @@ godot --headless --path game -s res://tests/run_tests.gd   # testler
 #   yakinlasma: kesitten arsaya iniş. --zb-yakin=0..1 tek an; --zb-yakin-sure=8 oynatma (sn);
 #   filmde --zb-yakin-bas=0 --zb-yakin-son=1 --zb-film-kare=192
 #   --zb-olcum: ekran görüntüsü anında üçgen, çizim çağrısı ve nesne sayısını yazar
+#   --zb-durum=vitrin|bos|ilk (K20): vitrin dolu bahçe (varsayılan), bos yeni oyuncu (yalnız çerçeve),
+#   ilk ilk Bismillah'tan sonra (çakıl sınırı, kapı). --zb-irmak=1,0,0,0 ırmakları (su, süt, bal, şerbet)
+#   tek tek açar. --zb-dalga=4 her 4 sn'de bir sabâ halkası (oyunda her sayımda)
 #   nur_ori (varsayılan): Nur ↔ Ori geçişi. --zb-isik=0..1 ışığı sabitler; --zb-ayar="ortam/parlama/0=0.2;gok/bulut=0.5"
 #   profil değerlerini dosyaya dokunmadan dener; N tuşu geçişi başlatır.
 tools/render/cek.sh nur ufuk 800x450 16 /tmp/nur_ufuk.png   # cennet sahnesi çekimi (lavapipe; ~5 dk, üçü paralel olur)
@@ -215,5 +231,12 @@ python3 tools/render/pano.py fark /tmp/a.png /tmp/b.png /tmp/fark.png   # ortala
   - İçerideki bulutlar MultiMesh'tir; her küme kameraya göre uzak ve yakın yarıya bölünür. Tek MultiMesh saydam sıralamayı bozar (hale ile bulut).
   - Yakınlaşmada kesikli profil değerleri (SDFGI, SSR, parıltı kipi) iç profilden alınır (`dis_karistir`); yarıda el değiştirirse ışık sıçrar.
   - Shader'da `ALPHA` yazmak (1 olsa bile) malzemeyi saydam geçişe atar; derinlik yazmaz, arkasındakiler sıraya göre üstüne çizilebilir. Büyük opak yüzeylerde (perde, tavan) yazılmaz; eriyen tek perde ayrı türdür (`kat_gogu_saydam`).
+- **Boş başlangıç (K20):**
+  - Dünyada neyin görüneceği `DunyaDurumu` hâlinden gelir (tek kaynak); sahneye yeni bir nimet eklerken hâldeki anahtarına bağla. Vitrin kipi bütün eski çekimleri aynen verir.
+  - Irmak yatağı verisi arazinin UV'sindedir (x oyma, y ırmak + bölge × 0,99); arazi başka bir UV kullanmamalı. Arazi örneğine `irmak_yatagi` instance değeri verilir.
+  - Ağaç büyütme bayrağı (`agac_buyut`) ve ırmak yatağı gibi örneğe özgü değerler `instance uniform`dır; malzeme adına bağlanırsa aynı malzemeyi kullanan yapılar da etkilenir.
+  - Ova kendi üstüne gölge düşürmez (alçak güneşte geniş koyu lekeler ve gölge mesafesinde sert bir sınır bırakıyordu).
+- **Testler:** Koşucu çalışma zamanı hatasını (SCRIPT ERROR) saymaz; test geçmiş görünür. Test çıktısında `SCRIPT ERROR` da aranmalı.
+- **Paralel ajanlar:** Saf mantık işleri ayrı çalışma ağacında (`.claude/worktrees/`, depoya girmez) yürütülüp birleştirilebilir; render isteyen işler ana ağaçta sırayla yapılır (4 çekirdek).
 - **Bellek:** Kesit ve yakınlaşma sahnesi çekim başına ~3,5 GB kullanır. Dört paralel çekimde biri "Killed" ile ölür; en çok üç paralel.
 - **Kullanıcının yüklediği dosyalar:** Ali Ünal epub'ları ve Sorularla İslamiyet PDF'i depoya konmaz (telif). Bulgular `docs/mekan-kurgusu.md` dosyasına işlendi.

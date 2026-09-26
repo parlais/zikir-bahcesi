@@ -224,4 +224,27 @@ K14'teki iki açık soru ve iş sırası kullanıcıya soruldu.
 - **Firdevs (8. kat): nur tabakası, mavi gök yok.** Kullanıcının seçimi "nurlu bahçe":
   - Zemin görünür ama her şey nurdur: ağaçlar ışıktan siluetler, ortadaki tepede dört ırmağın kaynağı ışır.
   - Gök mavi değil, ışıktandır. Arş tasvir edilmez; gökte tek bir noktada toplanan ışık ya da ışık sütunu yoktur.
-- Sonuç (yakınlaşma filmi ve dikey çekimler) kullanıcıya gösterilecek.
+- Sonuç (yakınlaşma filmi ve dikey çekimler) kullanıcıya gösterildi. Kullanıcı açık kalan iki soruyu onayladı (K20).
+
+## K20 — Boş başlangıç: nimetler zikirle açılır; uzak ağaç büyütmesi ve 1. kata uzak korular (2026-09-26)
+- **Kullanıcının sözü:** "Olur, iki dediğin şeyi de onaylıyorum ama şunu da unutmayalım: insanlar oyuna başladığında henüz ne ağaç ne ırmaklar ne çiçekler ne de kelebekler, hayvanlar, nimetler olmayacak. İnsanlar oynadıkça bunlar açılacak."
+- **Onaylanan iki madde (K19'un açık soruları):**
+  - Kesitte uzak ağaçlar uzakta hafifçe büyür, yaklaşınca gerçek boya döner: en çok ×1,8, 3-20 km arasında; içeride tam 1. Yalnız ağaçlar büyür, yapılar gerçek boydadır.
+  - 1. kata uzak korular eklenir (vitrinde dolu; oyunda "on misli yankı" ile açılır).
+- **Boş başlangıç:** K16'daki "Açık: başlangıç görüntüsü" sorusunu kapatır. Dünya iki kısımdır:
+  - **Çerçeve** (hep vardır, asset değildir): Nur/Ori ışığı ve gök, bulutlar, havadaki nur zerreleri, ova ve tepeler, arsanın kadife çimeni, seyrek kısa çimen, Tûbâ çekirdeği.
+  - **Nimet** (zikirle gelir): ağaç, çiçek (kır çiçekleri dahil), ırmak ve çağlayan, yapılar (kapı ve çakıl sınırı dahil), merdiven, canlılar, nimet objeleri, gür çimen, ovanın koruları.
+  - Cennet sahnesindeki dolu görünüm vitrindir (çekimler ve tanıtım).
+- **Kullanıcının cevapları (üç soru):**
+  - Açılış kesitinde üst katlar (2-8, Firdevs) **dolu kalır**: cennet hazırlanmıştır (Âl-i İmrân 133), ayrıntısı saklıdır (Secde 17); oyuncunun katı zikriyle dolar. Numara, kilit ya da puan gösterilmez.
+  - Ova ve uzak korular **"on misli yankı"** ile dolar: olgunlaşan her ağaç ovada on ağaç açar (En'âm 160). Önce arsanın çevresi, sonra ova; uzak korular ve ufuk Tûbâ olgunlaşınca (1000 tevhid) yeşerir.
+  - Dört ırmak **istiğfarla** gelir: 100 istiğfarda nisan yağmuru ve su ırmağı, 300'de süt, 700'de bal, 1000'de şerbet ırmağı; her biri bir kez (Nuh 10-12, temsil; Muhammed 15).
+- **Tasarım kararları** (üç öneri ve hakem):
+  - Tûbâ çekirdeği baştan vardır: arsanın ortasında diz boyunda süzülen bir nur (ışık, hale, zerreler, nefes gibi parıltı). İlk tevhidde toprağa iner ve a1 olur.
+  - Irmak açılana kadar yatağı yoktur: ova düz çayırdır. Irmak açılınca yatak oyulur, çağlayan buluttan iner, su akarak dolar. Kuru hendek bırakılmaz.
+  - Kır çiçekleri başta yoktur; açılan çiçeklerle arsadan dışa yayılır.
+  - Kapı ve inci-yakut çakıl sınırı açılıştaki ilk Bismillah'la gelir (nur izi arsayı dolaşır).
+  - Merdiven kat değiştirme mekaniğiyle gelir; ucundaki bulut çerçevedir.
+  - Çağlayanların ineceği bulutlar çerçevedir ama halesizdir: kısık ışık ya da boş yuva "kilitli yer" gibi okunuyordu.
+  - Boş dünya her zikre görünür bir karşılık verir: sabâ halkası çekirdekten ovaya yayılır, rüzgâr ovada bantlar hâlinde geçer.
+- **Dayanaklar danışma kuruluna gider:** Nuh 10-12'nin temsil olarak kullanılması, En'âm 160'ın "on misli" okuması, çekirdeğin zikirden önce görünmesi, üst katların dolu gösterilmesinin derece sıralaması gibi okunmaması (K3).

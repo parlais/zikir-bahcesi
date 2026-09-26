@@ -102,7 +102,7 @@ Bu belge sıradaki işleri toplar.
     - `buyume_agaclar.jpg`: yedi tür, tohumdan olguna
     - `buyume_tuba_arsa.jpg`: arsada Tûbâ'nın beş aşaması
     - `tuba_yakin.jpg`: fidan, olgun, ulu (Nur ve Ori)
-- **Kesit (dış görünüm), durum (2026-09-26): yeniden yapıldı (K18, K19); kullanıcıya gösterilecek.**
+- **Kesit (dış görünüm), durum (2026-09-26): yeniden yapıldı (K18, K19); kullanıcıya gösterildi, iki açık soru K20'de cevaplandı.**
   - **Önceki hâl** (`docs/goruntuler/cennet/kesit_dikey_simdi.jpg`): 8 eşit, birbirinin aynı bant; ağaçlar nokta nokta, kesit yüzü ince pastel çizgiler, üstte ve altta boş pembe alan. İçerideki dünyayla ilgisi yoktu (eskiz).
   - **Kullanıcının kararları (K19):**
     - Önden, 8 bantlı kompozisyon kalır.
@@ -145,7 +145,7 @@ Bu belge sıradaki işleri toplar.
     - Gök fonksiyonunun başucu içeriden hiç görülmez ve koyudur (Ori'de lacivert). Tavanın bakış yüksekliği perdenin üst kenarındakiyle (~61°) sınırlı.
   - **Çekimler (`docs/goruntuler/cennet/`, dikey):** `kesit_once_sonra.jpg` (eski, yeni Nur, yeni Ori), `kesit_yakinlasma.gif` (Nur, 8 sn), `kesit_yakinlasma_nur.jpg` ve `kesit_yakinlasma_ori.jpg` (anahtar kareler), `kesit_firdevs.jpg`.
     - Yakınlaşmanın son karesi arsa kamerasıyla karşılaştırıldı (`pano.py fark`): kadraj ve öğeler aynı; fark rüzgâr, zerre ve çağlayanın akışı (ortalama 3,3/255).
-  - **Kullanıcıya sorulacaklar:** Uzak ağaçlar gerçek boyda (2-4 piksel) mı kalsın, uzakta hafifçe büyütülüp yaklaşınca gerçek boya mı dönsün? 1. kat öteki katlardan seyrek; uzak korular eklensin mi (içerideki görünüşü de değiştirir)?
+  - **Sorulan iki soru (K20'de cevaplandı):** uzak ağaçlar uzakta ×1,8'e kadar büyür (gerçek boyda 2-4 piksel kalıyordu); 1. kata uzak korular eklendi.
 - **Modeller:**
   - Ağaçlar lolipop gibi; taç ve dal ayrıntısı ister.
   - Köşk ve çadırda yakın plan ayrıntısı eksik.
@@ -205,6 +205,32 @@ Bu belge sıradaki işleri toplar.
 - **Canlılık:** Kuşlar ve kelebekler: model fabrikasında sade, parçalı modeller; kanat çırpma Godot'da (K13).
 
 ## 3. Planda bekleyen mekân ve mekanik öğeleri
+- **Boş başlangıç ve açılma (K20), durum (2026-09-26): çerçeve ve veri katmanı yapıldı; açılma katmanları sırada.**
+  - **İlke:** Başlangıçta ağaç, ırmak, çiçek, canlı ve nimet yoktur; oynadıkça açılır. Dünya çerçeve (hep var) ve nimet (zikirle gelir) olarak ikiye ayrılır (K20). Cennet sahnesindeki dolu görünüm vitrindir.
+  - **Tasarım:** Üç öneri (oyun hissi, mimari, görsel ve temsil) ve hakem (ultracode). Kullanıcının cevapları: üst katlar kesitte dolu, ova "on misli yankı" ile, ırmaklar istiğfarla.
+  - **Yapılanlar:**
+    - **Dünya durumu** (`game/core/dunya_durumu.gd`, Godot'a bağlı değil): GardenState -> hâl sözlüğü (vitrin, tuba 0-5, kapı, çakıl, yuva, yansıma {çevre, ova, ufuk, çiçek, çimen}, ırmak, çağlayan, merdiven, canlı, etki). `bos()`, `vitrin()`, `hesapla()`, `fark()`, görülen hâl (`dunya_gorulen`; ebced modu değişse de aşama düşmez). Yalnız hiç azalmayan değerlerden hesaplanır (cezasızlık).
+    - **Yuvalar** (`tools/model_factory/models/dunya_yuvalari.py`, `game/core/dunya_yuvalari.gd`): arsa (51) ve çevre (104) yuvaları; her MVP 3D ve 3D-A asset'inin yeri var; ırmak koridorlarının, yapıların ve koru taçlarının dışında; sıra numarası kalıcı, liste yalnız sona eklenir.
+    - **Dört ırmak asset'i** (`irmak_su`, `irmak_sut`, `irmak_bal`, `irmak_serbet`): istiğfar toplamı 100 / 300 / 700 / 1000, her biri bir kez ("toplam" kuralı). Aynı sayıda önce nisan yağmuru, sonra ırmak. Asset listesi 161 asset.
+    - **Irmak yatağı verisi:** arazinin UV'si oyma ve ırmak bölgesidir (`cennet.irmak_oyma`); global `zb_irmak_dolu` kapalı ırmağın yatağını ova hizasına kaldırır, kıyıyı çimen yapar; kesit yüzünün çentiği de düzleşir. Arsa ve sınırı oyulmaz. Irmaklar ve çağlayanlar ırmak başına ayrı düğüm.
+    - **Sahne kipi:** `--zb-durum=vitrin|bos|ilk`, `--zb-irmak=1,0,0,0`. Boşta yalnız çerçeve ve süzülen Tûbâ çekirdeği; kapalı ırmağın çağlayanı, halesi ve dip sisi kurulmaz, bulutu kalır.
+    - **Çayır:** ova kendi üstüne gölge düşürmez (alçak güneşte geniş koyu lekeler ve 220 m'de sert bir sınır bırakıyordu); leke karşıtlığı yumuşak, rüzgâr bantları (zemin ve çimen aynı bantları görür), kadife parıltısı, her sayımda sabâ halkası (`cayir.gdshaderinc`, `zb_dalga`).
+    - **Uzak korular:** 2150 ufuk ağacı (kesit penceresinde 700-2200 m, kuzey kamasında 2,2-4 km); koru, uzak ağaç ve uzak koru örneklerinde açılış eşiği (0-1).
+    - **Bütçe (720×1280, vitrin):** arsa 1,04 milyon üçgen / 314 çizim çağrısı (önce 1,62 / 351), ufuk 0,90 / 257 (önce 295), kesit 0,49 / 439 (önce 547).
+  - **Sırada (hakemin planı):**
+    1. Açılma katmanları (`dunya_katmanlari.gd`): yuva tutucuları, `hesapla()` ile oyun kipi (`--zb-durum=oyun`, `ilk_gun`, `ilk_hafta`, `ilk_ay` senaryoları), "on misli yankı" ve Tûbâ'yla ufuk (MultiMesh'lerde açılış eşiği ve `visible_instance_count`).
+    2. Bahar açılışı (`bahar_acilisi.gd`): olay kuyruğu, nur tohumu, çimen halkası, büyüme (10. Söz); dönüşte görülmemiş açılışlar.
+    3. Açılış akışı: temsil kartı -> "Bismillah ile başla" -> Firdevs yönünden nur izi (Hadîd 12) -> kesitten arsaya yakınlaşma -> nur izi arsayı dolaşır, çakıl ve kapı gelir -> ilk tevhidde çekirdek uyanır.
+    4. Irmak açılışı: bulut aydınlanır, çağlayan iner, yatak ~20 sn'de oyulur, su kaynaktan akarak dolar (su şeridinin UV.y'si yay oranı).
+    5. Kuş ve kelebek modelleri (ilk kuş 33 Sübhanallah'ta gelir; bugün modeli yok): K15 sırasında köşk ve çadırdan önceye alınması önerildi.
+  - **Çekimler (`docs/goruntuler/cennet/`):** `bos_baslangic_pano.jpg` (kesit, yakınlaşma, ufuk, arsa; Nur ve Ori; dikey) ve `bos_baslangic_saba.gif` (ilk Bismillah'tan sonraki arsa; rüzgâr bantları, sabâ halkası).
+  - **Kapı:** bahçe kapısı arsanın kuzeyinde (yuva 155°), ovaya açılır, kanatları açık. Model adadan kalma, sade; yakın plan ayrıntısı köşk ve çadırla birlikte yenilenmeli.
+  - **Denenecek:** uzak tepelerin 40-60 m'ye çıkması (ufuk çizgisi düz kalıyor) ve ovada gezinen nur lekeleri (K12 ile uyumu).
+  - **Öğrenilenler:**
+    - Büyütme bayrağı malzeme adına bağlanırsa aynı malzemeyi kullanan yapılar da büyür (merdivenin sarmaşığı, köşkün ahşabı); örnek başına `instance uniform` ile verilir.
+    - Ağaç sınır kutusuna verilen kırpma payı içeride kadraj ve gölge kademelerinin kenarındaki hücreleri de çizdiriyordu (+45 çağrı); yalnız dışarıdan bakılan sahnelerde verilir.
+    - Test koşucusu çalışma zamanı hatasını (SCRIPT ERROR) saymıyor; test çıktısında ayrıca aranmalı.
+    - Paralel ajanlar ayrı çalışma ağacında (worktree) çalıştı; ortak dosyada (cennet.py) tek satırlık değişiklik çakışmadan birleşti.
 - **Nur tohumu ve bahar açılışı (10. Söz):** Zikirle dikim anında tomurcuk, çiçek ve meyve birlikte açar (animasyon).
 - **Açılış ve katlar arası geçiş:** Dış kesitten oyuncunun katına iniş. Hadîd 12: oyuncunun önünde ilerleyen nur izi.
 - **Merdivenle kat değiştirme:** Merdiven bulutun içinden bir üst kata çıkar.
