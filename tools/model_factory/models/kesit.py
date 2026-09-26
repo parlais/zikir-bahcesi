@@ -82,8 +82,8 @@ FIRDEVS_TEPE = 250.0
 
 # Uzak ağaç siluetlerinin türleri (atlas hücreleri): gerçek modellerden çizilir (mf/siluet.py)
 SILUET_TURLERI = ["koru", "hurma", "nar", "sidr", "selvi", "cinar", "talh", "su_kosku", "inci_cadir"]
-SILUET_MODELLERI = {"koru": "ZB_bitki_koru_agac", "hurma": "ZB_agac_hurma_a4", "nar": "ZB_bitki_nar",
-                    "sidr": "ZB_agac_sidr_a4", "selvi": "ZB_bitki_selvi", "cinar": "ZB_agac_cinar_a4",
+SILUET_MODELLERI = {"koru": "ZB_bitki_koru_agac", "hurma": "ZB_agac_hurma_a4", "nar": "ZB_agac_nar_a4",
+                    "sidr": "ZB_agac_sidr_a4", "selvi": "ZB_agac_servi_a4", "cinar": "ZB_agac_cinar_a4",
                     "talh": "ZB_agac_talh_a4", "su_kosku": "ZB_yapi_su_kosku", "inci_cadir": "ZB_yapi_inci_cadir"}
 
 
@@ -259,6 +259,8 @@ def _firdevs_agaclari(irmaklar, rng, bos, derin_max) -> dict:
             t = "cinar" if sira % 2 == 0 else "selvi"
             for yan in (-1.0, 1.0):
                 n = ir.N[i] * (ir.a[i] + ir.banka()[i] + 22.0) * yan
+                if z + n[1] > KESME_Z - 5.0:
+                    continue
                 if bos(x + n[0], z + n[1], 0.0):
                     ekle(t, x + n[0], z + n[1])
             sira += 1
@@ -344,9 +346,12 @@ def kat_dunyasi(k: int) -> KatDunyasi:
                 if rng.uniform() < 0.5:
                     continue
                 x, zz = ir.P[i]
-                if KESME_Z - zz > derin_max:
+                # Kesme düzleminin önünde zemin yoktur: orada ağaç havada kalırdı
+                if KESME_Z - zz > derin_max or zz > KESME_Z - 5.0:
                     continue
                 n = ir.N[i] * (ir.a[i] + ir.banka()[i] + rng.uniform(4, 16)) * rng.choice([-1, 1])
+                if zz + n[1] > KESME_Z - 5.0:
+                    continue
                 agaclar["hurma"].append([x + n[0], 0.0, zz + n[1], rng.uniform(0, 360), rng.uniform(1.9, 2.5)])
     agaclar = {t: np.asarray(v, float).reshape(-1, 5) for t, v in agaclar.items()}
     kd = KatDunyasi(k, kar, ova, irmaklar, selaleler, merdiven, agaclar, {}, [], None)
