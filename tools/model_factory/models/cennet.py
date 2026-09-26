@@ -662,7 +662,7 @@ def yerlesim() -> dict:
                    "y_cm": [int(round(v * 100)) for v in h], "cimen": [int(round(v * 9)) for v in W]}
 
     from .dunya_yuvalari import yuvalar as dunya_yuvalari   # K20: zikirle gelen nimetlerin yuvaları
-    d["yuvalar"] = dunya_yuvalari(irmaklar, yapilar, lambda x, z: _yerde(x, z, irmaklar))
+    d["yuvalar"] = dunya_yuvalari(irmaklar, yapilar, lambda x, z: _yerde(x, z, irmaklar), korular=d["koru"])
 
     # --- Kameralar: konum, hedef, dikey görüş açısı
     d["kameralar"] = {

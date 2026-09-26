@@ -188,7 +188,8 @@ static func kir_cicegi(olgun_cicek: int, bahar: bool) -> float:
 
 
 ## İki hâlin birleşimi: her değerin büyüğü (yuvalarda aşaması büyük olan model).
-## yuvalar verilirse artık olmayan yuvalar atılır.
+## yuvalar verilirse artık olmayan yuvalar atılır. Boş yuvalar (dosya ya da alan okunamadı,
+## DunyaYuvalari.yukle) bir şeyin kalktığını göstermez; hatırlanan yuvalar korunur.
 static func en_yuksek(content: Content, eski: Dictionary, yeni: Dictionary, yuvalar: DunyaYuvalari = null) -> Dictionary:
 	var e := duzelt(eski)
 	var h := duzelt(yeni)
@@ -206,6 +207,7 @@ static func en_yuksek(content: Content, eski: Dictionary, yeni: Dictionary, yuva
 		if not h["etki"].has(key):
 			h["etki"].append(key)
 	h["etki"].sort()
+	var kirp := yuvalar != null and not yuvalar.bos_mu()
 	for id in e["yuva"]:
 		if not content.assets.has(id):
 			continue
@@ -213,7 +215,7 @@ static func en_yuksek(content: Content, eski: Dictionary, yeni: Dictionary, yuva
 		var ey: Array = e["yuva"][id]
 		var hy: Array = h["yuva"].get(id, [])
 		var n := maxi(ey.size(), hy.size())
-		if yuvalar != null:
+		if kirp:
 			n = mini(n, yuvalar.sayi(id))
 		var liste: Array = []
 		for i in n:

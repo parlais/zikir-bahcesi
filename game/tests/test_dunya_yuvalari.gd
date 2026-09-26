@@ -6,6 +6,8 @@ var c := Content.load_default()
 var y := DunyaYuvalari.yukle()
 ## Kapı çakıl sınırının üstündedir; sınır arsa yarıçapının çevresinde en çok bu kadar dalgalanır.
 const SINIR_DALGASI := 1.7
+## Çevre korusunun taç yarıçapı (ölçeksiz, m); tools/model_factory/models/dunya_yuvalari.py KORU_TAC.
+const KORU_TAC := 5.0
 
 
 func _arsa_r() -> float:
@@ -86,6 +88,24 @@ func test_yuvalar_cakismiyor() -> void:
 			if d < y.ayak_r(a) + y.ayak_r(b) - 0.02:  # konumlar 1 cm'ye yuvarlanır
 				dogru(false, "%s (%d) ile %s (%d) çakışıyor" % [DunyaYuvalari.asset(a), DunyaYuvalari.sira(a),
 					DunyaYuvalari.asset(b), DunyaYuvalari.sira(b)])
+
+
+## Çevre koruları "on misli yankı" ile (yansima.cevre) yuvalardaki ağaçlarla aynı anda görünür:
+## hiçbir yuva bir koru ağacının tacı altında durmaz.
+func test_yuvalar_koru_tacinda_degil() -> void:
+	if not _veri_var():
+		return
+	var d = JSON.parse_string(FileAccess.get_file_as_string(DunyaYuvalari.VARSAYILAN_YOL))
+	var koru: Array = d.get("koru", [])
+	dogru(koru.size() > 100, "dunya_cennet.json'da korular var")
+	for yuva in y.hepsi():
+		var p := DunyaYuvalari.konum(yuva)
+		for k in koru:
+			var t := Vector2(p.x - float(k[0]), p.z - float(k[2])).length()
+			if t < KORU_TAC * float(k[4]) + y.ayak_r(yuva) - 0.02:  # konumlar 1 cm'ye yuvarlanır
+				dogru(false, "%s (%d) koru tacının altında: %s, koru (%.1f, %.1f)" % [DunyaYuvalari.asset(yuva),
+					DunyaYuvalari.sira(yuva), p, float(k[0]), float(k[2])])
+				break
 
 
 func test_yuva_sirasi_benzersiz() -> void:

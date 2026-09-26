@@ -10,13 +10,22 @@ konur (game/core/dunya_durumu.gd). Yuvalar game/data/dunya_cennet.json "yuvalar"
 Bölgeler:
   arsa   oyuncunun arsası (Tûbâ orijinde). Ağaçlar dış halkada (r 8-11 m), çiçek tarhları iç
          halkada, küçük objeler Tûbâ'nın dibinde ve sınırda, bahçe kapısı doğu kenarında.
-  cevre  arsanın dışı, 13-120 m: türlere göre kümeler; ırmak koridorlarının (a + banka + 22 m)
-         ve vitrin yapılarının (cennet.py yerlesim() "yapilar") dışında, kesme düzleminin gerisinde.
+  cevre  arsanın dışı, 13-120 m: türlere göre kümeler; ırmak koridorlarının (a + banka + 22 m),
+         vitrin yapılarının (cennet.py yerlesim() "yapilar") ve çevre korularının (yerlesim()
+         "koru"; "on misli yankı" ile yuvalardaki ağaçlarla aynı anda görünür) dışında, kesme
+         düzleminin gerisinde.
 
 Sıra kalıcıdır. Bir asset'in yuvaları sıraya göre dolar; oyuncunun üçüncü olgun hurması hep
-aynı yuvada durur. KURAL: liste yalnız sona eklenir. Var olan bir grubun adedi ve sırası
-değiştirilmez; yeni yuvalar _gruplar() sonuna yeni bir grup olarak eklenir. Arazi veya ırmaklar
-değişirse bir yuvanın konumu en yakın boş yere kayabilir; sırası değişmez.
+aynı yuvada durur. Sıra numarası koy() çağrılarının sırasıyla verilir: önce _arsa(), sonra
+_cevre(). KURAL: liste yalnız sona eklenir. Var olan bir grubun adedi ve sırası değiştirilmez;
+yeni yuvalar yalnız yuvalar() fonksiyonunun sonuna, _cevre()'den sonra, yeni bir grup olarak
+eklenir. _arsa() ya da _cevre() içine eklenen bir yuva sonraki bütün sıraları kaydırır; aynı
+asset'in yuvaları yer değiştirir ve oyuncunun olgun ağaçları başka yere taşınır.
+
+Konumlar sıra kadar kalıcı değildir. koy() ile konan tek yuva, yeri dolarsa en yakın boş yere
+(itme payı kadar) kayar. _kume() tohumlu, reddetmeli örnekleme yapar: ırmaklar, yapılar ya da
+korular değişirse kümedeki bütün konumlar ve kümenin yakından uzağa dizilişi değişebilir (adet
+ve sıra numaraları değişmez).
 
 Uzun öğeler (ağaçlar, kapı, yapılar) arsa ve ufuk kameralarının dikey (720x1280) kadrajında,
 kamera ile Tûbâ arasında durmaz.
@@ -44,6 +53,9 @@ SINIR_PAYI = 1.0             # çevre yuvaları çakıl sınırının en az bu k
 KESIT_PAYI = 8.0             # çevre yuvaları kesme düzleminin (KESME_Z) gerisinde kalır
 KAPI_ACISI = 108.0           # bahçe kapısının arsa ortasına göre yönü (+z'den doğuya, derece)
 ITME_ADIMI = 0.5             # yuva dolu bir yere düşerse bu adımlarla en yakın boş yer aranır
+# Çevre korusu (ZB_bitki_koru_agac): taç yarıçapı (ölçeksiz, m). Modelin tacı gövdeden 4-6 m
+# uzanır (kutusu x -4,0..5,9, z -6,1..4,2). Hiçbir yuva bir koru tacının içinde durmaz.
+KORU_TAC = 5.0
 
 # Taban yarıçapı (ölçeksiz, m): yuvalar arasında çakışma denetimi (oyundaki test de kullanır).
 # Üretilmemiş modeller (gül, bahar dalı, kitabe, temel taşı, parsel kapısı, sur) tahminidir.
@@ -83,9 +95,11 @@ def _yuze_don(x: float, z: float, hx: float = 0.0, hz: float = 0.0) -> float:
 
 
 class _Yerlestirici:
-    def __init__(self, irmaklar, yapilar, yerde):
+    def __init__(self, irmaklar, yapilar, yerde, korular=()):
         self.irmaklar = irmaklar
         self.yapilar = list(yapilar)
+        # (x, z, taç yarıçapı): cennet.py yerlesim() "koru" örnekleri [x, y, z, dönüş, ölçek, ...]
+        self.korular = [(float(k[0]), float(k[2]), KORU_TAC * float(k[4])) for k in korular]
         self.yerde = yerde
         self.konan = []            # (bölge, x, z, dönüş, ölçek, asset, sıra, dy)
         self.sira = 0
@@ -115,6 +129,14 @@ class _Yerlestirici:
             for (yx, yz, yr) in self.yapilar:
                 if math.hypot(x - yx, z - yz) < yr + ayak:
                     return "vitrin yapısının yerinde"
+        # Koru ağaçları: yuva tacın altına girmez; uzun öğelerin tacı koru tacıyla iç içe geçmez
+        # (ağaçlar arasındaki kuralla aynı pay)
+        for (kx, kz, kr) in self.korular:
+            d = math.hypot(x - kx, z - kz)
+            if d < kr + ayak:
+                return "koru tacının altında"
+            if asset in TAC and d < 0.8 * (kr + TAC[asset] * olcek):
+                return "tacı bir koru tacının içinde"
         if asset in UZUN and asset != "tuba":
             for (kx, kz), (hx, hz), menzil in (ARSA_KAMERA, UFUK_KAMERA):
                 vx, vz = x - kx, z - kz
@@ -305,17 +327,19 @@ def _cevre(y: _Yerlestirici, rng) -> None:
     _kume(y, "beyaz_gul", (22.0, -60.0), 4.5, 6, 1.2, 105, bas=arsa, aralik=1.0)
     _kume(y, "bahar_dali", (26.0, -46.0), 5.0, 5, 1.0, 106, bas=arsa, aralik=2.0)
 
-    # Su ırmağının batısındaki çayır: ağaçlar için ikinci kümeler
-    _kume(y, "servi", (-96.0, -40.0), 14.0, 10, 1.05, 107, bas=arsa)
-    _kume(y, "hurma_agaci", (-95.0, 12.0), 16.0, 8, 1.05, 108, bas=arsa)
-    _kume(y, "cinar", (-100.0, -12.0), 14.0, 3, 1.0, 109, bas=arsa)
-    _kume(y, "uzum_asmasi_ve_cardak", (-98.0, 32.0), 12.0, 5, 1.0, 110, bas=arsa)
+    # Su ırmağının batısındaki çayır: ağaçlar için ikinci kümeler. Çayırın kuzeyi ve batısı
+    # koru (yansima.cevre); kümeler korunun güney kıyısıyla ırmak koridoru arasındaki açıklıkta.
+    _kume(y, "servi", (-102.0, -8.0), 7.0, 10, 1.05, 107, bas=arsa)
+    _kume(y, "hurma_agaci", (-92.0, 10.0), 11.0, 8, 1.05, 108, bas=arsa)
+    _kume(y, "cinar", (-86.0, -10.0), 6.0, 3, 1.0, 109, bas=arsa)
+    _kume(y, "uzum_asmasi_ve_cardak", (-96.0, 34.0), 10.0, 5, 1.0, 110, bas=arsa)
 
 
-def yuvalar(irmaklar, yapilar, yerde) -> dict:
+def yuvalar(irmaklar, yapilar, yerde, korular=()) -> dict:
     """Dünya yuvaları (bkz. modül başı). irmaklar: cennet.Irmak listesi; yapilar: vitrin
-    yapılarının (x, z, yarıçap) listesi; yerde(x, z): arazinin yüksekliği."""
-    y = _Yerlestirici(irmaklar, yapilar, yerde)
+    yapılarının (x, z, yarıçap) listesi; yerde(x, z): arazinin yüksekliği; korular: çevre
+    koruları (yerlesim() "koru", [x, y, z, dönüş, ölçek, ...]), yuvalar onların tacına girmez."""
+    y = _Yerlestirici(irmaklar, yapilar, yerde, korular)
     rng = np.random.default_rng(20260926)
     _arsa(y, rng)
     _cevre(y, rng)

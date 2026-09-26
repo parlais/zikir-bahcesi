@@ -21,7 +21,7 @@ var _by_asset: Dictionary = {}   ## asset id -> [yuva] (sıraya göre)
 var _bolge: Dictionary = {}      ## sıra -> bölge adı
 
 
-## dunya_cennet.json dosyasından okur. Dosya ya da alan yoksa boş döner (uyarıyla).
+## dunya_cennet.json dosyasından okur. Dosya ya da alan yoksa boş döner (uyarıyla; bos_mu()).
 static func yukle(yol: String = VARSAYILAN_YOL) -> DunyaYuvalari:
 	var y := DunyaYuvalari.new()
 	var text := FileAccess.get_file_as_string(yol)
@@ -82,6 +82,11 @@ func yuvalar(asset_id: String) -> Array:
 
 func sayi(asset_id: String) -> int:
 	return yuvalar(asset_id).size()
+
+
+## Hiç yuva yok mu (dosya ya da "yuvalar" alanı okunamadı)?
+func bos_mu() -> bool:
+	return _by_asset.is_empty()
 
 
 ## Bütün yuvalar, sıraya göre.

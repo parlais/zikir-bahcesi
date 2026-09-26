@@ -282,6 +282,28 @@ func test_ebced_modu_degisince_dusmez() -> void:
 	esit(h["yuva"]["servi"], ["ZB_agac_servi_a4"], "olgunlaşınca yerini olgun servi alır")
 
 
+## Yuva verisi okunamazsa (DunyaYuvalari.yukle boş döner) hatırlanan yuvalar silinmez.
+func test_bos_yuvalar_gorulen_yuvalari_silmez() -> void:
+	var e := _yeni()
+	var y := _yuvalar()
+	e.say("tevhid", 150)
+	e.say("esma:vahid", 10)
+	var h := DunyaDurumu.hesapla(c, e.state, e, y)
+	DunyaDurumu.goruldu(e.state, h)
+	var bos := DunyaYuvalari.sozlukten({})
+	dogru(bos.bos_mu(), "boş yuvalar")
+	dogru(not y.bos_mu(), "dolu yuvalar")
+	var sonra := DunyaDurumu.hesapla(c, e.state, e, bos)
+	esit(sonra["yuva"], h["yuva"], "görülen yuvalar korunur")
+	esit(_dusenler(h, sonra), [], "hiçbir değer düşmedi")
+	DunyaDurumu.goruldu(e.state, sonra)
+	esit(e.state.dunya_gorulen["yuva"], h["yuva"], "kayıttaki yuvalar boşalmaz")
+	# Dolu yuvalarda artık olmayan yuvalar yine atılır
+	var tek := DunyaYuvalari.sozlukten({"arsa": [[0.0, 0.0, 0.0, 0.0, 1.0, "tuba", 0]]})
+	var kirpik := DunyaDurumu.en_yuksek(c, h, DunyaDurumu.bos(), tek)
+	esit(kirpik["yuva"].keys(), ["tuba"], "yuvası kalmayan asset atılır")
+
+
 func test_vitrin_her_sey_acik() -> void:
 	var v := DunyaDurumu.vitrin()
 	esit(v["vitrin"], true, "vitrin alanı")
