@@ -722,6 +722,9 @@ def yerlesim() -> dict:
     d["izgara"] = {"x0": x0, "z0": z0, "adim": 1.0, "nx": len(xs), "nz": len(zs),
                    "y_cm": [int(round(v * 100)) for v in h], "cimen": [int(round(v * 9)) for v in W]}
 
+    from .dunya_yuvalari import yuvalar as dunya_yuvalari   # K20: zikirle gelen nimetlerin yuvaları
+    d["yuvalar"] = dunya_yuvalari(irmaklar, yapilar, lambda x, z: _yerde(x, z, irmaklar), korular=d["koru"])
+
     # --- Kameralar: konum, hedef, dikey görüş açısı
     d["kameralar"] = {
         "ufuk": {"konum": [12.0, _yerde(12, 38, irmaklar) + 17.0, 38.0], "hedef": [-10.0, 60.0, -700.0], "fov": 55.0},
