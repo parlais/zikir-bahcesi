@@ -51,7 +51,8 @@ IRMAK_PAYI = 22.0            # ırmak koridoru: yatak (a) + banka + 22 m
 CEVRE_R = (13.0, 120.0)      # çevre yuvalarının uzaklığı (arsanın ortasından)
 SINIR_PAYI = 1.0             # çevre yuvaları çakıl sınırının en az bu kadar dışında
 KESIT_PAYI = 8.0             # çevre yuvaları kesme düzleminin (KESME_Z) gerisinde kalır
-KAPI_ACISI = 108.0           # bahçe kapısının arsa ortasına göre yönü (+z'den doğuya, derece)
+KAPI_ACISI = 155.0           # bahçe kapısının arsa ortasına göre yönü (+z'den doğuya, derece); arsa
+                             # kamerasının ~4° sağında, arsanın kuzeyinde; ovaya açılır (108°'de kadraj dışında kalıyordu)
 ITME_ADIMI = 0.5             # yuva dolu bir yere düşerse bu adımlarla en yakın boş yer aranır
 # Çevre korusu (ZB_bitki_koru_agac): taç yarıçapı (ölçeksiz, m). Modelin tacı gövdeden 4-6 m
 # uzanır (kutusu x -4,0..5,9, z -6,1..4,2). Hiçbir yuva bir koru tacının içinde durmaz.
@@ -204,8 +205,8 @@ def _arsa(y: _Yerlestirici, rng) -> None:
 
     # Tûbâ: ortada (aşama 0'da süzülen çekirdek sahnenin işidir; yuva a1'den itibaren dolar)
     y.koy("arsa", "tuba", 0.0, 0.0, 1.0, rot=0.0, itme=0.0)
-    # Bahçe kapısı (ilk Bismillah): doğu kenarında, çakıl sınırının üstünde; önü arsaya bakar.
-    # Arsa kamerasından yandan görünür, dikey kadrajın sağında kalır.
+    # Bahçe kapısı (ilk Bismillah): kuzeydoğu kenarında, çakıl sınırının üstünde; önü arsaya bakar.
+    # Arsa kamerasından görünür: Tûbâ solda, kapı sağ arkada; kamerayı kapatmaz.
     aci = KAPI_ACISI
     x, z = _kutup(aci, sinir_r(math.radians(aci)))
     y.koy("arsa", "bahce_kapisi", x, z, 1.0, rot=aci + 180.0, itme=0.0)

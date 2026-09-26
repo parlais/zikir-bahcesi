@@ -85,13 +85,15 @@ void fragment() {
 	float zb_uzak = smoothstep(0.6, 3.0, length(fwidth(dunya.xz)));
 	float zb_bant = mix(zb_ruzgar_bandi(dunya, TIME), 0.18, zb_uzak) * cim;
 	c = mix(c, c * 1.16 + vec3(0.025, 0.03, 0.0), zb_bant * ruzgar_dalga);
-	// Sabâ halkası: her zikirde çekirdekten yayılan açık, sıcak bir halka
-	float zb_h = zb_halka(dunya.xz) * cim;
-	c = mix(c, c * 1.3 + vec3(0.06, 0.055, 0.02), zb_h);
+	// Sabâ halkası: her zikirde çekirdekten yayılan açık, sıcak bir halka (arsanın çimeninde de)
+	float zb_h = zb_halka(dunya.xz) * mix(0.45, 1.0, cim);   // arsanın küçük çimeninde yarı güçte
+	c = mix(c, c * 1.35 + vec3(0.08, 0.07, 0.03), zb_h);
 	ALBEDO = zb_renk(c);
 	// Kadife: yatık bakışta çimen uçlarının yumuşak parıltısı
 	float zb_yatik = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0);
 	EMISSION += ALBEDO * zb_yatik * kadife * cim;
+	// Halka nurdan bir dalga gibi hafifçe ışır
+	EMISSION += vec3(1.0, 0.92, 0.7) * zb_h * 0.18;
 	// Tümseklerin ışığı yumuşar (çimenli yerde)
 	NORMAL = normalize(mix(NORMAL, (VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz, normal_yumusak * cim));
 	ROUGHNESS = 0.95;

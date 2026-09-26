@@ -13,6 +13,6 @@ float zb_ruzgar_bandi(vec3 zb_p, float zb_t) {
 
 float zb_halka(vec2 zb_p) {
 	float zb_d = length(zb_p - zb_dalga.xy);
-	float zb_x = (zb_d - zb_dalga.z) / 5.0;
+	float zb_x = (zb_d - zb_dalga.z) / 7.0;
 	return exp(-zb_x * zb_x) * zb_dalga.w;
 }

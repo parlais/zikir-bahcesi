@@ -75,7 +75,6 @@ var _on_dugumleri: Array[Node] = []
 ## kapi, cakil, irmak [su, süt, bal, şerbet], merdiven, yansima {cevre, ova, ufuk, cicek, cimen}).
 var durum: Dictionary = {}
 const IRMAK_ADLARI := ["su", "sut", "bal", "serbet"]
-const ARSA_R := 13.0
 ## Kapalı ırmak ve çağlayan düğümleri gizli bir tutucuya taşınır (kesitin ve yakınlaşmanın
 ## görünürlük ayarları onlara dokunmaz)
 var _kapali: Node3D
@@ -327,9 +326,16 @@ func _arsa_kur() -> void:
 	if durum["cakil"]:
 		k.coklu("ZB_obje_inci_cakil", yer["inci_cakil"], false)
 	if not durum["vitrin"]:
-		# Bahçe kapısı (Bismillah) arsanın doğu kenarında; yolu arsaya dik (yuva tablosu gelince oradan)
+		# Bahçe kapısı (ilk Bismillah): yuva tablosundaki yerinde (models/dunya_yuvalari.py)
 		if durum["kapi"]:
-			k.ornek("ZB_yapi_bahce_kapisi", [ARSA_R, 0.0, 0.0, 90.0, 1.0])
+			for y in yer.get("yuvalar", {}).get("arsa", []):
+				if y[5] == "bahce_kapisi":
+					var kapi := k.ornek("ZB_yapi_bahce_kapisi", y.slice(0, 5))
+					# Bismillah'la kanatlar açılır (adadaki kapıyla aynı açı; bahce.gd)
+					for kanat in ["kanat_sol", "kanat_sag"]:
+						var kn := kapi.find_child(kanat, true, false) as Node3D
+						if kn:
+							kn.rotation_degrees.y = 78.0 if kanat == "kanat_sol" else -78.0
 		return
 	for f in a["fidan"]:
 		k.agac_isaretle(k.ornek(f[5], f.slice(0, 5)))
