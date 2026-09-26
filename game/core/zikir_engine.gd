@@ -4,8 +4,10 @@ extends RefCounted
 ## item'ın açılacağına ve kaynakların nasıl değişeceğine karar verir.
 ##
 ## Olaylar sözlük olarak döner; arayüz bunlara göre efekt ve kart gösterir:
-##   {tur="asama", asset, asama}          büyüyen örnek yeni aşamaya geçti
-##   {tur="tamamlandi", asset, adet}      item açıldı / bitki olgunlaştı
+##   {tur="asama", asset, asama}          büyüyen örnek yeni aşamaya geçti (yalnız aşamalı asset'ler)
+##   {tur="tamamlandi", asset, adet}      item açıldı / bitki olgunlaştı. Aynı sayıda birden
+##                                        çok asset gelirse sıra Content.by_key sırasıdır:
+##                                        100. istiğfarda önce nisan yağmuru, sonra su ırmağı.
 ##   {tur="ardisik", asset}               N kez art arda söylendi (örn. gül kokusu)
 ##   {tur="esma_tamam", esma, kez}        esmanın hedef sayısı tamamlandı
 ##   {tur="kart", esma}                   öğretici kart açıldı
@@ -56,7 +58,9 @@ func _say_bir(key: String, olaylar: Array) -> void:
 
 	for id in etkilenen:
 		var sonra := ilerleme(id)
-		if sonra["asama"] > once[id]["asama"]:
+		# Tek aşamalı asset'in (ırmak) aşama adı yoktur; yalnız "tamamlandi" olayı gelir.
+		var asamali: bool = int(content.assets[id]["asama_sayisi"]) > 1
+		if asamali and sonra["asama"] > once[id]["asama"]:
 			olaylar.append({"tur": "asama", "asset": id, "asama": sonra["asama"]})
 		_ver(id, sonra["tamam"], olaylar)
 
@@ -139,7 +143,8 @@ func ilerleme(id: String) -> Dictionary:
 	var tamam := 0
 	var p := 0
 	if t["kural"] == "toplam":
-		# Ömür boyu toplamla büyür, tekrar etmez (Tûbâ).
+		# Ömür boyu toplamla ilerler; son eşikte bir kez verilir, tekrar etmez.
+		# Tûbâ beş aşamayla büyür; dört ırmak tek eşiklidir (100, 300, 700, 1000 istiğfar).
 		tamam = 1 if c >= son else 0
 		p = c
 	else:

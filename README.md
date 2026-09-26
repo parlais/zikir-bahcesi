@@ -11,7 +11,7 @@ Stil karşılaştırması yapıldı (`docs/stil-karsilastirmasi.md`). Sıradaki 
 ## Faz 1 (ilk oynanabilir dilim)
 
 Hazır olanlar:
-- **İçerik verisi.** Asset listesi (`docs/asset-listesi.md`) makinece okunur JSON'a çevrilir: 157 asset, 99+2 esma, 34 söz ve 15 tarif.
+- **İçerik verisi.** Asset listesi (`docs/asset-listesi.md`) makinece okunur JSON'a çevrilir: 161 asset, 99+2 esma, 34 söz ve 15 tarif.
 - **Oyun çekirdeği.** Kapsadığı konular:
   - aşama eşikleri (1, 10, 33, 100) ve açılıp kapanabilen ebced modu
   - ikinci item sırası, her 33 Sübhanallah'ta bir kuş, 10 kez üst üste salavat
