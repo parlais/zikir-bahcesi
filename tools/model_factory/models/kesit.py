@@ -567,8 +567,11 @@ def _kat_modeli(k: int) -> Node:
     xs = _x_sutunlari(kd.irmaklar)
     cizgi = np.stack([xs, kd.zemin_y(xs, np.full_like(xs, KESME_Z))], 1)
     root.add(Node("zemin", [zemin]), Node("yuz", [_kesit_yuzu(cizgi, G(k) - KAT_T, k)]))
-    # Alttaki katın tavanı: bu dilimin altı (içeriden gök gibi görünür; dışarıdan hiç)
-    root.add(Node("taban", [_duz(G(k) - KAT_T, KESME_Z, ARKA_Z, -KABUK_X, KABUK_X, "kat_tavani", (0, -1, 0))]))
+    # Alttaki katın tavanı: bu dilimin altı (içeriden gök gibi görünür; dışarıdan hiç).
+    # Alttaki katın perdesinde biter: perde eriyince ardında gerçek gök kalır (tavanın uzak
+    # kenarı, sise girmeyen tavan göğü ile sisli gök arasında çizgi bırakıyordu).
+    root.add(Node("taban", [_duz(G(k) - KAT_T, KESME_Z, KESME_Z - pencere(k - 1) - 10.0, -KABUK_X, KABUK_X,
+                                 "kat_tavani", (0, -1, 0))]))
     if k < KAT - 1:
         root.add(Node("perde", [_perde(k)]))
     root.add(Node("irmaklar", _kat_irmaklari(kd)))
