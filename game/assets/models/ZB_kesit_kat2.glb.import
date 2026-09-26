@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cc30vp3182g6g"
-path="res://.godot/imported/ZB_dunya_kesit.glb-6d559682639fb41059dfe4ea23ae3a0c.scn"
+uid="uid://c4ha7fhjj8b60"
+path="res://.godot/imported/ZB_kesit_kat2.glb-572e4093df83e83a63ebd80c0e667cf6.scn"
 
 [deps]
 
-source_file="res://assets/models/ZB_dunya_kesit.glb"
-dest_files=["res://.godot/imported/ZB_dunya_kesit.glb-6d559682639fb41059dfe4ea23ae3a0c.scn"]
+source_file="res://assets/models/ZB_kesit_kat2.glb"
+dest_files=["res://.godot/imported/ZB_kesit_kat2.glb-572e4093df83e83a63ebd80c0e667cf6.scn"]
 
 [params]
 

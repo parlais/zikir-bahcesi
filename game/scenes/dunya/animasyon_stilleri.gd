@@ -158,20 +158,26 @@ const PROFILLER := {
 			"inci": {"isima": Color("fff0dc"), "isima_guc": 0.18},
 			"nur": {"isima_guc": 4.0},
 			"tavan": {"guc": 1.0, "bulut": 0.35},
+			"kesit_yuzu": {"yuz_ton": Color("ffffff"), "yuz_isik": 1.0, "damar_renk": Color("ffeab0")},
+			"kesit_serit": {"isima": 0.35, "tas_renk": Color("fbf0dc"), "cicek_renk": Color("ff9fb4")},
 		},
 		"bulut_renk": [Color(1.3, 1.16, 0.98), Color(0.98, 0.84, 0.8)],
 		"parcacik": {"nur": 700, "nur_renk": Color(1.0, 0.9, 0.6), "sis_renk": Color(1.0, 0.95, 0.85, 0.45),
 			"selale_sis": Color(1.3, 1.24, 1.12, 0.35)},
+		# Kesit (K18): katların pusu (her katın dışarıdan görünen göğü), alttaki bulut denizi
+		"kesit_pus": {"ufuk": Color("ffd9a2"), "gok": Color("9ec2ec"), "nur": Color("fff2d8")},
+		"bulut_denizi": {"acik": Color("fff4ea"), "golge": Color("d8b0b4"), "isima": Color("ffd8b4"), "isima_guc": 0.25},
 		"kesit": {
-			"gunes": {"yukseklik": 30.0, "yon": 340.0, "enerji": 1.6, "golge_mesafe": 6000.0},
-			"gok": {"kozmik": 1.0, "tepe": Color("5a5aa8"), "ufuk": Color("ffe0a8"), "nur_yon": Vector3(0.0, 0.93, -0.36),
-				"nur_guc": 1.3, "nur_cekirdek": 1.8, "bulutsu_a": Color("f0b890"), "bulutsu_b": Color("7a6ab8"),
-				"parilti": 1.2},
+			# Işık içerideki gibi arkadan gelir (aynı mekân, aynı ışık; yakınlaşmada gölge dönmez).
+			# Gök: her şeyi kuşatan nur, mavi yok (Firdevs'in üstü; Arş tasvir edilmez).
+			"gok": {"kozmik": 1.0, "tepe": Color("fff3dc"), "ufuk": Color("ffe2b0"), "nur_yon": Vector3(0.0, 0.93, -0.36),
+				"nur_guc": 1.3, "nur_cekirdek": 1.8, "bulutsu_a": Color("ffe8cc"), "bulutsu_b": Color("f4ecf8"),
+				"parilti": 0.8},
 			# Kontrast, parlaklık, doygunluk: kullanıcının beğendiği taslak (taslak_nur_kesit.png)
 			# profilin son ayarından önce çekilmişti; bu değerler o açık, pastel görüntüyü verir.
 			"ortam": {"sis": [0.000002, Color("ffe8d0"), 0.2, 0.0], "hava_perspektif": 0.0, "sdfgi": false,
 				"ssr": false, "ssao": 0.0, "ambient": 0.55, "hacim_sis": [0.0, Color.WHITE, 0.0, 0.0],
-				"kontrast": 0.8, "parlaklik": 1.18, "doygunluk": 1.05},
+				"pozlama": 0.9, "kontrast": 1.12, "parlaklik": 1.0, "doygunluk": 1.3},
 		},
 	},
 	# ------------------------------------------------------------------
@@ -215,18 +221,21 @@ const PROFILLER := {
 			"inci": {"isima": Color("e8ffff"), "isima_guc": 0.35},
 			"nur": {"isima_guc": 6.0},
 			"tavan": {"guc": 1.05, "bulut": 0.3},
+			"kesit_yuzu": {"yuz_ton": Color("f4fbff"), "yuz_isik": 1.05, "damar_renk": Color("e8fff8")},
+			"kesit_serit": {"isima": 0.5, "tas_renk": Color("f4fcff"), "cicek_renk": Color("ffb4e0")},
 		},
 		"bulut_renk": [Color(1.35, 1.42, 1.5), Color(0.7, 0.86, 1.25)],
 		"parcacik": {"nur": 1200, "nur_renk": Color(0.85, 1.0, 0.95), "sis_renk": Color(0.85, 0.97, 1.0, 0.4),
 			"selale_sis": Color(1.15, 1.32, 1.42, 0.35)},
+		"kesit_pus": {"ufuk": Color("c8f2ff"), "gok": Color("a8d6f2"), "nur": Color("effffb")},
+		"bulut_denizi": {"acik": Color("ffffff"), "golge": Color("b4cff0"), "isima": Color("c4fff0"), "isima_guc": 0.35},
 		"kesit": {
-			"gunes": {"yukseklik": 35.0, "yon": 340.0, "enerji": 1.3, "golge_mesafe": 6000.0},
-			"gok": {"kozmik": 1.0, "tepe": Color("071a4a"), "ufuk": Color("c8fff0"), "nur_yon": Vector3(0.0, 0.93, -0.36),
-				"nur_guc": 1.4, "nur_cekirdek": 2.0, "bulutsu_a": Color("2a8ad0"), "bulutsu_b": Color("0a2a70"),
-				"parilti": 2.0},
+			"gok": {"kozmik": 1.0, "tepe": Color("f2fffd"), "ufuk": Color("d4fff4"), "nur_yon": Vector3(0.0, 0.93, -0.36),
+				"nur_guc": 1.4, "nur_cekirdek": 2.0, "bulutsu_a": Color("e6fff8"), "bulutsu_b": Color("dcecff"),
+				"parilti": 1.4},
 			"ortam": {"sis": [0.000002, Color("a0e8ff"), 0.2, 0.0], "hava_perspektif": 0.0, "sdfgi": false,
 				"ssr": false, "ssao": 0.0, "ambient": 0.5, "hacim_sis": [0.0, Color.WHITE, 0.0, 0.0],
-				"parlama": [0.5, 1.0, 0.06, 1.2]},
+				"parlama": [0.5, 1.0, 0.06, 1.2], "pozlama": 0.88, "kontrast": 1.12, "doygunluk": 1.3},
 		},
 	},
 }
@@ -236,6 +245,10 @@ const PROFILLER := {
 ## Henüz tanımlanmamış stiller Pixar'a düşer.
 static func al(ad: String, kesit := false) -> Dictionary:
 	var p: Dictionary = PROFILLER.get(ad, PROFILLER["pixar"]).duplicate(true)
+	if kesit:
+		# Kesitte katların göğü (kat_gogu) içeriden görülen göğün aynısıdır: kesitin
+		# üzerine yazdığı ortam göğünden önce saklanır (K18).
+		p["kat_gok"] = (p["gok"] as Dictionary).duplicate(true)
 	if kesit and p.has("kesit"):
 		for alan in p["kesit"]:
 			for anahtar in p["kesit"][alan]:

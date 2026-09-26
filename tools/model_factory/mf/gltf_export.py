@@ -48,6 +48,11 @@ MATERIALS = {
     # bağlanır (önizleme için). "yaprak_*" adları yaprak kümesi atlasıdır (alfa kesmeli).
     "kabuk": dict(roughness=0.9, metallic=0.0, doku="kabuk.png"),
     "meyve": dict(roughness=0.5, metallic=0.0),
+    # Kesit (K18): öteki katların zemini, kesit yüzü (za'ferân toprak), katın göğü, merdiven şeridi
+    "zemin_kesit": dict(roughness=1.0, metallic=0.0),
+    "kesit_yuzu": dict(roughness=1.0, metallic=0.0, doku="kesit_toprak.png"),
+    "kat_gogu": dict(roughness=1.0, metallic=0.0, emissive=(0.8, 0.85, 0.95)),
+    "kesit_serit": dict(roughness=0.6, metallic=0.0, emissive=(0.9, 0.85, 0.75)),
 }
 DOKU_KLASORU = "../dokular/"
 
@@ -95,7 +100,8 @@ class _Writer:
         return len(self.gltf.bufferViews) - 1
 
     def _indeksli(self, ms, mat) -> "g.Primitive":
-        """Köşeleri paylaşılan mesh'ler: tek köşe tablosu, köşe renkleri (16 bit), uint32 indeks."""
+        """Köşeleri paylaşılan mesh'ler: tek köşe tablosu, köşe renkleri (16 bit); indeks 65 536'dan
+        az köşede uint16, çoğunda uint32."""
         P = np.vstack([m.V for m in ms]).astype(np.float32)
         N = np.vstack([m.NV for m in ms]).astype(np.float32)
         C = np.vstack([np.hstack([srgb_to_linear(m.CV), m.W[:, None]]) for m in ms])
@@ -103,15 +109,17 @@ class _Writer:
         for m in ms:
             F.append(m.F + off)
             off += len(m.V)
-        F = np.vstack(F).astype(np.uint32)
+        F = np.vstack(F)
+        kucuk = off < 65536
+        F = F.astype(np.uint16 if kucuk else np.uint32)
         C16 = np.round(np.clip(C, 0, 1) * 65535).astype(np.uint16)
         view = self._view(np.ascontiguousarray(C16).tobytes(), g.ARRAY_BUFFER)
         self.gltf.accessors.append(g.Accessor(bufferView=view, componentType=g.UNSIGNED_SHORT, normalized=True,
                                               count=len(C16), type=g.VEC4))
         ci = len(self.gltf.accessors) - 1
         view = self._view(np.ascontiguousarray(F.ravel()).tobytes(), g.ELEMENT_ARRAY_BUFFER)
-        self.gltf.accessors.append(g.Accessor(bufferView=view, componentType=g.UNSIGNED_INT, count=F.size,
-                                              type=g.SCALAR))
+        self.gltf.accessors.append(g.Accessor(bufferView=view, componentType=g.UNSIGNED_SHORT if kucuk else g.UNSIGNED_INT,
+                                              count=F.size, type=g.SCALAR))
         ii = len(self.gltf.accessors) - 1
         attrs = g.Attributes(POSITION=self._accessor(P, g.VEC3, True), NORMAL=self._accessor(N, g.VEC3), COLOR_0=ci)
         if any(m.UV is not None for m in ms):

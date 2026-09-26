@@ -2,6 +2,7 @@ shader_type spatial;
 // Genel yüzey: taş, mermer, ahşap, kurşun, altın. Renk köşe renginden gelir.
 render_mode blend_mix, depth_draw_opaque, cull_back;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
+#include "res://scenes/stil/shader/kesit.gdshaderinc"
 
 uniform float puruz : hint_range(0.0, 1.0) = 0.8;
 uniform float metal : hint_range(0.0, 1.0) = 0.0;
@@ -23,4 +24,6 @@ void fragment() {
 	ROUGHNESS = puruz;
 	METALLIC = metal;
 	EMISSION = isima * isima_guc + kenar * pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0) * kenar_renk * 0.4;
+	// Kesit (K18): dıştan bakınca katın pusu; içeride etkisiz (zb_kesit = 0)
+	ZB_KESIT_PUS(dunya);
 }

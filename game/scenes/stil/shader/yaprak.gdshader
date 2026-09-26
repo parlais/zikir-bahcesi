@@ -3,6 +3,7 @@ shader_type spatial;
 // farkı (INSTANCE_CUSTOM.r), arkadan gelen ışığın yapraktan geçişi.
 render_mode blend_mix, depth_draw_opaque, cull_disabled;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
+#include "res://scenes/stil/shader/kesit.gdshaderinc"
 
 uniform float ruzgar = 0.08;
 uniform float ruzgar_hiz = 1.3;
@@ -32,4 +33,6 @@ void fragment() {
 		NORMAL = -NORMAL;
 	}
 	EMISSION = kenar * pow(1.0 - clamp(abs(dot(NORMAL, VIEW)), 0.0, 1.0), 4.0) * kenar_renk * ALBEDO * 0.6;
+	// Kesit (K18): dıştan bakınca katın pusu; içeride etkisiz (zb_kesit = 0)
+	ZB_KESIT_PUS(dunya);
 }

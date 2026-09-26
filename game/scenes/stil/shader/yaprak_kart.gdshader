@@ -5,6 +5,7 @@ shader_type spatial;
 // taç binlerce kart yerine tek bir kabarık kütle gibi ışık alır.
 render_mode blend_mix, depth_draw_opaque, cull_disabled;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
+#include "res://scenes/stil/shader/kesit.gdshaderinc"
 
 uniform sampler2D doku : source_color, filter_linear_mipmap_anisotropic, repeat_disable;
 uniform float ruzgar = 0.08;
@@ -54,4 +55,6 @@ void fragment() {
 		float isik = dot(t.rgb, vec3(0.299, 0.587, 0.114));
 		EMISSION += t.rgb * isima_renk * isima_guc * smoothstep(0.5, 0.85, isik);
 	}
+	// Kesit (K18): dıştan bakınca katın pusu; içeride etkisiz (zb_kesit = 0)
+	ZB_KESIT_PUS(dunya);
 }

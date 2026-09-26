@@ -45,6 +45,8 @@ var yer: Dictionary
 var k: SahneKurucu
 var _vp: Viewport
 var _kesit := false
+## Kesit katmanı (K18): dışarıdan görülenler (kesit yüzleri, öteki katlar, siluetler)
+var kesit: KesitKurucu
 ## Işık geçişi (yalnız nur_ori kipinde; diğer stillerde null).
 var gecis: IsikGecisi
 var _son_t := -1.0
@@ -228,6 +230,7 @@ func _kat_kur() -> void:
 		_arsa_kur()
 	_bitkiler_kur()
 	_gok_kur()
+	_bulut_katmani()
 	_parcaciklar_kur()
 
 
@@ -401,39 +404,22 @@ func _en_cok_zerre() -> int:
 # --------------------------------------------------------------------------
 
 func _kesit_kur() -> void:
-	var kesit := k.ornek("ZB_dunya_kesit", [0, 0, 0, 0, 1])
-	# Bütün tabakalar aynı ışığı alır: üstteki tabaka alttakine gölge düşürmez
-	for mi in kesit.find_children("*", "MeshInstance3D", true, false):
-		(mi as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var ks: Dictionary = yer["kesit"]
-	k.coklu("ZB_bitki_ufuk_agaci", ks["agac"], false)
-	var i := 0
-	for b in ks["bulut"]:
-		_bulut_kumesi(Vector3(b[0], b[1], b[2]), b[3], 14, 300 + i, 1.8)
-		i += 1
-	# Tavanların altında ince bulut kuşağı: içeriden bakınca üst tabaka görünmez
-	var kat: int = ks["kat"]
-	var kh: float = ks["kat_h"]
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 5
-	for kk in range(1, kat):
-		for j in 9:
-			_bulut_kumesi(Vector3(rng.randf_range(-4200, 4200), kk * kh - 22.0, rng.randf_range(-1150, -150)),
-				rng.randf_range(260.0, 420.0), 10, 400 + kk * 20 + j, 2.2)
-	# Firdevs'in üstü: her şeyi kuşatan ışık (Arş tasvir edilmez)
-	var nur_renk := k.yol("parcacik/nur_renk")
-	for isaret in kesit.find_children("isik_*", "", true, false):
-		var pos := (isaret as Node3D).global_position
-		var l := OmniLight3D.new()
-		k.bagla(l, "light_color", nur_renk)
-		l.light_energy = 6.0
-		l.omni_range = 1400.0
-		l.omni_attenuation = 1.3
-		isaret.add_child(l)
-		_hale(pos + Vector3(0, 60, 0), 5200.0, nur_renk, 0.75, true)
-		_huzme(pos + Vector3(0, 900, 0), Vector2(900, 1900), nur_renk, 0.7)
-		k.parcacik(300, pos + Vector3(0, 150, 0), Vector3(1600, 120, 900), 12.0, nur_renk, 3.0,
-			Vector3(0, 8.0, 0), 5.0, 30.0)
+	# İlk kat, içerideki dünyanın kendisidir: aynı arazi, ırmaklar, çağlayanlar, köşkler,
+	# merdiven, korular, arsa ve Tûbâ. Kesme düzleminin önündekiler gizlenir.
+	var olcu: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(KesitKurucu.VERI))["olcu"]
+	var on := Node3D.new()
+	on.name = "kesme_onu"
+	on.visible = false
+	add_child(on)
+	k.on_ebeveyn = on
+	k.kesme_z = float(olcu["kesme_z"])
+	_kat_kur()
+	for n in find_children("*_on", "Node3D", true, false):
+		(n as Node3D).visible = false
+	k.kesit_dislik = 1.0
+	k.kesit_globalleri()
+	kesit = KesitKurucu.new(self, k)
+	kesit.kur()
 
 
 # --------------------------------------------------------------------------
@@ -469,34 +455,84 @@ func _bulut_doku() -> Texture2D:
 
 ## Kabarık bulut billboard'larından küme: tepesi sıcak beyaz, altı gölgeli.
 ## yatay: kümenin yatayda ne kadar yayıldığı (1 yuvarlak, 3 uzun bulut şeridi).
+## Kartlar _bulut_kartlari'na küme olarak eklenir; _bulut_katmani() MultiMesh'lerle kurar.
 func _bulut_kumesi(merkez: Vector3, boyut: float, adet: int, tohum: int, yatay := 1.0) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = tohum
-	var doku := _bulut_doku()
+	var kume: Array = []
+	_bulut_kartlari.append(kume)
 	for i in adet:
 		var o := Vector3(rng.randf_range(-0.75, 0.75) * yatay, rng.randf_range(-0.22, 0.28), rng.randf_range(-0.5, 0.5)) * boyut
 		var s := boyut * rng.randf_range(0.5, 0.9) * (1.0 - 0.4 * absf(o.x) / (boyut * yatay))
-		var q := QuadMesh.new()
-		q.size = Vector2(s, s * 0.8)
-		var m := StandardMaterial3D.new()
-		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		m.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
-		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		m.albedo_texture = doku
 		var yuk := clampf(o.y / (boyut * 0.3) * 0.5 + 0.5, 0.0, 1.0)
 		var f := yuk * 0.8 + rng.randf() * 0.2
-		var renk_fn := func(p: Dictionary) -> Color:
-			var r: Array = p.get("bulut_renk", BULUT_RENK)
-			var c: Color = (r[1] as Color).lerp(r[0], f)
-			c.a = 0.72
-			return c
-		k.bagla(m, "albedo_color", renk_fn)
-		q.material = m
-		var mi := MeshInstance3D.new()
-		mi.mesh = q
-		mi.position = merkez + o
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		add_child(mi)
+		kume.append([Transform3D(Basis().scaled(Vector3(s, s * 0.8, 1.0)), merkez + o), f])
+
+
+var _bulut_kartlari: Array = []
+
+
+## Bulut kartlarını MultiMesh'lerle kurar (bulut_kart.gdshader): her kart kameraya döner;
+## uzaktan yakına (kameralar kuzeye, -z'ye bakar) sıralı çizilir. Renk bulut_renk'ten.
+## birlesik = false: küme başına bir MultiMesh (içeride; haleler ve çağlayan pusuyla saydam
+## sıralama eskisi gibi küme küme kalır). true: hepsi tek çizim (kesitte uzak katlar).
+## Eskiden her kart ayrı bir MeshInstance ve malzemeydi (yüzlerce çizim çağrısı).
+func _bulut_katmani(ebeveyn: Node = null, birlesik := false) -> void:
+	if _bulut_kartlari.is_empty():
+		return
+	var kumeler := _bulut_kartlari
+	_bulut_kartlari = []
+	var mesh := QuadMesh.new()
+	mesh.size = Vector2(1, 1)
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://scenes/stil/shader/bulut_kart.gdshader")
+	mat.set_shader_parameter("doku", _bulut_doku())
+	k.bagla(mat, "shader_parameter/acik", func(p: Dictionary) -> Color: return (p.get("bulut_renk", BULUT_RENK)[0] as Color))
+	k.bagla(mat, "shader_parameter/golge", func(p: Dictionary) -> Color: return (p.get("bulut_renk", BULUT_RENK)[1] as Color))
+	mesh.material = mat
+	if birlesik:
+		var hepsi: Array = []
+		for kume in kumeler:
+			hepsi.append_array(kume)
+		kumeler = [hepsi]
+	# Kümede uzaktan yakına: içeride kameralar arsanın çevresindedir (eski kartlar kameraya
+	# uzaklıkla sıralanıyordu); kesitte kamera güneyde, uzaktadır (z sırası)
+	var goz := Vector3(10, 10, 30)
+	if not birlesik:
+		# Küme, merkezine göre uzak ve yakın yarıya bölünür: halelerle saydam sıralama eski
+		# kart kart sıralamaya yakın kalır (hale iki yarının arasına düşer)
+		var yarilar: Array = []
+		for kume: Array in kumeler:
+			var merkez := Vector3.ZERO
+			for kart in kume:
+				merkez += (kart[0] as Transform3D).origin
+			var r := (merkez / kume.size()).distance_to(goz)
+			var uzak: Array = []
+			var yakin: Array = []
+			for kart in kume:
+				((uzak if (kart[0] as Transform3D).origin.distance_to(goz) > r else yakin) as Array).append(kart)
+			for y in [uzak, yakin]:
+				if not (y as Array).is_empty():
+					yarilar.append(y)
+		kumeler = yarilar
+	for kume: Array in kumeler:
+		if birlesik:
+			kume.sort_custom(func(a: Array, b: Array) -> bool: return (a[0] as Transform3D).origin.z < (b[0] as Transform3D).origin.z)
+		else:
+			kume.sort_custom(func(a: Array, b: Array) -> bool:
+				return (a[0] as Transform3D).origin.distance_squared_to(goz) > (b[0] as Transform3D).origin.distance_squared_to(goz))
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.use_custom_data = true
+		mm.mesh = mesh
+		mm.instance_count = kume.size()
+		for i in kume.size():
+			mm.set_instance_transform(i, kume[i][0])
+			mm.set_instance_custom_data(i, Color(kume[i][1], 0, 0, 0))
+		var mmi := MultiMeshInstance3D.new()
+		mmi.multimesh = mm
+		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		(ebeveyn if ebeveyn else self).add_child(mmi)
 
 
 var _isik_doku_onbellek: Texture2D
@@ -601,7 +637,7 @@ func _kamera_kur() -> void:
 	if _inceleme_modeli:
 		_model_kamerasi(kam)
 	kam.near = 0.15
-	kam.far = 40000.0 if kamera_modu == "kesit" else 12000.0
+	kam.far = 90000.0 if kamera_modu == "kesit" else 12000.0
 	if _arg.has("kam"):
 		kam.far = 120000.0
 	var ayar := CameraAttributesPractical.new()

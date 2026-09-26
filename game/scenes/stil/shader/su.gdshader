@@ -2,6 +2,7 @@ shader_type spatial;
 // Kanal ve havuz suyu: opak ve çok pürüzsüz yüzey; Forward+ ekran uzayı
 // yansıması (SSR) köşkü ve selvileri suya yansıtır. Dalgalar normalle verilir.
 render_mode blend_mix, depth_draw_opaque, cull_back;
+#include "res://scenes/stil/shader/kesit.gdshaderinc"
 
 uniform vec3 derin : source_color = vec3(0.04, 0.22, 0.28);
 uniform vec3 sig : source_color = vec3(0.12, 0.55, 0.58);
@@ -38,4 +39,9 @@ void fragment() {
 	METALLIC = 0.0;
 	SPECULAR = 0.9;
 	EMISSION = isima * isima_guc * (0.6 + kostik);
+	// Kesit (K18): uzaktan ırmaklar kendi renginde ışık teli gibi seçilsin (K12: su kendi
+	// ışığıyla parlar); bir pikselin kapladığı alan büyüdükçe artar. İçeride etkisiz.
+	EMISSION += sig * 1.6 * zb_kesit * smoothstep(1.5, 6.0, length(fwidth(dunya)));
+	// Kesit (K18): dıştan bakınca katın pusu; içeride etkisiz (zb_kesit = 0)
+	ZB_KESIT_PUS(dunya);
 }

@@ -9,6 +9,9 @@ uniform vec3 isima : source_color = vec3(1.0, 0.9, 0.75);
 uniform float isima_guc = 0.25;
 uniform float kabarma = 90.0;
 uniform float olcek = 0.0012;
+// Kesit (K18): bulut denizi kendi ışığıyla da aydınlanır (güneş arkadan vurunca kameraya bakan
+// yamaçlar gölgede kalıp düz bir alana dönüyordu)
+uniform float oz_isik = 0.0;
 
 varying vec3 dunya;
 varying float yogun;
@@ -48,5 +51,6 @@ void fragment() {
 	ALBEDO = c;
 	ROUGHNESS = 1.0;
 	SPECULAR = 0.0;
-	EMISSION = isima * isima_guc * (0.4 + yogun);
+	EMISSION = isima * isima_guc * (0.4 + yogun) + c * oz_isik * (0.55 + 0.6 * clamp(yogun * 1.3 + ince * 0.5 - 0.3, 0.0, 1.0));
+	ALBEDO = c * (1.0 - 0.7 * oz_isik);
 }

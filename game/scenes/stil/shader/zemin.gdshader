@@ -2,6 +2,7 @@ shader_type spatial;
 // Çimenlik zemin ve dış arazi: büyük ölçekli lekeler, sarımsı çayır izleri.
 render_mode blend_mix, depth_draw_opaque, cull_back;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
+#include "res://scenes/stil/shader/kesit.gdshaderinc"
 
 uniform vec3 cimen_acik : source_color = vec3(0.55, 0.72, 0.32);
 uniform vec3 cimen_koyu : source_color = vec3(0.22, 0.42, 0.2);
@@ -13,6 +14,9 @@ uniform vec3 cicek_b : source_color = vec3(1.0, 0.72, 0.8);
 uniform vec3 cicek_c : source_color = vec3(1.0, 0.85, 0.35);
 uniform vec3 filiz_renk : source_color = vec3(0.45, 0.72, 0.25);
 uniform float filiz_miktar = 0.0;
+// Kesitteki öteki katlar (K18): çimen, köşe rengindeki katın tonuyla çarpılır (0,5 nötr).
+// İçerideki arazide 0'dır; görünüş değişmez.
+uniform float kose_ton = 0.0;
 
 varying vec3 dunya;
 
@@ -25,6 +29,7 @@ void fragment() {
 	float kucuk = zb_fbm(dunya * 0.6);
 	vec3 c = mix(cimen_koyu, cimen_acik, smoothstep(0.25, 0.75, buyuk * 0.8 + kucuk * 0.35));
 	c = mix(c, kuru, smoothstep(0.62, 0.8, zb_fbm(dunya * 0.02 + 7.0)) * kuru_miktar);
+	c *= mix(vec3(1.0), COLOR.rgb * 2.0, kose_ton * step(0.99, COLOR.a));
 	// Kır çiçekleri: hücre başına bir benek, çayır lekelerinde yoğunlaşır
 	vec2 hc = floor(dunya.xz * 3.0);
 	vec2 hf = fract(dunya.xz * 3.0) - 0.5;
@@ -50,4 +55,6 @@ void fragment() {
 	c = mix(kose, c, cim);
 	ALBEDO = zb_renk(c);
 	ROUGHNESS = 0.95;
+	// Kesit (K18): dıştan bakınca katın pusu; içeride etkisiz (zb_kesit = 0)
+	ZB_KESIT_PUS(dunya);
 }

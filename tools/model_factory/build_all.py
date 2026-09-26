@@ -26,11 +26,16 @@ OUT = ROOT / "game" / "assets" / "models"
 EK_MODELLER = {"ZB_zemin_ada", "ZB_sahne_carbag", "ZB_sahne_daglar", "ZB_bitki_selvi", "ZB_bitki_nar",
                "ZB_bitki_gul_cali", "ZB_bitki_simsir", "ZB_bitki_cimen", "ZB_bitki_lale_tarhi",
                # Cennet mekânı (Faz 2a)
-               "ZB_dunya_cennet", "ZB_dunya_selaleler", "ZB_dunya_kesit",
+               "ZB_dunya_cennet", "ZB_dunya_selaleler",
                "ZB_bitki_koru_agac", "ZB_bitki_uzak_agac", "ZB_bitki_ufuk_agaci", "ZB_yapi_su_kosku", "ZB_yapi_inci_cadir",
-               "ZB_obje_inci_cakil", "ZB_yapi_kat_merdiveni"}
+               "ZB_obje_inci_cakil", "ZB_yapi_kat_merdiveni",
+               # Kesit (K10, K18): ilk kata eklenenler, 2-7. katlar ve Firdevs
+               "ZB_kesit_kat1", "ZB_kesit_kat2", "ZB_kesit_kat3", "ZB_kesit_kat4", "ZB_kesit_kat5", "ZB_kesit_kat6",
+               "ZB_kesit_kat7", "ZB_kesit_firdevs"}
 # Sahne ve dünya modelleri tek parça büyük arazidir; üçgen sınırı onlara uygulanmaz.
-SINIRSIZ = {"ZB_sahne_carbag", "ZB_sahne_daglar", "ZB_dunya_cennet", "ZB_dunya_selaleler", "ZB_dunya_kesit"}
+SINIRSIZ = {"ZB_sahne_carbag", "ZB_sahne_daglar", "ZB_dunya_cennet", "ZB_dunya_selaleler",
+            "ZB_kesit_kat1", "ZB_kesit_kat2", "ZB_kesit_kat3", "ZB_kesit_kat4", "ZB_kesit_kat5", "ZB_kesit_kat6",
+            "ZB_kesit_kat7", "ZB_kesit_firdevs"}
 # Ana ağaçlar ve kahraman yapılar sahnede az sayıda bulunur; daha ayrıntılı olabilir.
 # Su köşkü kahraman modeldir; mobil için ileride LOD gerekir.
 OZEL_SINIR = {"ZB_bitki_nar": 11000, "ZB_bitki_koru_agac": 12000, "ZB_bitki_selvi": 7000, "ZB_agac_talh_a4": 8000, "ZB_agac_nar_a4": 11000, "ZB_agac_servi_a4": 7000, "ZB_agac_cinar_a4": 18000, "ZB_agac_tuba_a3": 9000, "ZB_agac_tuba_a4": 22000, "ZB_agac_tuba_a5": 45000, "ZB_agac_sidr_a4": 13000, "ZB_agac_uzum_a4": 11000,
@@ -67,6 +72,9 @@ def main(argv):
     from models.cennet import yerlesim_yaz as cennet_yerlesim_yaz
     if not filtre or "dunya" in filtre:
         print("Cennet yerleşimi:", cennet_yerlesim_yaz(ROOT).relative_to(ROOT))
+    if not filtre or "kesit" in filtre:
+        from models.kesit import kesit_yerlesim_yaz
+        print("Kesit yerleşimi:", kesit_yerlesim_yaz(ROOT).relative_to(ROOT))
 
     beklenen = set(EK_MODELLER)
     for a in json.loads((ROOT / "game/data/assets.json").read_text(encoding="utf-8"))["assets"]:

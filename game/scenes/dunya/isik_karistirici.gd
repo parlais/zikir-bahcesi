@@ -53,6 +53,11 @@ static func karistir(a: Dictionary, b: Dictionary, t: float) -> Dictionary:
 	p["gok"]["nur_yon"] = a["gok"]["nur_yon"]
 	p["gok"]["nur_yon_b"] = b["gok"]["nur_yon"]
 	p["gok"]["nur_karisim"] = t
+	# Kesitte katların göğü (içerideki gök): aynı çapraz geçiş
+	if a.has("kat_gok") and b.has("kat_gok"):
+		p["kat_gok"]["nur_yon"] = a["kat_gok"]["nur_yon"]
+		p["kat_gok"]["nur_yon_b"] = b["kat_gok"]["nur_yon"]
+		p["kat_gok"]["nur_karisim"] = t
 	return p
 
 

@@ -4,6 +4,7 @@ shader_type spatial;
 // (ağırlık COLOR.a): dal ve üstündeki kartlar birlikte salınır.
 render_mode blend_mix, depth_draw_opaque, cull_back;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
+#include "res://scenes/stil/shader/kesit.gdshaderinc"
 
 uniform sampler2D doku : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D doku_n : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
@@ -15,7 +16,10 @@ uniform float ruzgar_hiz = 1.3;
 uniform float isima_guc = 0.0;
 uniform vec3 isima_renk : source_color = vec3(1.0);
 
+varying vec3 zb_dunya;
+
 void vertex() {
+	zb_dunya = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	vec3 w = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	float t = TIME * ruzgar_hiz;
 	float s = sin(t + w.x * 0.35 + w.z * 0.22) + 0.4 * sin(t * 2.3 + w.x * 1.7 + w.y);
@@ -32,4 +36,6 @@ void fragment() {
 	SPECULAR = 0.3;
 	EMISSION = kenar * pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0) * kenar_renk * 0.3
 		+ ALBEDO * isima_renk * isima_guc;
+	// Kesit (K18): dıştan bakınca katın pusu; içeride etkisiz (zb_kesit = 0)
+	ZB_KESIT_PUS(zb_dunya);
 }

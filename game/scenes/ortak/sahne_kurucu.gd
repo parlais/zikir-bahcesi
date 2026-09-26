@@ -55,6 +55,14 @@ const MALZEME_TABLOSU := {
 		"golge_alma": 0.6, "spek": 0.15, "isima_guc": 0.22, "isima_renk": Color(1.0, 0.93, 0.78)}, ""],
 	"yaprak_tuba": ["yaprak_kart", {"doku": DOKULAR + "yaprak_tuba.png", "golge_alma": 0.5, "spek": 0.05,
 		"isima_guc": 0.9, "isima_renk": Color(1.0, 0.88, 0.6)}, "yaprak"],
+	# Kesit (K10, K18): öteki katların zemini (çimen katın tonuyla çarpılır), kesit yüzü
+	# (za'ferân toprak), katın göğü, merdiven şeridi, uzak siluetler
+	"zemin_kesit": ["zemin", {"spek": 0.03, "kose_ton": 1.0}, "zemin"],
+	"kesit_yuzu": ["kesit_yuzu", {"doku": DOKULAR + "kesit_toprak.png", "doku_n": DOKULAR + "kesit_toprak_n.png"},
+		"kesit_yuzu"],
+	"kat_gogu": ["kat_gogu", {}, "kat_gogu"],
+	"kesit_serit": ["kesit_serit", {}, "kesit_serit"],
+	"kesit_agac": ["kesit_agac", {"atlas": DOKULAR + "kesit_siluet.png", "golge_alma": 0.5, "spek": 0.05}, "yaprak"],
 }
 
 var kok: Node3D
@@ -161,12 +169,30 @@ func ortam_kur(gok_shader := SHADER + "gok.gdshader") -> DirectionalLight3D:
 	_gok_ayarla()
 	_ortam_ayarla()
 	_gunes_ayarla()
+	kesit_globalleri()
 	return gunes
+
+
+## Kesit (K18): katların pusu ve ışığı için global shader parametreleri. kesit: 0 içeride
+## (pus etkisiz), 1 dışarıdan kesitte; yakınlaşmada kameranın konumuna göre arada.
+var kesit_dislik := 0.0
+
+
+func kesit_globalleri() -> void:
+	RenderingServer.global_shader_parameter_set("zb_kesit", kesit_dislik)
+	if profil.has("kesit_pus"):
+		var kp: Dictionary = profil["kesit_pus"]
+		# Uzak zemin, katın göğünün ufkuna karışır (perdenin altıyla zemin arasında dikiş kalmasın)
+		var ufuk: Color = profil["kat_gok"]["ufuk"] if profil.has("kat_gok") else kp["ufuk"]
+		RenderingServer.global_shader_parameter_set("zb_pus_ufuk", ufuk)
+		RenderingServer.global_shader_parameter_set("zb_pus_gok", kp["gok"])
+		RenderingServer.global_shader_parameter_set("zb_pus_nur", kp["nur"])
 
 
 ## Işık geçişi (K12): profil değişince sürekli değerleri yeniden ayarlar.
 func guncelle(p: Dictionary) -> void:
 	profil = p
+	kesit_globalleri()
 	if gok_malzeme:
 		_gok_ayarla()
 	if ortam:
@@ -361,6 +387,13 @@ func bitki_mesh(model: String) -> Mesh:
 ## parca > 0 ise örnekler parca metrelik ızgara hücrelerine bölünür: her hücre kendi
 ## MultiMesh'idir ve ayrıntı düzeyi (LOD) hücrenin kameraya uzaklığına göre seçilir.
 ## Tek MultiMesh bütün örneklere en yakın örneğin ayrıntısını verirdi (K15 ağaçları).
+## Kesit (K18): on_ebeveyn verilirse kesme düzleminin önündeki (z > kesme_z) örnekler
+## ayrı MultiMesh'lere, o düğümün altına kurulur (kesitte gizlenir). Örnek başına renk
+## farkı bütün listeden aynı sırayla üretilir; bölme görünüşü değiştirmez.
+var on_ebeveyn: Node3D
+var kesme_z := INF
+
+
 func coklu(model: String, konumlar: Array, golge := true, parca := 0.0) -> MultiMeshInstance3D:
 	if konumlar.is_empty():
 		return null
@@ -368,9 +401,11 @@ func coklu(model: String, konumlar: Array, golge := true, parca := 0.0) -> Multi
 	var gruplar := {}
 	for i in konumlar.size():
 		var t: Array = konumlar[i]
-		var anahtar := Vector2i.ZERO
+		var anahtar := Vector3i.ZERO
 		if parca > 0.0:
-			anahtar = Vector2i(floori(float(t[0]) / parca), floori(float(t[2]) / parca))
+			anahtar = Vector3i(floori(float(t[0]) / parca), floori(float(t[2]) / parca), 0)
+		if on_ebeveyn and float(t[2]) > kesme_z:
+			anahtar.z = 1
 		if not gruplar.has(anahtar):
 			gruplar[anahtar] = []
 		gruplar[anahtar].append(i)
@@ -395,7 +430,7 @@ func coklu(model: String, konumlar: Array, golge := true, parca := 0.0) -> Multi
 		var mmi := MultiMeshInstance3D.new()
 		mmi.multimesh = mm
 		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if golge else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		kok.add_child(mmi)
+		(on_ebeveyn if anahtar.z == 1 else kok).add_child(mmi)
 		if ilk == null:
 			ilk = mmi
 	return ilk

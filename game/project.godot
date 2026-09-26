@@ -35,3 +35,34 @@ pointing/emulate_touch_from_mouse=true
 
 renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
+
+[shader_globals]
+
+zb_kesit={
+"type": "float",
+"value": 0.0
+}
+zb_kesit_olcu={
+"type": "vec4",
+"value": Vector4(60, 1000, 200, 800)
+}
+zb_pus_ufuk={
+"type": "color",
+"value": Color(1, 0.86, 0.67, 1)
+}
+zb_pus_gok={
+"type": "color",
+"value": Color(0.85, 0.89, 0.95, 1)
+}
+zb_pus_nur={
+"type": "color",
+"value": Color(1, 0.95, 0.85, 1)
+}
+zb_pus_aralik={
+"type": "vec4",
+"value": Vector4(0.25, 1.05, 2600, 3800)
+}
+zb_kesit_kamera={
+"type": "vec4",
+"value": Vector4(8809, 48194, 360, 0)
+}

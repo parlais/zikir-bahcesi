@@ -11,6 +11,7 @@ shader_type spatial;
 // pus = 1: perdenin arkasındaki geniş, yumuşak, parlayan serpinti zarfı.
 render_mode blend_mix, depth_draw_opaque, cull_disabled;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
+#include "res://scenes/stil/shader/kesit.gdshaderinc"
 
 uniform vec3 su_renk : source_color = vec3(0.62, 0.86, 0.9);
 uniform vec3 derin_renk : source_color = vec3(0.25, 0.55, 0.62);
@@ -106,4 +107,6 @@ void fragment() {
 	if (!FRONT_FACING) {
 		NORMAL = -NORMAL;
 	}
+	// Kesit (K18): dıştan bakınca katın pusu; içeride etkisiz (zb_kesit = 0)
+	ZB_KESIT_PUS(dunya);
 }

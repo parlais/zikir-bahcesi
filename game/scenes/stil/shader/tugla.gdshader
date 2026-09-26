@@ -3,6 +3,7 @@ shader_type spatial;
 // şaşırtmalı tuğla dizisi. Uzaklaştıkça desen ortalama renge yumuşakça döner.
 render_mode blend_mix, depth_draw_opaque, cull_back;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
+#include "res://scenes/stil/shader/kesit.gdshaderinc"
 
 uniform vec3 tugla_a : source_color = vec3(0.93, 0.76, 0.44);   // altın
 uniform vec3 tugla_b : source_color = vec3(0.9, 0.91, 0.94);    // gümüş
@@ -44,4 +45,6 @@ void fragment() {
 	METALLIC = mix(mix(metal_a, metal_b, sec) * (1.0 - hat), (metal_a + metal_b) * 0.45, uzak);
 	ROUGHNESS = puruz + hat * 0.5;
 	EMISSION = c * isima_guc + kenar * pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 3.0) * kenar_renk * 0.3;
+	// Kesit (K18): dıştan bakınca katın pusu; içeride etkisiz (zb_kesit = 0)
+	ZB_KESIT_PUS(dunya);
 }

@@ -694,6 +694,164 @@ def cinar_kabugu(n=512, tohum=17):
     return albedo, _normal(h + ince * 0.1, 4.0)
 
 
+def _yatay_periyodik(n_x, n_y, fx, fy, rng, oktav=4):
+    """Yatayda döşenebilir, dikeyde döşenmesi gerekmeyen fbm (n_y × n_x)."""
+    kare = _fbm(max(n_x, n_y), fx, fy, rng, oktav)
+    return kare[:n_y, :n_x]
+
+
+def kesit_toprak(n_x=1024, n_y=512, tohum=31):
+    """Kesit yüzü (K10, Dünya'nın katman resimleri gibi): cennet toprağının kesiti.
+    Dayanak: "Toprağı za'ferân, çakılları inci ve yakuttur, harcı misktir"
+    (et-Tâc 5/402, Tirmizî 2526; danışma kurulu teyit edecek).
+    Yukarıdan aşağı: çimen kökleri, za'ferân toprak (inci çakıllı), dalgalı misk damarı,
+    açık za'ferân, yakut çakıllı kuşak, ince altın damarlar, derin misk. Yatayda
+    döşenebilir; dikeyde dilimin üstünden (v=0) altına (v=1) bir kez uzanır.
+    Renk dokudadır (köşe rengi beyaza yakın verilir). Albedo ve normal haritası."""
+    rng = np.random.default_rng(tohum)
+    y, x = np.mgrid[0:n_y, 0:n_x]
+    v = y / n_y
+    u = x / n_x
+    iri = _yatay_periyodik(n_x, n_y, 4, 4, rng, 4)
+    orta = _yatay_periyodik(n_x, n_y, 16, 16, rng, 4)
+    ince = _yatay_periyodik(n_x, n_y, 96, 96, rng, 3)
+
+    def sinir(taban, genlik, dalga, faz):
+        """Katman sınırı: dalgalı ve pürüzlü (u'da periyodik)."""
+        return taban + genlik * np.sin(2 * math.pi * (u * dalga) + faz) + (iri - 0.5) * genlik * 1.6
+
+    zaferan = np.array([226, 166, 62]) / 255
+    zaferan_acik = np.array([240, 198, 112]) / 255
+    misk = np.array([70, 46, 34]) / 255
+    kok_renk = np.array([96, 78, 46]) / 255
+    cimen_dip = np.array([88, 112, 50]) / 255
+    ust_toprak = np.array([150, 104, 56]) / 255
+    altin = np.array([250, 214, 120]) / 255
+    inci_taban = np.array([236, 226, 210]) / 255
+    yakut_taban = np.array([150, 52, 66]) / 255
+    rgb = np.tile(zaferan, (n_y, n_x, 1)).astype(np.float64)
+    h = np.zeros((n_y, n_x))
+
+    def kat(maske, renk_):
+        nonlocal rgb
+        rgb = rgb * (1 - maske[..., None]) + renk_ * maske[..., None]
+
+    puruz = (orta - 0.5) * 0.012 + (ince - 0.5) * 0.006
+    yumusak = lambda d, g: np.clip(0.5 + (d + puruz) / (g * 0.5), 0, 1)
+    kusak = lambda a, b, g: yumusak(v - a, g) * yumusak(b - v, g)
+    # Katmanlar (yukarıdan aşağı): uzaktan da seçilen renkli kuşaklar (Dünya'nın katman resimleri gibi)
+    s_ust = sinir(0.12, 0.012, 4, 0.9)
+    kat(yumusak(s_ust - v, 0.02), ust_toprak)                                     # koyu üst toprak (kökler)
+    m0, m1 = sinir(0.3, 0.03, 3, 0.7), sinir(0.37, 0.025, 2, 2.6)
+    misk_m = kusak(m0, m1, 0.01)
+    kat(misk_m, misk)                                                             # misk damarı
+    i0, i1 = sinir(0.4, 0.02, 2, 1.3), sinir(0.49, 0.02, 3, 4.0)
+    inci_m = kusak(i0, i1, 0.012)
+    sedef = 0.5 + 0.5 * np.sin(u * 2 * math.pi * 7 + iri * 6)[..., None] * np.array([0.03, -0.01, 0.04])
+    kat(inci_m, inci_taban * (1.0 + sedef - 0.5))                                 # inci kuşağı (sedef)
+    kat(kusak(i1, sinir(0.62, 0.025, 3, 1.9), 0.012), zaferan_acik)               # açık za'ferân
+    y0, y1 = sinir(0.64, 0.02, 2, 3.3), sinir(0.71, 0.02, 3, 0.4)
+    yakut_m = kusak(y0, y1, 0.012)
+    kat(yakut_m, yakut_taban)                                                     # yakut kuşağı
+    s_derin = sinir(0.84, 0.03, 2, 4.1)
+    kat(yumusak(v - s_derin, 0.015), misk * 0.9)                                  # derin misk
+    h -= misk_m * 0.15
+    # İnce altın damarlar
+    for taban, dalga, faz in ((0.55, 5, 0.4), (0.76, 3, 2.2), (0.8, 4, 5.0)):
+        s = sinir(taban, 0.02, dalga, faz)
+        d = np.clip(1 - np.abs(v - s) / 0.004, 0, 1) * np.clip((orta - 0.35) / 0.2, 0, 1)
+        kat(d, altin)
+        h += d * 0.1
+    # Çimen kökleri kuşağı (üstte): koyu, lifli
+    s_cim = sinir(0.045, 0.01, 5, 1.1)
+    cim = yumusak(s_cim - v, 0.012)
+    kat(cim, cimen_dip)
+    s_kok = sinir(0.17, 0.02, 4, 3.3)
+    kok_kusak = yumusak(s_kok - v, 0.03) * (1 - cim)
+    kat(kok_kusak * 0.3, kok_renk)
+    # Toprak tanesi: bütün katmanlarda ince pürüz
+    rgb *= (0.86 + 0.2 * orta[..., None]) * (0.92 + 0.14 * ince[..., None])
+    h += orta * 0.25 + ince * 0.2
+    # Kökler: yukarıdan inen, kıvrılan ve incelen çizgiler (yatayda döşenebilir).
+    # Her adımda yalnızca çevresindeki küçük pencere boyanır.
+    def kok_ciz(px, py, aci, boy, kal):
+        nonlocal rgb, h
+        adim = 0.0
+        while adim < boy and py < n_y - 2:
+            r = int(kal + 2)
+            x0, y0 = int(px) - r, max(int(py) - r, 0)
+            y1 = min(int(py) + r + 1, n_y)
+            xs = np.arange(x0, int(px) + r + 1)
+            yy, xi = np.mgrid[y0:y1, 0:len(xs)]
+            xx = xs[xi] % n_x
+            d = np.hypot(xs[xi] - px, yy - py)
+            m = np.clip((kal - d) + 0.5, 0, 1)
+            rgb[yy, xx] = rgb[yy, xx] * (1 - 0.75 * m[..., None]) + kok_renk * 0.75 * m[..., None]
+            h[yy, xx] = np.maximum(h[yy, xx], m * 0.45)
+            if rng.random() < 0.012 and kal > 0.9:
+                kok_ciz(px, py, aci + rng.choice((-1, 1)) * rng.uniform(0.4, 0.8), (boy - adim) * 0.5, kal * 0.7)
+            aci += rng.normal(0, 0.08)
+            aci = min(max(aci, 0.4), math.pi - 0.4)
+            px += math.cos(aci) * 0.8
+            py += math.sin(aci) * 0.8
+            adim += 0.8
+            kal = max(0.5, kal * 0.996)
+
+    for _ in range(40):
+        kok_ciz(rng.uniform(0, n_x), rng.uniform(0, 6), math.pi / 2 + rng.normal(0, 0.2),
+                rng.uniform(0.12, 0.3) * n_y, rng.uniform(1.0, 2.2))
+    # İnce tabakalanma: za'ferân kuşaklarında yatay, hafif dalgalı açık-koyu çizgiler
+    lam = np.sin((v * 90 + (orta - 0.5) * 3.0 + (iri - 0.5) * 6.0) * 2 * math.pi)
+    rgb *= (1 + 0.035 * lam[..., None] * (1 - misk_m[..., None]) * (1 - cim[..., None]))
+    # Tortu benekleri: koyu ve açık ince taneler
+    tane = _yatay_periyodik(n_x, n_y, 256, 256, rng, 1)
+    rgb *= (1 - 0.18 * np.clip((tane - 0.8) / 0.1, 0, 1))[..., None]
+    rgb += 0.08 * np.clip((0.2 - tane) / 0.1, 0, 1)[..., None]
+
+    def cakil(adet, v0, v1, renk_, parlak, boy):
+        nonlocal rgb, h
+        for _ in range(adet):
+            cx, cy = rng.uniform(0, n_x), rng.uniform(v0, v1) * n_y
+            rx = rng.uniform(*boy)
+            ry = rx * rng.uniform(0.6, 0.9)
+            ton = renk_ * rng.uniform(0.9, 1.08)
+            x0, x1 = int(cx - rx - 2), int(cx + rx + 3)
+            y0, y1 = max(int(cy - ry - 2), 0), min(int(cy + ry + 3), n_y)
+            for ox in (-n_x, 0, n_x):
+                xs = np.arange(x0, x1) + ox
+                ic = (xs >= 0) & (xs < n_x)
+                if not ic.any():
+                    continue
+                xs = xs[ic]
+                yy, xx = np.mgrid[y0:y1, 0:len(xs)]
+                xx = xs[xx]
+                dx, dy = (xx - (cx + ox)) / rx, (yy - cy) / ry
+                r2 = dx * dx + dy * dy
+                m = np.clip((1 - r2) * 6, 0, 1)
+                if not m.any():
+                    continue
+                # Yuvarlak çakıl: üstte parlak benek, altta gölge (ışık yukarıdan)
+                golge = 0.72 + 0.35 * np.clip(-dy, -1, 1) * 0.5 + 0.2 * np.sqrt(np.clip(1 - r2, 0, 1))
+                benek = np.clip(1 - np.hypot(dx + 0.3, dy + 0.45) / 0.28, 0, 1) ** 2 * parlak
+                c = ton * golge[..., None] + benek[..., None]
+                eski = rgb[yy, xx]
+                rgb[yy, xx] = eski * (1 - m[..., None]) + c * m[..., None]
+                h[yy, xx] = np.maximum(h[yy, xx], np.sqrt(np.clip(1 - r2, 0, 1)) * m)
+                # Çakılın altında ince gölge
+                gm = np.clip((1 - ((dx) ** 2 + ((yy - cy - ry * 0.35) / ry) ** 2)) * 3, 0, 1) * (1 - m) * 0.35
+                rgb[yy, xx] = rgb[yy, xx] * (1 - gm[..., None])
+
+    inci = np.array([246, 240, 226]) / 255
+    yakut = np.array([176, 26, 52]) / 255
+    cakil(50, 0.16, 0.29, inci, 0.9, (3.0, 6.0))
+    cakil(90, 0.4, 0.49, inci * 1.02, 1.0, (2.5, 5.5))
+    cakil(80, 0.64, 0.71, np.array([196, 22, 50]) / 255, 0.8, (2.5, 5.0))
+    cakil(40, 0.5, 0.62, inci, 0.8, (2.0, 4.0))
+    cakil(18, 0.86, 0.97, yakut, 0.6, (3.0, 5.0))
+    albedo = Image.fromarray(np.round(np.clip(rgb, 0, 1) * 255).astype(np.uint8), "RGB")
+    return albedo, _normal(h, 4.0)
+
+
 # --------------------------------------------------------------------------
 # Kayıt
 # --------------------------------------------------------------------------
@@ -745,7 +903,8 @@ def dokulari_yaz(klasor: Path) -> list[Path]:
     for ad, (albedo, normal) in (("kabuk", kabuk_dokusu()), ("kabuk_hurma", hurma_kabugu()),
                                  ("kabuk_muz", muz_govdesi()), ("kabuk_cinar", cinar_kabugu()),
                                  ("kabuk_tuba", tuba_kabugu()),
-                                 ("yuzey_toprak", toprak_dokusu())):
+                                 ("yuzey_toprak", toprak_dokusu()),
+                                 ("kesit_toprak", kesit_toprak())):
         for img, dosya in ((albedo, f"{ad}.png"), (normal, f"{ad}_n.png")):
             img.save(klasor / dosya, optimize=True)
             yazilan.append(klasor / dosya)

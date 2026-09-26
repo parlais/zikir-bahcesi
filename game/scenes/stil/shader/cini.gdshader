@@ -3,6 +3,7 @@ shader_type spatial;
 // çinisinden). Zemin rengi köşe renginden; çizgiler beyaz/altın.
 render_mode blend_mix, depth_draw_opaque, cull_back;
 #include "res://scenes/stil/shader/ortak.gdshaderinc"
+#include "res://scenes/stil/shader/kesit.gdshaderinc"
 
 uniform float olcek = 1.6;
 uniform vec3 cizgi : source_color = vec3(0.96, 0.93, 0.85);
@@ -40,4 +41,6 @@ void fragment() {
 	ROUGHNESS = 0.18;
 	SPECULAR = 0.7;
 	EMISSION = (hat * yildiz + ic * zemin * 0.4) * isima_guc;
+	// Kesit (K18): dıştan bakınca katın pusu; içeride etkisiz (zb_kesit = 0)
+	ZB_KESIT_PUS(dunya);
 }
